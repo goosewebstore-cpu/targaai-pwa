@@ -84,6 +84,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .input-wrap input::placeholder{color:var(--text3);font-weight:400;font-size:17px;text-transform:none;letter-spacing:0;}
 .price-input{width:100%;height:52px;padding:0 16px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-size:16px;outline:none;margin-top:12px;}
 .price-input:focus{border-color:var(--accent);background:var(--surface);}
+.input-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;}.input-pair .price-input{margin-top:12px;min-width:0;}
 .btn-search{height:60px;padding:0 28px;border-radius:var(--radius-sm);border:none;background:var(--accent);color:#fff;font-size:18px;font-weight:600;cursor:pointer;transition:transform 0.1s,opacity 0.15s;display:flex;align-items:center;gap:8px;}
 .btn-search:active{transform:scale(0.97);opacity:0.9;}
 .btn-search:disabled{opacity:0.5;cursor:not-allowed;}
@@ -178,8 +179,8 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .ai-verdict-icon.avoid{background:rgba(255,59,48,0.12);}
 .ai-verdict-title{font-size:18px;font-weight:700;margin-bottom:2px;}
 .ai-verdict-sub{font-size:14px;color:var(--text2);}
-.ai-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:22px;}
-.ai-item{background:var(--surface2);border-radius:var(--radius-sm);padding:16px;}
+.ai-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px;}
+.ai-item{background:var(--surface2);border-radius:12px;padding:12px;}
 .ai-item-label{font-size:13px;color:var(--text2);margin-bottom:6px;}
 .ai-item-value{font-size:17px;font-weight:600;}
 .ai-score{display:inline-flex;align-items:center;gap:6px;}
@@ -248,6 +249,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 @media (min-width:520px){
   .app{border-left:1px solid var(--border);border-right:1px solid var(--border);}
 }
+@media (max-width:380px){.ai-grid{grid-template-columns:repeat(2,1fr)}.input-pair{grid-template-columns:1fr}.input-pair .price-input{margin-top:8px}}
 </style>
 </head>
 <body>
@@ -275,7 +277,10 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
           Cerca
         </button>
       </div>
-      <input class="price-input" type="number" id="askingPriceInput" min="0" inputmode="numeric" placeholder="Prezzo richiesto (facoltativo, es. 12.900)">
+      <div class="input-pair">
+        <input class="price-input" type="number" id="askingPriceInput" min="0" inputmode="numeric" placeholder="Prezzo richiesto (€)">
+        <input class="price-input" type="number" id="mileageInput" min="0" inputmode="numeric" placeholder="Chilometri (facoltativo)">
+      </div>
       <input type="file" id="fileInput" accept="image/*" onchange="handlePhoto(event)" style="display:none">
       <button class="photo-btn" onclick="document.getElementById('fileInput').click()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
@@ -431,6 +436,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
             <div class="ai-verdict-sub" id="aiVerdictSub">Stiamo valutando tutti i parametri.</div>
           </div>
         </div>
+        <div class="quick-actions" id="aiTools"></div>
         <div class="ai-grid" id="aiGrid"></div>
         <div class="ai-text" id="aiText"></div>
         <div class="ai-issues-title">Problemi più comuni</div>
@@ -480,6 +486,7 @@ const $ = id => document.getElementById(id);
 
 const targaInput = $('targaInput');
 const askingPriceInput = $('askingPriceInput');
+const mileageInput = $('mileageInput');
 const searchBtn = $('searchBtn');
 const homeView = $('homeView');
 const loadingView = $('loadingView');
@@ -566,6 +573,7 @@ function getVal(data) {
 function estimateValue(data) {
   const y = parseInt(data.y) || parseInt(data.RegistrationYear) || 2020;
   const cv = parseInt(data.cv) || 100;
+  const km = parseInt(String(data.km || '').replace(/\D/g, '')) || null;
   const f = (data.f || '').toLowerCase();
   const body = (data.b || '').toLowerCase();
   const isDiesel = f.includes('diesel');
@@ -574,21 +582,32 @@ function estimateValue(data) {
   const isPremium = /audi|bmw|mercedes|volvo|alfa/i.test(data.v + ' ' + data.m);
   const isLuxury = /ferrari|lamborghini|porsche|maserati|bentley|rolls/i.test(data.v + ' ' + data.m);
   const isSuv = /suv|crossover|fuoristrada/i.test(body);
-  let base = isLuxury ? 75000 : isPremium ? 32000 : 22000;
+  const vehicleName = `${data.v} ${data.m}`.toLowerCase();
+  const modelBases = [
+    [/panda|aygo|i10|picanto|twingo|up!|ypsilon/, 16000],
+    [/500|fiesta|clio|polo|corsa|208|yaris|micra|swift|ibiza/, 19500],
+    [/tipo|golf|focus|astra|308|megane|i30|ceed|civic|mazda.?3/, 26000],
+    [/captur|2008|t-roc|qashqai|sportage|tucson|c-hr|renegade|duster/, 31000],
+    [/serie 1|a3|classe a|mini/, 33000],
+    [/serie 3|a4|classe c|giulia|xc60/, 46000]
+  ];
+  let base = modelBases.find(([pattern]) => pattern.test(vehicleName))?.[1] || (isLuxury ? 95000 : isPremium ? 38000 : 24000);
   if (isSuv) base += 3500;
   if (isDiesel) base += 1500;
   if (isHybrid) base += 2500;
   if (isGas) base -= 1500;
   const age = 2026 - y;
   let depreciation;
-  if (age <= 10) depreciation = 1 - (age * 0.05);
-  else depreciation = 0.50 - ((age - 10) * 0.04);
-  depreciation = Math.max(0.12, depreciation);
+  if (age <= 5) depreciation = 1 - (age * 0.10);
+  else depreciation = 0.50 - ((age - 5) * 0.028);
+  depreciation = Math.max(0.16, depreciation);
   const powerFactor = 1 + (Math.min(cv, 300) - 100) * 0.003;
-  let value = Math.round(base * depreciation * powerFactor / 500) * 500;
+  const expectedKm = Math.max(1, age) * 12000;
+  const mileageFactor = km ? Math.max(0.72, Math.min(1.12, 1 - ((km - expectedKm) / 500000))) : 1;
+  let value = Math.round(base * depreciation * powerFactor * mileageFactor / 500) * 500;
   value = Math.max(2000, value);
-  const range = Math.round(value * 0.10 / 100) * 100;
-  return { value, min: value - range, max: value + range, confidence: age <= 3 ? 'Alta' : age <= 8 ? 'Media' : 'Stimata' };
+  const range = Math.round(value * (km ? 0.12 : 0.18) / 100) * 100;
+  return { value, min: value - range, max: value + range, confidence: km ? 'Indicativa' : 'Bassa: inserisci i km' };
 }
 
 const siteColors = {
@@ -705,6 +724,8 @@ async function searchPlate() {
   try {
     const data = await lookupPlate(plate);
     const f = getVal(data);
+    const typedKm = Number(String(mileageInput.value).replace(/[^0-9]/g, '')) || 0;
+    if (typedKm) f.km = typedKm;
     const val = estimateValue(f);
     const listings = generateListings(f, val);
     const askingPrice = Number(String(askingPriceInput.value).replace(/[^0-9]/g, '')) || 0;
@@ -801,7 +822,8 @@ function renderReport(plate, f, val, listings, askingPrice = 0) {
     { label: 'Qualità/prezzo', value: Math.min(10, Math.max(4, 10 - Math.abs(trend) / 5)) },
     { label: 'Rivendita', value: Math.max(4, 10 - analysis.age * 0.4) }
   ];
-  $('aiGrid').innerHTML = `<div class="quick-actions"><button class="quick-action" onclick="askAutoEsperto('price')">Prezzo</button><button class="quick-action" onclick="askAutoEsperto('risks')">Rischi</button><button class="quick-action" onclick="askAutoEsperto('checklist')">Verifiche</button></div>` + scores.map(s => {
+  $('aiTools').innerHTML = `<button class="quick-action" onclick="askAutoEsperto('price')">Prezzo consigliato</button><button class="quick-action" onclick="askAutoEsperto('risks')">Rischi da verificare</button><button class="quick-action" onclick="askAutoEsperto('checklist')">Checklist acquisto</button>`;
+  $('aiGrid').innerHTML = scores.map(s => {
     const v = Math.round(s.value);
     return `<div class="ai-item">
       <div class="ai-item-label">${s.label}</div>
@@ -836,6 +858,8 @@ function resetApp() {
   loadingView.classList.remove('active');
   newSearchBtn.style.display = 'none';
   targaInput.value = '';
+  askingPriceInput.value = '';
+  mileageInput.value = '';
   targaInput.focus();
   currentData = null;
 }
