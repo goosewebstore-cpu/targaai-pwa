@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>CercaAuto — Analisi auto usate</title>
-<meta name="description" content="Scopri se un'auto usata vale davvero la pena. Analisi AI, prezzi di mercato, problemi noti e consiglio d'acquisto.">
+<title>AutoEsperto — Analisi auto usate</title>
+<meta name="description" content="AutoEsperto: il consulente che controlla l'auto prima di comprarla.">
 <meta name="theme-color" content="#007AFF">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="CercaAuto">
+<meta name="apple-mobile-web-app-title" content="AutoEsperto">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -245,7 +245,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 <body>
 <div class="app">
   <header class="header">
-    <div class="header-logo">Cerca<span>Auto</span></div>
+    <div class="header-logo">Auto<span>Esperto</span></div>
     <button class="header-btn" id="newSearchBtn" onclick="resetApp()" style="display:none">Nuova ricerca</button>
   </header>
 
@@ -439,6 +439,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 
     <!-- Actions -->
     <div class="action-bar">
+      <button class="action-btn" onclick="askAutoEsperto()">Chiedi ad AutoEsperto</button>
       <button class="action-btn primary" onclick="generatePDF()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Scarica PDF
@@ -449,7 +450,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 </div>
 
 <div id="installBanner">
-  <div class="install-text">Installa CercaAuto</div>
+  <div class="install-text">Installa AutoEsperto</div>
   <button class="install-btn" onclick="installApp()">Installa</button>
 </div>
 
@@ -593,18 +594,22 @@ function generateListings(data, val) {
   const cities = ['Milano', 'Roma', 'Napoli', 'Torino', 'Bologna', 'Firenze', 'Genova', 'Verona', 'Bari', 'Catania'];
   const baseYear = parseInt(data.y) || 2020;
   const name = `${data.v} ${data.m}`;
+  // Il prodotto non presenta stime locali come annunci reali: i link portano
+  // alle fonti e i valori servono esclusivamente a orientare la valutazione.
   const count = 5;
   const listings = [];
+  const seed = [...`${data.v}-${data.m}-${data.y}`].reduce((total, char) => total + char.charCodeAt(0), 0);
+  const pseudoRandom = i => ((seed * (i + 17) * 9301 + 49297) % 233280) / 233280;
   for (let i = 0; i < count; i++) {
     const yearOffset = (i - 2); // -2, -1, 0, +1, +2
     const ly = baseYear + yearOffset;
-    const lkm = 60000 + Math.floor(Math.random() * 120000);
+    const lkm = 60000 + Math.floor(pseudoRandom(i) * 120000);
     const yearFactor = 1 + ((baseYear - ly) * 0.05);
     const kmFactor = 1 - ((lkm - 100000) / 400000);
-    const conditionFactor = 0.92 + (Math.random() * 0.16);
+    const conditionFactor = 0.92 + (pseudoRandom(i + 9) * 0.16);
     const price = Math.round(val.value * yearFactor * kmFactor * conditionFactor / 50) * 50;
     const brand = brands[i % brands.length];
-    const city = cities[Math.floor(Math.random() * cities.length)];
+    const city = cities[Math.floor(pseudoRandom(i + 21) * cities.length)];
     listings.push({ title: `${name} ${ly}`, meta: `${lkm.toLocaleString('it-IT')} km · ${city}`, price: Math.max(1500, price), site: brand.name, url: brand.url });
   }
   return listings.sort((a, b) => a.price - b.price);
@@ -745,7 +750,7 @@ function renderReport(plate, f, val, listings) {
   ].filter(s => s.value);
   $('specsGrid').innerHTML = specs.map(s => `<div class="spec"><div class="spec-label">${s.label}</div><div class="spec-value">${s.value}</div></div>`).join('');
 
-  $('marketCount').textContent = listings.length + ' annunci';
+  $('marketCount').textContent = listings.length + ' stime';
   $('listingsContainer').innerHTML = listings.map(l => {
     const initial = l.site.charAt(0);
     const bg = siteColors[l.site] || '#8E8E93';
@@ -754,7 +759,7 @@ function renderReport(plate, f, val, listings) {
       <div class="listing-info">
         <div class="listing-title">${l.title}</div>
         <div class="listing-meta">${l.meta}</div>
-        <div class="listing-site">${l.site}</div>
+        <div class="listing-site">${l.site} · Stima indicativa</div>
       </div>
       <div class="listing-price-area">
         <div class="listing-price">€${l.price.toLocaleString('it-IT')}</div>
@@ -818,6 +823,18 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
+function askAutoEsperto() {
+  if (!currentData) return;
+  const { f, val, listings } = currentData;
+  const analysis = computeAnalysis(f, val, listings);
+  const message = analysis.verdict === 'Compra'
+    ? `AutoEsperto: ${analysis.subVerdict} Prima dell'acquisto controlla sempre storico manutenzione e prova su strada.`
+    : analysis.verdict === 'Tratta il prezzo'
+      ? `AutoEsperto: ${analysis.subVerdict} Usa la stima di ${val.value.toLocaleString('it-IT')} € come base per trattare.`
+      : `AutoEsperto: ${analysis.subVerdict} Richiedi una verifica indipendente prima di procedere.`;
+  showToast(message);
+}
+
 async function generatePDF() {
   if (!currentData) return;
   const { jsPDF } = window.jspdf;
@@ -826,7 +843,7 @@ async function generatePDF() {
   const analysis = computeAnalysis(f, val, listings);
   doc.setFont('helvetica');
   doc.setFontSize(22);
-  doc.text('CercaAuto - Report', 20, 25);
+  doc.text('AutoEsperto - Report', 20, 25);
   doc.setFontSize(14);
   doc.text(`Targa: ${plate}`, 20, 45);
   doc.text(`Veicolo: ${f.vn || f.v + ' ' + f.m}`, 20, 55);
@@ -841,7 +858,7 @@ async function generatePDF() {
   doc.text('Annunci simili (prezzi stimati):', 20, y + 5);
   y += 15;
   listings.forEach(l => { doc.text(`${l.site}: ${l.price.toLocaleString('it-IT')} EUR`, 20, y); y += 8; });
-  doc.save(`CercaAuto-${plate}.pdf`);
+  doc.save(`AutoEsperto-${plate}.pdf`);
 }
 </script>
 </body>
