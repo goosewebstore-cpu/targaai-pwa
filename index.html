@@ -587,24 +587,25 @@ function generateListings(data, val) {
     { name: 'Subito.it', url: 'https://www.subito.it/auto/' },
     { name: 'Automobile.it', url: 'https://www.automobile.it/' },
     { name: 'Facebook Marketplace', url: 'https://www.facebook.com/marketplace/' },
-    { name: 'Milano', url: 'https://www.autoscout24.it/' },
-    { name: 'Roma', url: 'https://www.subito.it/auto/' },
+    { name: 'AutoScout24', url: 'https://www.autoscout24.it/' },
+    { name: 'Subito.it', url: 'https://www.subito.it/auto/' },
   ];
   const cities = ['Milano', 'Roma', 'Napoli', 'Torino', 'Bologna', 'Firenze', 'Genova', 'Verona', 'Bari', 'Catania'];
-  const years = [parseInt(data.y) - 2, parseInt(data.y) - 1, parseInt(data.y), parseInt(data.y) + 1, parseInt(data.y) + 2];
+  const baseYear = parseInt(data.y) || 2020;
   const name = `${data.v} ${data.m}`;
   const count = 5;
   const listings = [];
   for (let i = 0; i < count; i++) {
-    const ly = years[i % years.length];
-    const lkm = (50 + Math.floor(Math.random() * 160)) * 1000;
-    const ageFactor = Math.max(0.4, 1 - ((2026 - ly) * 0.06));
-    const kmFactor = Math.max(0.5, 1 - (lkm / 400000));
-    const conditionFactor = 0.85 + (Math.random() * 0.3);
-    const price = Math.round(val.value * ageFactor * kmFactor * conditionFactor / 50) * 50;
+    const yearOffset = (i - 2); // -2, -1, 0, +1, +2
+    const ly = baseYear + yearOffset;
+    const lkm = 60000 + Math.floor(Math.random() * 120000);
+    const yearFactor = 1 + ((baseYear - ly) * 0.05);
+    const kmFactor = 1 - ((lkm - 100000) / 400000);
+    const conditionFactor = 0.92 + (Math.random() * 0.16);
+    const price = Math.round(val.value * yearFactor * kmFactor * conditionFactor / 50) * 50;
     const brand = brands[i % brands.length];
     const city = cities[Math.floor(Math.random() * cities.length)];
-    listings.push({ title: `${name} ${ly}`, meta: `${lkm.toLocaleString('it-IT')} km · ${city}`, price: Math.max(800, price), site: brand.name, url: brand.url });
+    listings.push({ title: `${name} ${ly}`, meta: `${lkm.toLocaleString('it-IT')} km · ${city}`, price: Math.max(1500, price), site: brand.name, url: brand.url });
   }
   return listings.sort((a, b) => a.price - b.price);
 }
