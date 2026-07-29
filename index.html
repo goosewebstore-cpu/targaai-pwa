@@ -482,7 +482,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 </div>
 
 <script>
-const API_BASE = 'https://www.regcheck.org.uk/api/reg.asmx';
+const API_BASE = '/api';
 let currentData = null;
 const $ = id => document.getElementById(id);
 
@@ -504,7 +504,7 @@ targaInput.addEventListener('input', e => {
 targaInput.addEventListener('keydown', e => { if (e.key === 'Enter') searchPlate(); });
 
 async function lookupPlate(plate) {
-  const apiUrl = `${API_BASE}/CheckItaly?RegistrationNumber=${encodeURIComponent(plate)}&username=demo`;
+  const apiUrl = `${API_BASE}/vehicle?plate=${encodeURIComponent(plate)}`;
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 12000);
   let text;
@@ -517,10 +517,9 @@ async function lookupPlate(plate) {
     clearTimeout(timeout);
     return createPreviewVehicle(plate);
   }
-  const m = text.match(/<vehicleJson>([\s\S]*?)<\/vehicleJson>/i);
-  if (!m) return createPreviewVehicle(plate);
   try {
-    return JSON.parse(m[1].replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').replace(/&quot;/g,'"'));
+    const payload = JSON.parse(text);
+    return payload.vehicle || createPreviewVehicle(plate);
   } catch {
     return createPreviewVehicle(plate);
   }
@@ -744,6 +743,10 @@ async function searchPlate() {
     const listings = generateListings(f, val);
     const askingPrice = Number(String(askingPriceInput.value).replace(/[^0-9]/g, '')) || 0;
     currentData = { plate, data, f, val, listings, askingPrice };
+    fetch('/api/analyses', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ plate, vehicle: `${f.v} ${f.m}`.trim(), year: f.y, askingPrice, estimatedValue: val.value, preview: Boolean(data.preview) })
+    }).catch(() => {});
     clearInterval(stepInt);
     loadingView.classList.remove('active');
     searchBtn.disabled = false;
