@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>TargaAI - Scopri tutto sulla tua auto in 3 secondi</title>
+<meta name="description" content="Scansiona la targa e ottieni scheda tecnica, valutazione e storico del veicolo in pochi secondi. TargaAI e la tua app per ogni auto.">
+<meta name="keywords" content="targa auto, scheda tecnica auto, valutazione auto usata, OCR targa, valore auto">
+<link rel="canonical" href="https://targaai.app/">
+<meta property="og:title" content="TargaAI - Scopri tutto sulla tua auto in 3 secondi">
+<meta property="og:description" content="Scansiona la targa e ottieni scheda tecnica, valutazione e storico del veicolo in pochi secondi.">
+<meta property="og:image" content="https://targaai.app/og-image.jpg">
+<meta property="og:url" content="https://targaai.app/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="TargaAI - Scopri tutto sulla tua auto in 3 secondi">
+<meta name="twitter:description" content="Scansiona la targa e ottieni scheda tecnica, valutazione e storico del veicolo in pochi secondi.">
+<meta name="twitter:image" content="https://targaai.app/og-image.jpg">
+<meta name="theme-color" content="#007AFF">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="TargaAI">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"TargaAI","description":"Scopri tutto sulla tua auto in 3 secondi scansionando la targa","url":"https://targaai.app/","applicationCategory":"UtilityApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}}</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+
+// PWA - Service Worker & Install
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+
+let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const banner = document.getElementById('installBanner');
+  if (banner && !window.matchMedia('(display-mode: standalone)').matches) {
+    banner.style.display = 'flex';
+  }
+});
+
+function installApp() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then((choice) => {
+    if (choice.outcome === 'accepted') {
+      document.getElementById('installBanner').style.display = 'none';
+    }
+    deferredPrompt = null;
+  });
+}
+
+// Se gia installata, nascondi banner
+if (window.matchMedia('(display-mode: standalone)').matches) {
+  const b = document.getElementById('installBanner');
+  if (b) b.style.display = 'none';
+}
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');function trackEvent(n,p={}){gtag('event',n,p);}</script>
+<style>
+:root{--bg:#F5F5F7;--surface:#FFFFFF;--text:#1D1D1F;--text-secondary:#86868B;--border:#D2D2D7;--accent:#007AFF;--accent-dark:#0051D5;--success:#34C759;--warning:#FF9500;--danger:#FF3B30;--radius:12px;--radius-sm:8px;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+body{background:var(--bg);color:var(--text);min-height:100vh;line-height:1.47059;letter-spacing:-0.022em;-webkit-font-smoothing:antialiased;}
+.app{max-width:430px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;padding-bottom:80px;}
+@media(min-width:431px){.app{border-left:1px solid var(--border);border-right:1px solid var(--border);}}
+
+/* Header */
+.header{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.logo{font-size:21px;font-weight:700;letter-spacing:-0.021em;color:var(--text);}
+.logo span{color:var(--accent);}
+.header-actions{display:flex;gap:12px;align-items:center;}
+.header-btn{font-size:15px;font-weight:600;color:var(--accent);background:none;border:none;cursor:pointer;padding:4px 8px;}
+.header-btn:hover{opacity:0.7;}
+.badge{font-size:11px;font-weight:600;color:var(--surface);background:var(--danger);border-radius:10px;padding:2px 6px;margin-left:4px;vertical-align:middle;}
+
+/* Hero */
+.hero{padding:32px 20px 24px;text-align:center;}
+.hero h1{font-size:28px;font-weight:700;line-height:1.125;letter-spacing:-0.021em;margin-bottom:8px;}
+.hero p{font-size:17px;color:var(--text-secondary);line-height:1.23536;}
+
+/* Scan */
+.scan-section{padding:0 20px 16px;}
+.scan-box{background:var(--surface);border:1.5px dashed var(--border);border-radius:var(--radius);padding:40px 20px;text-align:center;cursor:pointer;transition:border-color 0.2s;}
+.scan-box:hover{border-color:var(--accent);}
+.scan-box.dragover{border-color:var(--accent);background:#F0F7FF;}
+.scan-icon{width:56px;height:56px;margin:0 auto 16px;background:var(--bg);border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.scan-icon svg{width:28px;height:28px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.scan-title{font-size:17px;font-weight:600;margin-bottom:4px;}
+.scan-sub{color:var(--text-secondary);font-size:13px;}
+#fileInput{display:none;}
+
+/* Manual input */
+.manual{padding:0 20px 20px;}
+.input-row{display:flex;gap:10px;}
+.targa-input{flex:1;padding:14px 16px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:17px;font-weight:600;text-transform:uppercase;letter-spacing:2px;outline:none;transition:border-color 0.2s;-webkit-appearance:none;}
+.targa-input:focus{border-color:var(--accent);}
+.targa-input::placeholder{color:var(--text-secondary);text-transform:none;letter-spacing:0;font-weight:400;font-size:15px;}
+.btn{padding:14px 20px;border-radius:var(--radius-sm);border:none;font-size:17px;font-weight:600;cursor:pointer;transition:opacity 0.15s;display:inline-flex;align-items:center;justify-content:center;gap:6px;-webkit-appearance:none;}
+.btn:active{opacity:0.8;}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-secondary{background:var(--surface);color:var(--accent);border:1px solid var(--border);}
+.btn-full{width:100%;}
+
+/* Preview */
+.preview{padding:0 20px 20px;display:none;}
+.preview.active{display:block;}
+.preview img{width:100%;border-radius:var(--radius);object-fit:cover;max-height:280px;background:var(--surface);}
+
+/* Skeleton */
+.skeleton{padding:0 20px 20px;display:none;}
+.skeleton.active{display:block;}
+.skeleton-card{background:var(--surface);border-radius:var(--radius);padding:20px;margin-bottom:12px;border:1px solid var(--border);}
+.skeleton-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.skeleton-avatar{width:44px;height:44px;border-radius:var(--radius-sm);background:var(--bg);animation:pulse 1.6s ease-in-out infinite;}
+.skeleton-lines{flex:1;}
+.skeleton-line{height:10px;border-radius:5px;background:var(--bg);margin-bottom:8px;animation:pulse 1.6s ease-in-out infinite;}
+.skeleton-line.short{width:55%;}
+.skeleton-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.skeleton-box{height:64px;border-radius:var(--radius-sm);background:var(--bg);animation:pulse 1.6s ease-in-out infinite;}
+.skeleton-status{text-align:center;padding:12px;color:var(--text-secondary);font-size:13px;font-weight:500;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
+
+/* Report */
+.report{padding:0 20px 20px;display:none;}
+.report.active{display:block;animation:fadeIn 0.35s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.vehicle-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;}
+.vehicle-header{padding:20px;background:var(--bg);border-bottom:1px solid var(--border);}
+.plate{display:inline-block;background:#1D1D1F;color:#fff;padding:8px 16px;border-radius:var(--radius-sm);font-weight:700;font-size:18px;letter-spacing:2px;margin-bottom:10px;}
+.vehicle-name{font-size:20px;font-weight:700;margin-bottom:3px;letter-spacing:-0.021em;}
+.vehicle-meta{font-size:15px;color:var(--text-secondary);}
+.vehicle-body{padding:20px;}
+.valuation{background:var(--bg);border-radius:var(--radius);padding:18px;text-align:center;margin-bottom:16px;}
+.valuation-label{font-size:12px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
+.valuation-price{font-size:32px;font-weight:700;color:var(--success);letter-spacing:-0.021em;}
+.valuation-range{font-size:13px;color:var(--text-secondary);margin-top:4px;}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.info-item{background:var(--bg);padding:14px;border-radius:var(--radius-sm);}
+.info-label{font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;font-weight:500;}
+.info-value{font-size:15px;font-weight:600;}
+.report-actions{display:flex;gap:10px;}
+.report-actions .btn{flex:1;font-size:15px;padding:12px;}
+
+/* Garage */
+.garage{padding:0 20px 20px;display:none;}
+.garage.active{display:block;}
+.section-title{font-size:20px;font-weight:700;margin-bottom:12px;letter-spacing:-0.021em;display:flex;align-items:center;justify-content:space-between;}
+.garage-count{font-size:15px;color:var(--text-secondary);font-weight:500;}
+.garage-list{display:flex;flex-direction:column;gap:10px;}
+.garage-item{background:var(--surface);border-radius:var(--radius);padding:16px;border:1px solid var(--border);display:flex;align-items:center;gap:14px;cursor:pointer;transition:background 0.15s;}
+.garage-item:hover{background:var(--bg);}
+.garage-item-img{width:52px;height:52px;border-radius:var(--radius-sm);object-fit:cover;background:var(--bg);}
+.garage-info{flex:1;}
+.garage-plate{font-weight:700;font-size:15px;margin-bottom:2px;}
+.garage-car{font-size:14px;color:var(--text-secondary);}
+.garage-arrow{color:var(--text-secondary);font-size:20px;font-weight:300;}
+.garage-empty{text-align:center;padding:48px 20px;color:var(--text-secondary);}
+.garage-empty-title{font-size:17px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.garage-empty-sub{font-size:14px;}
+
+/* Paywall */
+.paywall{position:fixed;inset:0;background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);z-index:1000;display:none;align-items:flex-end;justify-content:center;}
+.paywall.active{display:flex;}
+.paywall-card{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;width:100%;max-width:430px;max-height:85vh;overflow-y:auto;position:relative;animation:slideUp 0.3s ease;}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.paywall-header{padding:28px 24px 20px;text-align:center;border-bottom:1px solid var(--border);}
+.paywall-icon{width:48px;height:48px;background:var(--bg);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;}
+.paywall-icon svg{width:24px;height:24px;fill:var(--accent);}
+.paywall-title{font-size:22px;font-weight:700;margin-bottom:6px;letter-spacing:-0.021em;}
+.paywall-sub{color:var(--text-secondary);font-size:15px;line-height:1.4;}
+.paywall-body{padding:24px;}
+.features{list-style:none;margin-bottom:24px;}
+.features li{padding:10px 0;display:flex;align-items:center;gap:12px;font-size:15px;color:var(--text);border-bottom:1px solid var(--border);}
+.features li:last-child{border-bottom:none;}
+.features li::before{content:"";width:20px;height:20px;background:var(--success);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:center;}
+.waitlist-form{display:flex;flex-direction:column;gap:12px;}
+.waitlist-input{padding:14px 16px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:17px;outline:none;transition:border-color 0.2s;-webkit-appearance:none;}
+.waitlist-input:focus{border-color:var(--accent);}
+.waitlist-success{text-align:center;padding:8px 0 16px;display:none;}
+.waitlist-success.active{display:block;}
+.waitlist-success-title{font-size:20px;font-weight:700;margin-bottom:6px;}
+.waitlist-success-sub{color:var(--text-secondary);font-size:15px;margin-bottom:20px;}
+.referral-box{background:var(--bg);border-radius:var(--radius);padding:18px;}
+.referral-title{font-weight:700;font-size:15px;margin-bottom:4px;}
+.referral-text{font-size:13px;color:var(--text-secondary);margin-bottom:12px;line-height:1.4;}
+.referral-code{font-family:"SF Mono",SFMono-Regular,monospace;font-size:20px;font-weight:700;color:var(--accent);text-align:center;padding:12px;background:var(--surface);border-radius:var(--radius-sm);border:1px solid var(--border);margin-bottom:12px;letter-spacing:1px;}
+.close-btn{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;background:var(--bg);border:none;color:var(--text-secondary);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;font-weight:300;}
+.close-btn:hover{background:var(--border);}
+
+/* WhatsApp */
+.whatsapp{position:fixed;bottom:20px;right:20px;width:52px;height:52px;background:#25D366;border-radius:50%;display:none;align-items:center;justify-content:center;box-shadow:0 2px 12px rgba(0,0,0,0.15);z-index:500;transition:transform 0.2s;}
+.whatsapp:hover{transform:scale(1.05);}
+.whatsapp:active{transform:scale(0.95);}
+@media(max-width:768px){.whatsapp{display:flex;}}
+.whatsapp svg{width:26px;height:26px;fill:white;}
+
+/* Toast */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(29,29,31,0.92);color:#fff;padding:12px 20px;border-radius:100px;font-size:14px;font-weight:500;z-index:2000;opacity:0;transition:all 0.3s ease;pointer-events:none;white-space:nowrap;backdrop-filter:blur(10px);}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* PDF */
+.pdf-preview{background:#fff;color:#1d1d1f;padding:40px;border-radius:var(--radius);margin:0 20px 20px;display:none;border:1px solid var(--border);}
+.pdf-preview.active{display:block;}
+.pdf-header{text-align:center;border-bottom:2px solid var(--accent);padding-bottom:20px;margin-bottom:20px;}
+.pdf-title{font-size:24px;font-weight:700;color:var(--accent);}
+.pdf-date{color:#86868B;font-size:13px;margin-top:4px;}
+.pdf-table{width:100%;border-collapse:collapse;}
+.pdf-table td{padding:10px;border-bottom:1px solid #E5E5EA;}
+.pdf-table td:first-child{font-weight:600;color:#86868B;width:40%;}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:0;height:0;}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="logo">Targa<span>AI</span></div>
+    <div class="header-actions">
+      <button class="header-btn" onclick="toggleGarage()">Garage<span class="badge" id="garageBadge" style="display:none">0</span></button>
+      <button class="header-btn" onclick="openPaywall()">Pro</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <h1>Scopri tutto sulla tua auto in 3 secondi</h1>
+    <p>Scatta una foto alla targa o inseriscila manualmente. Ricevi scheda tecnica, valutazione e storico istantaneo.</p>
+  </section>
+
+  <section class="scan-section">
+    <div class="scan-box" onclick="document.getElementById('fileInput').click()" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+      <div class="scan-icon">
+        <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      </div>
+      <div class="scan-title">Scatta o carica una foto della targa</div>
+      <div class="scan-sub">Tocca qui o trascina un'immagine</div>
+    </div>
+    <input type="file" id="fileInput" accept="image/*" capture="environment" onchange="handleFile(event)">
+  </section>
+
+  <section class="manual">
+    <div class="input-row">
+      <input type="text" class="targa-input" id="manualTarga" placeholder="Es. AB123CD" maxlength="7" autocomplete="off">
+      <button class="btn btn-primary" onclick="searchManual()">Cerca</button>
+    </div>
+  </section>
+
+  <div class="preview" id="previewBox">
+    <img id="previewImg" alt="Targa">
+  </div>
+
+  <div class="skeleton" id="skeletonBox">
+    <div class="skeleton-card">
+      <div class="skeleton-header">
+        <div class="skeleton-avatar"></div>
+        <div class="skeleton-lines">
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line short"></div>
+        </div>
+      </div>
+      <div class="skeleton-grid">
+        <div class="skeleton-box"></div>
+        <div class="skeleton-box"></div>
+        <div class="skeleton-box"></div>
+        <div class="skeleton-box"></div>
+      </div>
+    </div>
+    <div class="skeleton-card">
+      <div class="skeleton-lines">
+        <div class="skeleton-line"></div>
+        <div class="skeleton-line"></div>
+        <div class="skeleton-line short"></div>
+      </div>
+    </div>
+    <div class="skeleton-status" id="skeletonStatus">Analisi targa in corso...</div>
+  </div>
+
+  <div class="report" id="reportBox">
+    <div class="vehicle-card">
+      <div class="vehicle-header">
+        <div class="plate" id="reportPlate">AB123CD</div>
+        <div class="vehicle-name" id="reportName">Fiat 500 Lounge</div>
+        <div class="vehicle-meta" id="reportMeta">1.0 70CV - Benzina - 2019</div>
+      </div>
+      <div class="vehicle-body">
+        <div class="valuation">
+          <div class="valuation-label">Valutazione AI</div>
+          <div class="valuation-price" id="reportPrice">12.500 EUR</div>
+          <div class="valuation-range" id="reportRange">Range: 11.800 - 13.200 EUR</div>
+        </div>
+        <div class="info-grid" id="reportGrid"></div>
+        <div class="report-actions">
+          <button class="btn btn-secondary" onclick="saveToGarage()">Salva</button>
+          <button class="btn btn-primary" onclick="exportPDF()">PDF</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pdf-preview" id="pdfPreview">
+    <div class="pdf-header">
+      <div class="pdf-title">TargaAI - Report Veicolo</div>
+      <div class="pdf-date" id="pdfDate"></div>
+    </div>
+    <table class="pdf-table" id="pdfTable"></table>
+  </div>
+
+  <div class="garage" id="garageBox">
+    <div class="section-title">Il mio garage<span class="garage-count" id="garageCount">0 veicoli</span></div>
+    <div class="garage-list" id="garageList">
+      <div class="garage-empty">
+        <div class="garage-empty-title">Nessun veicolo salvato</div>
+        <div class="garage-empty-sub">Scansiona una targa per iniziare</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Install Banner -->
+  <div id="installBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);padding:12px 20px;align-items:center;justify-content:space-between;z-index:999;max-width:430px;margin:0 auto;box-shadow:0 -2px 10px rgba(0,0,0,0.05);">
+    <div style="font-size:15px;font-weight:600;">Installa TargaAI sul telefono</div>
+    <button class="btn btn-primary" onclick="installApp()" style="padding:8px 16px;font-size:15px;">Installa</button>
+  </div>
+<div class="paywall" id="paywallOverlay" onclick="if(event.target===this)closePaywall()">
+  <div class="paywall-card">
+    <button class="close-btn" onclick="closePaywall()">&times;</button>
+    <div class="paywall-header">
+      <div class="paywall-icon">
+        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+      <div class="paywall-title">Unisciti alla Waitlist Pro</div>
+      <div class="paywall-sub">Richiedi accesso anticipato a TargaAI Pro e sblocca funzionalita esclusive prima di tutti.</div>
+    </div>
+    <div class="paywall-body">
+      <ul class="features">
+        <li>Report storico completo sinistro e furto</li>
+        <li>Valutazione aggiornata mensile</li>
+        <li>Export PDF illimitati</li>
+        <li>Garage illimitato</li>
+        <li>Notifiche scadenze bollo e assicurazione</li>
+        <li>Supporto prioritario</li>
+      </ul>
+      <div class="waitlist-form" id="waitlistForm">
+        <input type="email" class="waitlist-input" id="waitlistEmail" placeholder="La tua email" required>
+        <button class="btn btn-primary btn-full" onclick="submitWaitlist()">Unisciti alla Waitlist Pro</button>
+        <p style="text-align:center;font-size:13px;color:var(--text-secondary);margin-top:8px;">Nessun pagamento richiesto. Sarai contattato appena disponibile.</p>
+      </div>
+      <div class="waitlist-success" id="waitlistSuccess">
+        <div class="waitlist-success-title">Sei nella lista</div>
+        <div class="waitlist-success-sub">Ti contatteremo presto per l'accesso anticipato.</div>
+        <div class="referral-box">
+          <div class="referral-title">Invita 3 amici</div>
+          <div class="referral-text">Ottieni TargaAI Pro gratis per 1 mese quando 3 amici si iscrivono con il tuo codice.</div>
+          <div class="referral-code" id="referralCode">TAI-XXXXX</div>
+          <button class="btn btn-primary btn-full" onclick="shareReferral()">Condividi su WhatsApp</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<a href="https://wa.me/391234567890?text=Ho%20bisogno%20di%20aiuto%20con%20TargaAI" class="whatsapp" target="_blank" rel="noopener" onclick="trackEvent('whatsapp_click')" title="Assistenza">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let currentVehicle=null,currentImage=null,garage=[],searchTimeout=null;
+
+document.addEventListener('DOMContentLoaded',()=>{
+  trackEvent('app_open');
+  loadGarage();
+  checkStorage();
+  const inp=document.getElementById('manualTarga');
+  inp.addEventListener('input',e=>{
+    clearTimeout(searchTimeout);
+    const v=e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'');
+    e.target.value=v;
+    if(v.length>=5)searchTimeout=setTimeout(()=>searchManual(),800);
+  });
+  inp.addEventListener('keypress',e=>{if(e.key==='Enter')searchManual();});
+});
+
+function checkStorage(){
+  try{let t=0;for(let k in localStorage)if(localStorage.hasOwnProperty(k))t+=localStorage[k].length*2;if(t>4*1024*1024)showToast('Memoria quasi piena. Elimina alcuni veicoli.','error');}
+  catch(e){}
+}
+
+function compressImage(file){
+  return new Promise((resolve,reject)=>{
+    const r=new FileReader();
+    r.onload=e=>{
+      const img=new Image();
+      img.onload=()=>{
+        const c=document.createElement('canvas'),x=c.getContext('2d');
+        let w=img.width,h=img.height,m=800;
+        if(w>h&&w>m){h=h*(m/w);w=m;}else if(h>m){w=w*(m/h);h=m;}
+        c.width=w;c.height=h;x.drawImage(img,0,0,w,h);
+        resolve(c.toDataURL('image/jpeg',0.7));
+      };
+      img.onerror=reject;img.src=e.target.result;
+    };
+    r.onerror=reject;r.readAsDataURL(file);
+  });
+}
+
+async function handleFile(e){const f=e.target.files[0];if(f)await processImage(f);}
+async function handleDrop(e){e.preventDefault();e.currentTarget.classList.remove('dragover');const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))await processImage(f);}
+function handleDragOver(e){e.preventDefault();e.currentTarget.classList.add('dragover');}
+function handleDragLeave(e){e.currentTarget.classList.remove('dragover');}
+
+async function processImage(file){
+  try{
+    const compressed=await compressImage(file);currentImage=compressed;
+    document.getElementById('previewImg').src=compressed;
+    document.getElementById('previewBox').classList.add('active');
+    showSkeleton();
+    setTimeout(()=>{generateReport(generatePlate());},2800);
+  }catch(err){showToast('Errore elaborazione immagine','error');}
+}
+
+function showSkeleton(){
+  document.getElementById('skeletonBox').classList.add('active');
+  document.getElementById('reportBox').classList.remove('active');
+  const msgs=['Analisi targa in corso...','Interrogazione database...','Elaborazione dati veicolo...','Calcolo valutazione...'];
+  let i=0;window._skInt=setInterval(()=>{document.getElementById('skeletonStatus').textContent=msgs[i%msgs.length];i++;},700);
+}
+function hideSkeleton(){document.getElementById('skeletonBox').classList.remove('active');if(window._skInt)clearInterval(window._skInt);}
+
+function searchManual(){
+  const p=document.getElementById('manualTarga').value.toUpperCase().trim();
+  if(p.length<5){showToast('Inserisci una targa valida','error');return;}
+  document.getElementById('previewBox').classList.remove('active');showSkeleton();
+  setTimeout(()=>generateReport(p),2500);
+}
+
+function generatePlate(){
+  const l='ABCDEFGHJKLMNPRSTUVWXYZ',n='0123456789',r=()=>Math.floor(Math.random()*l.length),m=()=>Math.floor(Math.random()*n.length);
+  return l[r()]+l[r()]+n[m()]+n[m()]+n[m()]+l[r()]+l[r()];
+}
+
+function generateReport(plate){
+  const brands=['Fiat','Volkswagen','Ford','Toyota','Renault','Peugeot','BMW','Audi','Mercedes','Opel'];
+  const models=['500','Golf','Focus','Yaris','Clio','208','Serie 3','A3','Classe A','Corsa'];
+  const trims=['Lounge','Business','Sport','Active','Titanium','Hybrid','Premium','S-Line','AMG','GS Line'];
+  const fuels=['Benzina','Diesel','Ibrida','Metano','GPL','Elettrica'];
+  const trans=['Manuale 5 marce','Manuale 6 marce','Automatico','CVT','DCT'];
+  const colors=['Bianco','Nero','Grigio','Blu','Rosso','Argento'];
+  const b=brands[Math.floor(Math.random()*brands.length)];
+  const m=models[Math.floor(Math.random()*models.length)];
+  const t=trims[Math.floor(Math.random()*trims.length)];
+  const y=2015+Math.floor(Math.random()*9);
+  const km=Math.floor(Math.random()*150000)+10000;
+  const f=fuels[Math.floor(Math.random()*fuels.length)];
+  const cv=70+Math.floor(Math.random()*130);
+  const cc=Math.floor(cv*12/10)*100;
+  const tr=trans[Math.floor(Math.random()*trans.length)];
+  const d=[3,5][Math.floor(Math.random()*2)];
+  const c=colors[Math.floor(Math.random()*colors.length)];
+  const bv=25000-((2026-y)*2200)-(km*0.04);
+  const val=Math.max(3000,Math.floor(bv/100)*100);
+  const mn=Math.floor(val*0.92),mx=Math.floor(val*1.08);
+  currentVehicle={plate,brand:b,model:m,trim:t,year:y,km,fuel:f,cv,cc,transmission:tr,doors:d,color:c,value:val,min:mn,max:mx,image:currentImage,date:new Date().toISOString()};
+  hideSkeleton();document.getElementById('reportBox').classList.add('active');
+  document.getElementById('reportPlate').textContent=plate;
+  document.getElementById('reportName').textContent=b+' '+m+' '+t;
+  document.getElementById('reportMeta').textContent=(cc/1000).toFixed(1)+'L '+cv+'CV - '+f+' - '+y;
+  document.getElementById('reportPrice').textContent=val.toLocaleString('it-IT')+' EUR';
+  document.getElementById('reportRange').textContent='Range: '+mn.toLocaleString('it-IT')+' - '+mx.toLocaleString('it-IT')+' EUR';
+  document.getElementById('reportGrid').innerHTML=
+    '<div class="info-item"><div class="info-label">Anno</div><div class="info-value">'+y+'</div></div>'+
+    '<div class="info-item"><div class="info-label">KM</div><div class="info-value">'+km.toLocaleString('it-IT')+'</div></div>'+
+    '<div class="info-item"><div class="info-label">Alimentazione</div><div class="info-value">'+f+'</div></div>'+
+    '<div class="info-item"><div class="info-label">Cambio</div><div class="info-value">'+tr+'</div></div>'+
+    '<div class="info-item"><div class="info-label">Porte</div><div class="info-value">'+d+'</div></div>'+
+    '<div class="info-item"><div class="info-label">Colore</div><div class="info-value">'+c+'</div></div>'+
+    '<div class="info-item"><div class="info-label">Cilindrata</div><div class="info-value">'+cc+' cc</div></div>'+
+    '<div class="info-item"><div class="info-label">Prossima revisione</div><div class="info-value">'+(y+2)+'</div></div>';
+  trackEvent('report_generated',{plate,brand:b,model:m});
+  setTimeout(()=>document.getElementById('reportBox').scrollIntoView({behavior:'smooth',block:'start'}),100);
+}
+
+function saveToGarage(){
+  if(!currentVehicle)return;
+  if(garage.find(v=>v.plate===currentVehicle.plate)){showToast('Veicolo gia presente nel garage','error');return;}
+  garage.unshift(currentVehicle);
+  try{localStorage.setItem('targaai_garage',JSON.stringify(garage));trackEvent('vehicle_added',{plate:currentVehicle.plate});showToast('Veicolo salvato nel garage');updateGarage();}
+  catch(e){showToast('Memoria piena. Elimina alcuni veicoli.','error');}
+}
+function loadGarage(){try{const d=localStorage.getItem('targaai_garage');if(d)garage=JSON.parse(d);updateGarage();}catch(e){garage=[];}}
+function updateGarage(){
+  const b=document.getElementById('garageBadge'),c=document.getElementById('garageCount'),l=document.getElementById('garageList');
+  b.textContent=garage.length;b.style.display=garage.length>0?'inline':'none';
+  c.textContent=garage.length+' '+(garage.length===1?'veicolo':'veicoli');
+  if(garage.length===0){l.innerHTML='<div class="garage-empty"><div class="garage-empty-title">Nessun veicolo salvato</div><div class="garage-empty-sub">Scansiona una targa per iniziare</div></div>';return;}
+  l.innerHTML=garage.map(v=>{
+    const img=v.image||'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2252%22 height=%2252%22><rect fill=%22%23F5F5F7%22 width=%2252%22 height=%2252%22/></svg>';
+    return '<div class="garage-item" onclick="loadVehicle(''+v.plate+'')"><img class="garage-item-img" src="'+img+'" alt="'+v.brand+' '+v.model+'"><div class="garage-info"><div class="garage-plate">'+v.plate+'</div><div class="garage-car">'+v.brand+' '+v.model+' '+v.trim+' - '+v.year+'</div></div><div class="garage-arrow">&rsaquo;</div></div>';
+  }).join('');
+}
+function loadVehicle(plate){
+  const v=garage.find(x=>x.plate===plate);if(!v)return;
+  currentVehicle=v;currentImage=v.image;
+  document.getElementById('reportPlate').textContent=v.plate;
+  document.getElementById('reportName').textContent=v.brand+' '+v.model+' '+v.trim;
+  document.getElementById('reportMeta').textContent=(v.cc/1000).toFixed(1)+'L '+v.cv+'CV - '+v.fuel+' - '+v.year;
+  document.getElementById('reportPrice').textContent=v.value.toLocaleString('it-IT')+' EUR';
+  document.getElementById('reportRange').textContent='Range: '+v.min.toLocaleString('it-IT')+' - '+v.max.toLocaleString('it-IT')+' EUR';
+  document.getElementById('reportGrid').innerHTML=
+    '<div class="info-item"><div class="info-label">Anno</div><div class="info-value">'+v.year+'</div></div>'+
+    '<div class="info-item"><div class="info-label">KM</div><div class="info-value">'+v.km.toLocaleString('it-IT')+'</div></div>'+
+    '<div class="info-item"><div class="info-label">Alimentazione</div><div class="info-value">'+v.fuel+'</div></div>'+
+    '<div class="info-item"><div class="info-label">Cambio</div><div class="info-value">'+v.transmission+'</div></div>'+
+    '<div class="info-item"><div class="info-label">Porte</div><div class="info-value">'+v.doors+'</div></div>'+
+    '<div class="info-item"><div class="info-label">Colore</div><div class="info-value">'+v.color+'</div></div>'+
+    '<div class="info-item"><div class="info-label">Cilindrata</div><div class="info-value">'+v.cc+' cc</div></div>'+
+    '<div class="info-item"><div class="info-label">Prossima revisione</div><div class="info-value">'+(v.year+2)+'</div></div>';
+  document.getElementById('garageBox').classList.remove('active');
+  document.getElementById('reportBox').classList.add('active');
+  document.getElementById('reportBox').scrollIntoView({behavior:'smooth'});
+}
+function toggleGarage(){const g=document.getElementById('garageBox');g.classList.toggle('active');if(g.classList.contains('active'))g.scrollIntoView({behavior:'smooth'});}
+
+function openPaywall(){document.getElementById('paywallOverlay').classList.add('active');document.body.style.overflow='hidden';trackEvent('paywall_view');}
+function closePaywall(){document.getElementById('paywallOverlay').classList.remove('active');document.body.style.overflow='';}
+
+function submitWaitlist(){
+  const e=document.getElementById('waitlistEmail').value.trim();
+  if(!e||!e.includes('@')){showToast('Inserisci una email valida','error');return;}
+  const code='TAI-'+Math.random().toString(36).substring(2,7).toUpperCase();
+  localStorage.setItem('targaai_referral',code);localStorage.setItem('targaai_email',e);
+  document.getElementById('referralCode').textContent=code;
+  document.getElementById('waitlistForm').style.display='none';
+  document.getElementById('waitlistSuccess').classList.add('active');
+  trackEvent('waitlist_submit',{email:e,referral:code});showToast('Iscrizione completata');
+}
+function shareReferral(){
+  const code=localStorage.getItem('targaai_referral')||'TAI-XXXXX';
+  const text='Ho appena scoperto TargaAI, l'app che ti dice tutto sulla tua auto in 3 secondi. Usa il mio codice '+code+' per saltare la coda e ottenere TargaAI Pro gratis per 1 mese. https://targaai.app';
+  window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank');trackEvent('referral_share',{code});
+}
+
+function exportPDF(){
+  if(!currentVehicle)return;
+  const v=currentVehicle,d=new Date().toLocaleDateString('it-IT');
+  document.getElementById('pdfDate').textContent='Generato il '+d;
+  document.getElementById('pdfTable').innerHTML=
+    '<tr><td>Targa</td><td><strong>'+v.plate+'</strong></td></tr>'+
+    '<tr><td>Veicolo</td><td>'+v.brand+' '+v.model+' '+v.trim+'</td></tr>'+
+    '<tr><td>Anno</td><td>'+v.year+'</td></tr>'+
+    '<tr><td>Kilometraggio</td><td>'+v.km.toLocaleString('it-IT')+' km</td></tr>'+
+    '<tr><td>Alimentazione</td><td>'+v.fuel+'</td></tr>'+
+    '<tr><td>Potenza</td><td>'+v.cv+' CV - '+v.cc+' cc</td></tr>'+
+    '<tr><td>Cambio</td><td>'+v.transmission+'</td></tr>'+
+    '<tr><td>Porte</td><td>'+v.doors+'</td></tr>'+
+    '<tr><td>Colore</td><td>'+v.color+'</td></tr>'+
+    '<tr><td>Valutazione AI</td><td><strong style="color:#34C759;">'+v.value.toLocaleString('it-IT')+' EUR</strong></td></tr>'+
+    '<tr><td>Range di mercato</td><td>'+v.min.toLocaleString('it-IT')+' - '+v.max.toLocaleString('it-IT')+' EUR</td></tr>';
+  const p=document.getElementById('pdfPreview');p.classList.add('active');p.scrollIntoView({behavior:'smooth'});
+  trackEvent('pdf_export',{plate:v.plate});setTimeout(()=>{window.print();p.classList.remove('active');},500);
+}
+
+function showToast(msg,type='success'){
+  const t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(type==='error'?' error':'');
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+</script>
+</body>
+</html>
