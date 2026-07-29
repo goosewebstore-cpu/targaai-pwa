@@ -502,7 +502,7 @@ function getVal(data) {
   const v = get(data.CarMake);
   const m = get(data.CarModel);
   const y = data.RegistrationYear || '';
-  const f = get(data.FuelType);
+  let f = get(data.FuelType);
   const e = get(data.EngineSize);
   const vn = data.Version || '';
   const d = get(data.NumberOfDoors);
