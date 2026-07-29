@@ -1,4 +1,4 @@
-const CACHE_NAME = 'targaai-v2';
+const CACHE_NAME = 'targaai-v3';
 const urlsToCache = [
   '/',
   '/index.html',
