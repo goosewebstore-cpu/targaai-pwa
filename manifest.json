@@ -1,7 +1,7 @@
 {
-  "name": "TargaAI",
-  "short_name": "TargaAI",
-  "description": "Scopri tutto sulla tua auto in 3 secondi scansionando la targa",
+  "name": "CercaAuto",
+  "short_name": "CercaAuto",
+  "description": "Scopri tutto sulla tua auto: scheda tecnica, valutazione e confronto prezzi",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#F5F5F7",

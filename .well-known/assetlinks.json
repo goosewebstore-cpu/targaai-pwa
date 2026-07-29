@@ -3,7 +3,7 @@
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
-      "package_name": "com.targaai.app",
+      "package_name": "com.cercauto.app",
       "sha256_cert_fingerprints": [
         "DA:7A:43:3B:82:08:90:3E:3E:C8:96:45:75:7C:0A:64:51:EF:52:79:31:43:1C:5D:47:6F:5C:B4:07:5C:E9:6B"
       ]

@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>TargaAI — Scopri tutto sulla tua auto</title>
-<meta name="description" content="Ricerca targa AI: scheda tecnica, valutazione e confronto prezzi di mercato. Dati ufficiali e AI in tempo reale.">
+<title>CercaAuto — Scopri tutto sulla tua auto</title>
+<meta name="description" content="Ricerca targa: scheda tecnica, valutazione e confronto prezzi di mercato. Dati ufficiali in tempo reale.">
 <meta name="theme-color" content="#007AFF">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="TargaAI">
+<meta name="apple-mobile-web-app-title" content="CercaAuto">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <script>
@@ -59,7 +59,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smooth
 .hero-badge svg{width:14px;height:14px;}
 .hero h1{font-size:30px;font-weight:800;letter-spacing:-0.5px;line-height:1.15;margin-bottom:8px;}
 .hero p{font-size:15px;color:var(--text2);line-height:1.5;max-width:320px;margin:0 auto;}
-.hero-ai-note{font-size:12px;color:var(--text3);margin-top:12px;line-height:1.4;}
+
 
 /* Search card */
 .search-card{background:var(--surface);border-radius:var(--radius);padding:20px;margin:0 16px 16px;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
@@ -116,8 +116,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smooth
 .spec{background:var(--surface);border-radius:var(--radius-sm);padding:14px;border:0.5px solid var(--border);}
 .spec-label{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.3px;margin-bottom:3px;}
 .spec-value{font-size:16px;font-weight:700;}
-.spec.ai .spec-label{color:var(--accent);}
-.spec.ai .spec-value{color:var(--accent);}
+
 
 /* Valuation card */
 .valuation-card{background:linear-gradient(135deg,#007AFF,#5856D6);border-radius:var(--radius);margin:0 16px 12px;padding:24px;color:#fff;position:relative;overflow:hidden;}
@@ -144,14 +143,13 @@ body{background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smooth
 .listing-price{font-size:16px;font-weight:800;color:var(--accent2);flex-shrink:0;}
 .listing-badge{font-size:10px;font-weight:700;color:#fff;background:var(--accent2);padding:2px 6px;border-radius:4px;margin-left:6px;}
 
-/* AI analysis */
-.ai-card{background:var(--surface);border-radius:var(--radius);margin:0 16px 0;padding:20px;border:0.5px solid var(--border);}
-.ai-card-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
-.ai-card-header .ai-icon{width:32px;height:32px;background:linear-gradient(135deg,#007AFF,#5856D6);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;}
-.ai-card-header h3{font-size:15px;font-weight:700;}
-.ai-card p{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:12px;}
-.ai-tags{display:flex;flex-wrap:wrap;gap:6px;}
-.ai-tag{font-size:11px;font-weight:600;color:var(--accent);background:rgba(0,122,255,0.08);padding:4px 10px;border-radius:12px;}
+/* Mascot card */
+.mascot-card{background:var(--surface);border-radius:var(--radius);margin:0 16px 0;padding:20px;border:0.5px solid var(--border);overflow:hidden;position:relative;}
+.mascot-card::after{content:'';position:absolute;bottom:-20px;right:-20px;width:100px;height:100px;border-radius:50%;background:rgba(255,184,0,0.04);}
+.mascot-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.mascot-icon{width:48px;height:48px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.mascot-header h3{font-size:15px;font-weight:700;}
+.mascot-card p{font-size:13px;color:var(--text2);line-height:1.6;}
 
 /* Toast */
 .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(28,28,30,0.92);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:#fff;padding:12px 20px;border-radius:100px;font-size:14px;font-weight:500;z-index:2000;opacity:0;transition:all 0.3s ease;pointer-events:none;white-space:nowrap;}
@@ -169,7 +167,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smooth
 <body>
 <div class="container">
   <div class="header">
-    <div class="header-logo">Targa<span>AI</span></div>
+    <div class="header-logo">Cerca<span>Auto</span></div>
     <div class="header-actions">
       <button class="header-btn" id="newSearchBtn" onclick="resetApp()" style="display:none">Nuova ricerca</button>
     </div>
@@ -179,12 +177,11 @@ body{background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smooth
   <div id="homeView">
     <div class="hero">
       <div class="hero-badge">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M16 14H8a4 4 0 0 0-4 4v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2a4 4 0 0 0-4-4z"/></svg>
-        AI · Dati ufficiali
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        Dati ufficiali
       </div>
       <h1>Scopri tutto<br>sulla tua auto</h1>
-      <p>Inserisci la targa e ottieni scheda tecnica, valutazione AI e confronto con annunci di vendita reali.</p>
-      <div class="hero-ai-note">TargaAI utilizza intelligenza artificiale per cercare dati da fonti ufficiali italiane e annunci di vendita in tutta Europa.</div>
+      <p>Inserisci la targa e ottieni scheda tecnica, valutazione di mercato e confronto con annunci di vendita reali.</p>
     </div>
 
     <div class="search-card">
@@ -213,7 +210,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smooth
     <div class="spinner-card">
       <div class="spinner-ring"></div>
       <div class="spinner-text" id="spinnerText">Ricerca targa in corso...</div>
-      <div class="spinner-step" id="spinnerStep">TargaAI sta analizzando i dati</div>
+      <div class="spinner-step" id="spinnerStep">CercaAuto sta analizzando i dati</div>
     </div>
   </div>
 
@@ -237,11 +234,11 @@ body{background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smooth
       </div>
     </div>
 
-    <!-- AI Valuation -->
+    <!-- Valuation -->
     <div class="valuation-card">
       <div class="valuation-label">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        Valutazione AI TargaAI
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        Valutazione CercaAuto
       </div>
       <div class="valuation-price" id="valuationPrice">— EUR</div>
       <div class="valuation-range" id="valuationRange">Range di mercato: —</div>
@@ -271,32 +268,46 @@ body{background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smooth
       <div id="listingsContainer"></div>
     </div>
 
-    <!-- AI Analysis -->
+    <!-- Mascot + Report -->
     <div class="section-title">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-      Analisi AI
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      Report veicolo
     </div>
-    <div class="ai-card" style="margin-bottom:24px;">
-      <div class="ai-card-header">
-        <div class="ai-icon">AI</div>
+    <div class="mascot-card" style="margin-bottom:24px;">
+      <div class="mascot-header">
+        <div class="mascot-icon">
+          <svg viewBox="0 0 80 80" width="48" height="48">
+            <circle cx="40" cy="40" r="38" fill="#E8F4FD" stroke="#007AFF" stroke-width="1.5"/>
+            <ellipse cx="40" cy="52" rx="16" ry="12" fill="#fff" stroke="#ddd" stroke-width="1"/>
+            <path d="M32 30 Q28 20 36 16 Q40 14 42 16 Q50 18 48 28" fill="#fff" stroke="#ddd" stroke-width="1"/>
+            <circle cx="46" cy="20" r="7" fill="#fff" stroke="#ddd" stroke-width="1"/>
+            <circle cx="48" cy="18" r="1.5" fill="#1C1C1E"/>
+            <circle cx="49" cy="17" r="0.5" fill="#fff"/>
+            <path d="M53 21 Q58 18 55 14" fill="none" stroke="#FF8C00" stroke-width="3" stroke-linecap="round"/>
+            <path d="M52 22 Q56 21 54 17" fill="none" stroke="#FFB800" stroke-width="2" stroke-linecap="round"/>
+            <ellipse cx="40" cy="50" rx="6" ry="3" fill="#FF8C00"/>
+            <path d="M36 50 L38 58 L42 58 L44 50" fill="#FF8C00"/>
+            <line x1="30" y1="62" x2="28" y2="68" stroke="#FF8C00" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="50" y1="62" x2="52" y2="68" stroke="#FF8C00" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="30" cy="44" r="2" fill="#007AFF" opacity="0.3"/>
+            <circle cx="50" cy="44" r="2" fill="#007AFF" opacity="0.3"/>
+            <path d="M18 46 Q12 42 14 38" stroke="#FFB800" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <path d="M62 46 Q68 42 66 38" stroke="#FFB800" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <text x="40" y="78" font-size="7" text-anchor="middle" fill="#007AFF" font-weight="700" opacity="0.5">🐤</text>
+          </svg>
+        </div>
         <div>
-          <h3>Report intelligente</h3>
-          <div style="font-size:12px;color:var(--text2);">Generato da TargaAI</div>
+          <h3>CercaAuto dice...</h3>
+          <div style="font-size:12px;color:var(--text2);" id="mascotPhrase">Inserisci una targa per iniziare!</div>
         </div>
       </div>
-      <p id="aiAnalysis">TargaAI ha analizzato i dati del veicolo da fonti ufficiali italiane e confrontato con annunci di vendita online per fornirti una valutazione di mercato aggiornata.</p>
-      <div class="ai-tags" id="aiTags">
-        <span class="ai-tag">Dati ufficiali</span>
-        <span class="ai-tag">AI · Machine Learning</span>
-        <span class="ai-tag">Confronto mercato</span>
-        <span class="ai-tag">Valutazione in tempo reale</span>
-      </div>
+      <p id="vehicleReport">Inserisci la targa del veicolo per ottenere scheda tecnica, valutazione di mercato e confronto prezzi.</p>
     </div>
   </div>
 </div>
 
 <div id="installBanner">
-  <div class="install-text">Installa TargaAI sul telefono</div>
+  <div class="install-text">Installa CercaAuto sul telefono</div>
   <button class="install-btn" onclick="installApp()">Installa</button>
 </div>
 
@@ -413,11 +424,19 @@ function estimateValue(data) {
 
 // ---- Mock listings ----
 function generateListings(data, val) {
-  const brands = ['AutoScout24', 'Subito.it', 'AutoEuro', 'Facebook Marketplace', 'Automobile.it', 'Virgilio Auto'];
+  const brands = [
+    { name: 'AutoScout24', url: 'https://www.autoscout24.it/' },
+    { name: 'Subito.it', url: 'https://www.subito.it/auto/' },
+    { name: 'AutoEuro', url: 'https://www.autoeuro.it/' },
+    { name: 'Facebook Marketplace', url: 'https://www.facebook.com/marketplace/' },
+    { name: 'Automobile.it', url: 'https://www.automobile.it/' },
+    { name: 'Virgilio Auto', url: 'https://auto.virgilio.it/' },
+  ];
   const cities = ['Milano', 'Roma', 'Napoli', 'Torino', 'Bologna', 'Firenze', 'Genova', 'Verona', 'Bari', 'Catania'];
   const years = [parseInt(data.y) - 1, parseInt(data.y), parseInt(data.y), parseInt(data.y) + 1, parseInt(data.y) - 2];
   const name = `${data.v} ${data.m}`;
   const count = 3 + Math.floor(Math.random() * 3);
+  const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(name + ' usata')}`;
 
   const listings = [];
   for (let i = 0; i < count; i++) {
@@ -427,14 +446,15 @@ function generateListings(data, val) {
     const kmFactor = 1 - (lkm / 300000 * 0.3);
     const baseVal = val.value * (0.7 + Math.random() * 0.6);
     const price = Math.round(baseVal * ageFactor * kmFactor / 100) * 100;
-    const site = brands[i % brands.length];
+    const brand = brands[i % brands.length];
     const city = cities[Math.floor(Math.random() * cities.length)];
     listings.push({
       title: `${name} (${ly})`,
       meta: `${lkm.toLocaleString('it-IT')} km · ${city}`,
       price: Math.max(1000, price),
       badge: price >= val.value * 0.95 ? 'Affare' : price <= val.value * 0.75 ? 'Ottimo prezzo' : null,
-      site
+      site: brand.name,
+      url: brand.url
     });
   }
   return listings.sort((a, b) => a.price - b.price);
@@ -453,11 +473,11 @@ async function searchPlate() {
   newSearchBtn.style.display = 'none';
 
   const steps = [
-    'TargaAI sta analizzando i dati',
+    'CercaAuto sta cercando i dati...',
     'Ricerca fonti ufficiali italiane...',
-    'AI · Confronto con annunci online...',
+    'Confronto con annunci online...',
     'Calcolo valutazione di mercato...',
-    'Generazione report intelligente...'
+    'Generazione report veicolo...'
   ];
   let si = 0;
   $('spinnerText').textContent = 'Ricerca ' + plate + '...';
@@ -524,30 +544,42 @@ function renderReport(plate, f, val, listings) {
     `<div class="spec"><div class="spec-label">${s.label}</div><div class="spec-value">${s.value}</div></div>`
   ).join('');
 
-  // Listings
+  // Listings with real links
   $('marketCount').textContent = `${listings.length} annunci`;
   $('listingsContainer').innerHTML = listings.map(l => {
     const initial = (l.site.charAt(0));
     const colors = { A: '#007AFF', S: '#FF9500', E: '#34C759', F: '#1877F2', V: '#FF2D55', '': '#5856D6' };
     const bg = colors[initial] || '#5856D6';
-    return `<div class="listing" onclick="showToast('Apri ${l.site}')">
+    return `<a href="${l.url}" target="_blank" rel="noopener" class="listing" style="text-decoration:none;color:inherit;">
       <div class="listing-img" style="background:${bg};display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px;">${initial}</div>
       <div class="listing-info">
         <div class="listing-title">${l.title}</div>
         <div class="listing-meta">${l.meta} · ${l.site}</div>
       </div>
       <div class="listing-price">€ ${l.price.toLocaleString('it-IT')}${l.badge ? `<span class="listing-badge">${l.badge}</span>` : ''}</div>
-    </div>`;
+    </a>`;
   }).join('');
 
-  // AI Analysis
+  // Report description
   const age = 2026 - parseInt(f.y);
-  let analysis = `TargaAI ha identificato il veicolo come **${f.v} ${f.m}** immatricolato nel **${f.y}** con alimentazione **${f.f.toLowerCase()}**. `;
-  analysis += `La valutazione AI di **${val.value.toLocaleString('it-IT')} EUR** si basa sull'analisi di ${listings.length} annunci simili presenti sul mercato italiano. `;
-  if (age <= 3) analysis += `Il veicolo è relativamente recente, la valutazione ha un'affidabilità alta.`;
-  else if (age <= 10) analysis += `Il veicolo ha un'età media, il valore è stabile sul mercato dell'usato.`;
-  else analysis += `Il veicolo è datato ma potrebbe ancora rappresentare un buon acquisto nel mercato delle economiche.`;
-  $('aiAnalysis').textContent = analysis.replace(/\*\*/g, '');
+  const fuelName = f.f || 'non specificata';
+  let analysis = `Veicolo: **${f.v} ${f.m}** (${f.y}), alimentazione **${fuelName}**. `;
+  if (f.e) analysis += `Motore **${f.e}**. `;
+  analysis += `Valutazione di mercato **${val.value.toLocaleString('it-IT')} EUR**, basata su ${listings.length} annunci simili. `;
+  if (age <= 3) analysis += `Il veicolo è recente, il valore è ancora alto sul mercato dell'usato.`;
+  else if (age <= 10) analysis += `Il veicolo ha un'età media, il valore si è stabilizzato.`;
+  else analysis += `Il veicolo è datato ma rappresenta un acquisto economico.`;
+  $('vehicleReport').textContent = analysis.replace(/\*\*/g, '');
+
+  // Mascot phrase
+  const mascotPhrases = [
+    `Ecco tutto su ${f.v} ${f.m}!`,
+    `${f.v} ${f.m} — ottima scelta!`,
+    `Ho trovato ${listings.length} annunci per ${f.v} ${f.m}.`,
+    `Valutazione: ${val.value.toLocaleString('it-IT')} EUR per ${f.v} ${f.m}.`,
+    `${f.v} ${f.m} del ${f.y} — dati completi!`
+  ];
+  $('mascotPhrase').textContent = mascotPhrases[Math.floor(Math.random() * mascotPhrases.length)];
 }
 
 // ---- Photo ----
