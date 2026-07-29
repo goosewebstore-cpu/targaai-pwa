@@ -121,6 +121,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .hero-plate{display:inline-block;background:var(--text);color:#fff;padding:8px 16px;border-radius:10px;font-size:18px;font-weight:700;letter-spacing:2px;margin-bottom:14px;}
 .hero-name{font-size:28px;font-weight:700;letter-spacing:-0.5px;line-height:1.15;margin-bottom:6px;}
 .hero-sub{font-size:17px;color:var(--text2);}
+.data-notice{margin:0 24px 20px;padding:12px 14px;border-radius:12px;background:#fff7e6;color:#8a5a00;font-size:13px;line-height:1.4;display:none;}
 
 /* Section */
 .section{padding:0 24px;margin-bottom:20px;}
@@ -356,6 +357,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 
   <!-- REPORT -->
   <main class="report" id="reportView">
+    <div class="data-notice" id="dataNotice"></div>
     <!-- Hero -->
     <div class="hero-card">
       <img class="hero-img" id="heroImg" style="display:none" alt="Veicolo">
@@ -493,6 +495,7 @@ const loadingView = $('loadingView');
 const errorView = $('errorView');
 const reportView = $('reportView');
 const newSearchBtn = $('newSearchBtn');
+const dataNotice = $('dataNotice');
 
 targaInput.addEventListener('input', e => {
   const v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
@@ -512,11 +515,22 @@ async function lookupPlate(plate) {
     text = await resp.text();
   } catch (e) {
     clearTimeout(timeout);
-    throw new Error('Richiesta fallita: ' + e.message);
+    return createPreviewVehicle(plate);
   }
   const m = text.match(/<vehicleJson>([\s\S]*?)<\/vehicleJson>/i);
-  if (!m) throw new Error('Formato risposta non valido');
-  return JSON.parse(m[1].replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').replace(/&quot;/g,'"'));
+  if (!m) return createPreviewVehicle(plate);
+  try {
+    return JSON.parse(m[1].replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').replace(/&quot;/g,'"'));
+  } catch {
+    return createPreviewVehicle(plate);
+  }
+}
+
+function createPreviewVehicle(plate) {
+  return {
+    CarMake: 'Veicolo', CarModel: 'da identificare', RegistrationYear: '',
+    FuelType: '', Description: `Analisi preliminare ${plate}`, preview: true
+  };
 }
 
 function getVal(data) {
@@ -748,6 +762,12 @@ async function searchPlate() {
 }
 
 function renderReport(plate, f, val, listings, askingPrice = 0) {
+  if (currentData.data.preview) {
+    dataNotice.textContent = 'Modalità anteprima: il provider targa non è disponibile. I dati e la stima mostrati non sono verificati. Per rendere AutoEsperto un MVP con dati reali va collegato un provider autorizzato tramite backend.';
+    dataNotice.style.display = 'block';
+  } else {
+    dataNotice.style.display = 'none';
+  }
   $('reportPlate').textContent = plate;
   $('reportName').textContent = f.vn || `${f.v} ${f.m}`;
   $('reportSub').textContent = [f.y, f.f, f.b].filter(Boolean).join(' · ') || 'Dati veicolo';
@@ -862,6 +882,7 @@ function resetApp() {
   mileageInput.value = '';
   targaInput.focus();
   currentData = null;
+  dataNotice.style.display = 'none';
 }
 
 function showToast(msg) {
