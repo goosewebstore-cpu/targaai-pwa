@@ -325,29 +325,41 @@ targaInput.addEventListener('input', e => {
 });
 targaInput.addEventListener('keypress', e => { if (e.key === 'Enter') searchPlate(); });
 
-// ---- API call ----
+// ---- API call (usiamo CORS proxy per affidabilità) ----
 async function lookupPlate(plate) {
-  const url = `${API_BASE}/CheckItaly?RegistrationNumber=${encodeURIComponent(plate)}&username=demo`;
-  const resp = await fetch(url);
-  if (!resp.ok) throw new Error('Errore ' + resp.status);
-  const xml = await resp.text();
-  const m = xml.match(/<vehicleJson>([\s\S]*?)<\/vehicleJson>/);
-  if (!m) throw new Error('Risposta non valida');
-  return JSON.parse(m[1].replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&'));
+  const apiUrl = `${API_BASE}/CheckItaly?RegistrationNumber=${encodeURIComponent(plate)}&username=demo`;
+  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`;
+  let resp;
+  try {
+    resp = await fetch(proxyUrl);
+  } catch (_) {
+    resp = await fetch(apiUrl);
+  }
+  if (!resp.ok) throw new Error('Errore server ' + resp.status);
+  const text = await resp.text();
+  const m = text.match(/<vehicleJson>([\s\S]*?)<\/vehicleJson>/i);
+  if (!m) throw new Error('Formato risposta non valido');
+  return JSON.parse(m[1].replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').replace(/&quot;/g,'"'));
 }
 
 // ---- Format data ----
 function getVal(data) {
-  const v = data.CarMake?.CurrentTextValue || data.CarMake || '';
-  const m = data.CarModel?.CurrentTextValue || data.CarModel || '';
+  const get = (obj, prop) => {
+    if (!obj) return '';
+    if (typeof obj === 'string') return obj;
+    return obj.CurrentTextValue || obj.CurrentValue || '';
+  };
+
+  const v = get(data.CarMake);
+  const m = get(data.CarModel);
   const y = data.RegistrationYear || '';
-  const f = data.FuelType?.CurrentTextValue || data.FuelType || '';
-  const e = data.EngineSize?.CurrentTextValue || '';
+  const f = get(data.FuelType);
+  const e = get(data.EngineSize);
   const vn = data.Version || '';
-  const d = data.NumberOfDoors?.CurrentTextValue || data.NumberOfDoors || '';
-  const t = data.Transmission?.CurrentTextValue || data.Transmission || '';
-  const b = data.BodyStyle?.CurrentTextValue || data.BodyStyle || '';
-  const s = data.NumberOfSeats?.CurrentTextValue || data.NumberOfSeats || '';
+  const d = get(data.NumberOfDoors);
+  const t = get(data.Transmission);
+  const b = get(data.BodyStyle);
+  const s = get(data.NumberOfSeats);
   const desc = data.Description || `${v} ${m}`;
   const img = data.ImageUrl || '';
 
@@ -478,7 +490,7 @@ async function searchPlate() {
 function renderReport(plate, f, val, listings) {
   $('reportPlate').textContent = plate;
   $('reportName').textContent = f.vn || `${f.v} ${f.m}`;
-  $('reportSub').textContent = [f.y, f.f].filter(Boolean).join(' · ');
+    $('reportSub').textContent = [f.y, f.f].filter(Boolean).join(' · ') || 'Dati veicolo';
 
   const img = $('vehicleImg');
   if (f.img) { img.src = f.img; img.style.display = 'block'; } else { img.style.display = 'none'; }
