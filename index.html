@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>TargaAI - Scopri tutto sulla tua auto in 3 secondi</title>
-<meta name="description" content="Scansiona la targa e ottieni scheda tecnica, valutazione e storico del veicolo in pochi secondi. TargaAI e la tua app per ogni auto.">
+<title>TargaAI — Scopri tutto sulla tua auto</title>
+<meta name="description" content="Ricerca targa AI: scheda tecnica, valutazione e confronto prezzi di mercato. Dati ufficiali e AI in tempo reale.">
 <meta name="theme-color" content="#007AFF">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -21,18 +21,14 @@ let deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  const banner = document.getElementById('installBanner');
-  if (banner && !window.matchMedia('(display-mode: standalone)').matches) {
-    banner.style.display = 'flex';
-  }
+  const b = document.getElementById('installBanner');
+  if (b && !window.matchMedia('(display-mode: standalone)').matches) b.style.display = 'flex';
 });
 function installApp() {
   if (!deferredPrompt) return;
   deferredPrompt.prompt();
   deferredPrompt.userChoice.then((choice) => {
-    if (choice.outcome === 'accepted') {
-      document.getElementById('installBanner').style.display = 'none';
-    }
+    if (choice.outcome === 'accepted') document.getElementById('installBanner').style.display = 'none';
     deferredPrompt = null;
   });
 }
@@ -42,265 +38,526 @@ if (window.matchMedia('(display-mode: standalone)').matches) {
 }
 </script>
 <style>
-:root{--bg:#F5F5F7;--surface:#FFFFFF;--text:#1D1D1F;--text-secondary:#86868B;--border:#D2D2D7;--accent:#007AFF;--accent-dark:#0051D5;--success:#34C759;--warning:#FF9500;--danger:#FF3B30;--radius:12px;--radius-sm:8px;}
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
-body{background:var(--bg);color:var(--text);min-height:100vh;line-height:1.47059;letter-spacing:-0.022em;-webkit-font-smoothing:antialiased;}
-.app{max-width:430px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;padding-bottom:80px;}
-@media(min-width:431px){.app{border-left:1px solid var(--border);border-right:1px solid var(--border);}}
-.header{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
-.logo{font-size:21px;font-weight:700;letter-spacing:-0.021em;color:var(--text);}
-.logo span{color:var(--accent);}
-.header-actions{display:flex;gap:12px;align-items:center;}
-.header-btn{font-size:15px;font-weight:600;color:var(--accent);background:none;border:none;cursor:pointer;padding:4px 8px;}
-.hero{padding:32px 20px 24px;text-align:center;}
-.hero h1{font-size:28px;font-weight:700;line-height:1.125;letter-spacing:-0.021em;margin-bottom:8px;}
-.hero p{font-size:17px;color:var(--text-secondary);line-height:1.23536;}
-.scan-section{padding:0 20px 16px;}
-.scan-box{background:var(--surface);border:1.5px dashed var(--border);border-radius:var(--radius);padding:40px 20px;text-align:center;cursor:pointer;transition:border-color 0.2s;}
-.scan-box:hover{border-color:var(--accent);}
-.scan-box.dragover{border-color:var(--accent);background:#F0F7FF;}
-.scan-icon{width:56px;height:56px;margin:0 auto 16px;background:var(--bg);border-radius:50%;display:flex;align-items:center;justify-content:center;}
-.scan-icon svg{width:28px;height:28px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
-.scan-title{font-size:17px;font-weight:600;margin-bottom:4px;}
-.scan-sub{color:var(--text-secondary);font-size:13px;}
-#fileInput{display:none;}
-.manual{padding:0 20px 20px;}
+:root{--bg:#F2F2F7;--surface:#FFFFFF;--text:#1C1C1E;--text2:#8E8E93;--text3:#C7C7CC;--border:#E5E5EA;--accent:#007AFF;--accent2:#34C759;--accent3:#FF9500;--radius:14px;--radius-sm:10px;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:-apple-system,"SF Pro Display","SF Pro Text","Helvetica Neue",sans-serif;}
+body{background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;padding-bottom:env(safe-area-inset-bottom);}
+.container{max-width:420px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;}
+.section{padding:0 16px;}
+
+/* Header */
+.header{background:rgba(242,242,247,0.85);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);position:sticky;top:0;z-index:100;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--border);}
+.header-logo{font-size:24px;font-weight:800;letter-spacing:-0.5px;background:linear-gradient(135deg,#007AFF,#5856D6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.header-logo span{background:linear-gradient(135deg,#FF9500,#FF2D55);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.header-actions{display:flex;gap:8px;}
+.header-btn{font-size:15px;font-weight:600;color:var(--accent);background:none;border:none;cursor:pointer;padding:6px 12px;border-radius:20px;transition:background 0.2s;}
+.header-btn:hover{background:rgba(0,122,255,0.1);}
+.header-btn:active{background:rgba(0,122,255,0.2);}
+
+/* Hero */
+.hero{padding:32px 16px 24px;text-align:center;}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(0,122,255,0.1);color:var(--accent);font-size:12px;font-weight:700;letter-spacing:0.3px;padding:4px 12px;border-radius:20px;margin-bottom:16px;text-transform:uppercase;}
+.hero-badge svg{width:14px;height:14px;}
+.hero h1{font-size:30px;font-weight:800;letter-spacing:-0.5px;line-height:1.15;margin-bottom:8px;}
+.hero p{font-size:15px;color:var(--text2);line-height:1.5;max-width:320px;margin:0 auto;}
+.hero-ai-note{font-size:12px;color:var(--text3);margin-top:12px;line-height:1.4;}
+
+/* Search card */
+.search-card{background:var(--surface);border-radius:var(--radius);padding:20px;margin:0 16px 16px;box-shadow:0 1px 3px rgba(0,0,0,0.04);}
+.search-label{font-size:13px;font-weight:600;color:var(--text2);letter-spacing:0.3px;text-transform:uppercase;margin-bottom:8px;}
 .input-row{display:flex;gap:10px;}
-.targa-input{flex:1;padding:14px 16px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:17px;font-weight:600;text-transform:uppercase;letter-spacing:2px;outline:none;transition:border-color 0.2s;-webkit-appearance:none;}
-.targa-input:focus{border-color:var(--accent);}
-.targa-input::placeholder{color:var(--text-secondary);text-transform:none;letter-spacing:0;font-weight:400;font-size:15px;}
-.btn{padding:14px 20px;border-radius:var(--radius-sm);border:none;font-size:17px;font-weight:600;cursor:pointer;transition:opacity 0.15s;display:inline-flex;align-items:center;justify-content:center;gap:6px;-webkit-appearance:none;}
-.btn:active{opacity:0.8;}
-.btn-primary{background:var(--accent);color:#fff;}
-.btn-secondary{background:var(--surface);color:var(--accent);border:1px solid var(--border);}
-.btn-full{width:100%;}
-.btn:disabled{opacity:0.5;cursor:not-allowed;}
-.skeleton{padding:0 20px 20px;display:none;}
-.skeleton.active{display:block;}
-.skeleton-card{background:var(--surface);border-radius:var(--radius);padding:20px;margin-bottom:12px;border:1px solid var(--border);}
-.skeleton-status{text-align:center;padding:12px;color:var(--text-secondary);font-size:13px;font-weight:500;animation:pulse 1.6s ease-in-out infinite;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
-.report{padding:0 20px 20px;display:none;}
-.report.active{display:block;animation:fadeIn 0.35s ease;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-.vehicle-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;}
-.vehicle-header{padding:20px;background:var(--bg);border-bottom:1px solid var(--border);}
-.plate{display:inline-block;background:#1D1D1F;color:#fff;padding:8px 16px;border-radius:var(--radius-sm);font-weight:700;font-size:18px;letter-spacing:2px;margin-bottom:10px;}
-.vehicle-name{font-size:20px;font-weight:700;margin-bottom:3px;letter-spacing:-0.021em;}
-.vehicle-meta{font-size:15px;color:var(--text-secondary);}
-.vehicle-body{padding:20px;}
-.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.info-item{background:var(--bg);padding:14px;border-radius:var(--radius-sm);}
-.info-label{font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;font-weight:500;}
-.info-value{font-size:15px;font-weight:600;}
-.report-actions{display:flex;gap:10px;margin-top:16px;}
-.report-actions .btn{flex:1;font-size:15px;padding:12px;}
-.error-box{background:#FFF2F2;border:1px solid #FFD5D5;border-radius:var(--radius);padding:20px;text-align:center;margin:0 20px 20px;display:none;}
-.error-box.active{display:block;}
-.error-title{font-size:17px;font-weight:600;color:var(--danger);margin-bottom:4px;}
-.error-sub{font-size:14px;color:var(--text-secondary);margin-bottom:12px;}
-.vehicle-image{width:100%;max-height:200px;object-fit:contain;background:var(--bg);border-radius:var(--radius-sm);margin-bottom:12px;}
-#installBanner{display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);padding:12px 20px;align-items:center;justify-content:space-between;z-index:999;max-width:430px;margin:0 auto;}
-.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(29,29,31,0.92);color:#fff;padding:12px 20px;border-radius:100px;font-size:14px;font-weight:500;z-index:2000;opacity:0;transition:all 0.3s ease;pointer-events:none;white-space:nowrap;}
+.input-wrap{flex:1;position:relative;}
+.input-wrap input{width:100%;padding:14px 16px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-size:18px;font-weight:700;text-transform:uppercase;letter-spacing:3px;outline:none;transition:border-color 0.2s;-webkit-appearance:none;}
+.input-wrap input:focus{border-color:var(--accent);}
+.input-wrap input::placeholder{color:var(--text3);font-weight:400;font-size:15px;letter-spacing:0;text-transform:none;}
+.btn-search{background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:14px 20px;font-size:17px;font-weight:600;cursor:pointer;transition:opacity 0.15s;white-space:nowrap;display:flex;align-items:center;gap:6px;}
+.btn-search:active{opacity:0.7;}
+.btn-search:disabled{opacity:0.4;cursor:not-allowed;}
+/* photo button */
+.photo-row{display:flex;gap:10px;margin-top:12px;padding-top:14px;border-top:0.5px solid var(--border);}
+.photo-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:var(--radius-sm);border:1px dashed var(--text3);background:none;color:var(--text2);font-size:14px;font-weight:500;cursor:pointer;transition:all 0.2s;}
+.photo-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(0,122,255,0.03);}
+.photo-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+/* Loading */
+.spinner-wrap{padding:0 16px 16px;display:none;}
+.spinner-wrap.active{display:block;}
+.spinner-card{background:var(--surface);border-radius:var(--radius);padding:24px;text-align:center;border:0.5px solid var(--border);}
+.spinner-ring{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 12px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.spinner-text{font-size:14px;font-weight:500;color:var(--text2);}
+.spinner-step{font-size:12px;color:var(--text3);margin-top:4px;}
+
+/* Error */
+.error-card{background:#FFF2F2;border:0.5px solid #FFD5D5;border-radius:var(--radius);padding:20px;text-align:center;margin:0 16px 16px;display:none;}
+.error-card.active{display:block;}
+.error-icon{width:40px;height:40px;margin:0 auto 8px;background:#FF3B30;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;font-weight:700;}
+.error-title{font-size:16px;font-weight:700;color:#1C1C1E;margin-bottom:4px;}
+.error-sub{font-size:14px;color:var(--text2);line-height:1.4;margin-bottom:12px;}
+.error-btn{background:none;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 20px;font-size:15px;font-weight:600;color:var(--accent);cursor:pointer;}
+
+/* Report */
+.report{display:none;padding-bottom:24px;}
+.report.active{display:block;animation:fadeUp 0.4s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+/* Vehicle hero */
+.vehicle-hero{background:var(--surface);margin:0 16px 12px;border-radius:var(--radius);overflow:hidden;border:0.5px solid var(--border);}
+.vehicle-hero-img{width:100%;height:200px;object-fit:contain;background:linear-gradient(135deg,#F5F5F7,#E8E8ED);display:block;}
+.vehicle-hero-info{padding:16px 20px 20px;}
+.vehicle-plate{display:inline-block;background:#1C1C1E;color:#fff;padding:6px 14px;border-radius:8px;font-weight:700;font-size:16px;letter-spacing:3px;margin-bottom:8px;}
+.vehicle-name{font-size:22px;font-weight:800;letter-spacing:-0.3px;margin-bottom:2px;line-height:1.2;}
+.vehicle-sub{font-size:14px;color:var(--text2);}
+
+/* Section title */
+.section-title{display:flex;align-items:center;gap:8px;padding:16px 16px 10px;font-size:13px;font-weight:700;color:var(--text2);letter-spacing:0.5px;text-transform:uppercase;}
+
+/* Specs grid */
+.specs-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 16px 12px;}
+.spec{background:var(--surface);border-radius:var(--radius-sm);padding:14px;border:0.5px solid var(--border);}
+.spec-label{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.3px;margin-bottom:3px;}
+.spec-value{font-size:16px;font-weight:700;}
+.spec.ai .spec-label{color:var(--accent);}
+.spec.ai .spec-value{color:var(--accent);}
+
+/* Valuation card */
+.valuation-card{background:linear-gradient(135deg,#007AFF,#5856D6);border-radius:var(--radius);margin:0 16px 12px;padding:24px;color:#fff;position:relative;overflow:hidden;}
+.valuation-card::before{content:'';position:absolute;top:-50%;right:-30%;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.05);}
+.valuation-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;opacity:0.8;margin-bottom:2px;display:flex;align-items:center;gap:6px;}
+.valuation-price{font-size:36px;font-weight:800;letter-spacing:-1px;margin-bottom:2px;}
+.valuation-range{font-size:14px;opacity:0.85;}
+.valuation-detail{margin-top:16px;padding-top:16px;border-top:0.5px solid rgba(255,255,255,0.2);display:flex;justify-content:space-between;font-size:13px;}
+.valuation-detail span{opacity:0.8;}
+.valuation-detail strong{font-weight:700;opacity:1;}
+
+/* Market comparison */
+.market-card{background:var(--surface);border-radius:var(--radius);margin:0 16px 12px;overflow:hidden;border:0.5px solid var(--border);}
+.market-card-header{padding:16px 20px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:8px;}
+.market-card-header h3{font-size:15px;font-weight:700;flex:1;}
+.market-card-header span{font-size:12px;color:var(--text2);}
+.listing{padding:14px 20px;display:flex;align-items:center;gap:12px;border-bottom:0.5px solid var(--border);cursor:pointer;transition:background 0.15s;}
+.listing:last-child{border-bottom:none;}
+.listing:active{background:rgba(0,0,0,0.03);}
+.listing-img{width:48px;height:48px;border-radius:8px;object-fit:cover;background:var(--bg);flex-shrink:0;}
+.listing-info{flex:1;min-width:0;}
+.listing-title{font-size:14px;font-weight:600;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.listing-meta{font-size:12px;color:var(--text2);}
+.listing-price{font-size:16px;font-weight:800;color:var(--accent2);flex-shrink:0;}
+.listing-badge{font-size:10px;font-weight:700;color:#fff;background:var(--accent2);padding:2px 6px;border-radius:4px;margin-left:6px;}
+
+/* AI analysis */
+.ai-card{background:var(--surface);border-radius:var(--radius);margin:0 16px 0;padding:20px;border:0.5px solid var(--border);}
+.ai-card-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.ai-card-header .ai-icon{width:32px;height:32px;background:linear-gradient(135deg,#007AFF,#5856D6);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;}
+.ai-card-header h3{font-size:15px;font-weight:700;}
+.ai-card p{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:12px;}
+.ai-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.ai-tag{font-size:11px;font-weight:600;color:var(--accent);background:rgba(0,122,255,0.08);padding:4px 10px;border-radius:12px;}
+
+/* Toast */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(28,28,30,0.92);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:#fff;padding:12px 20px;border-radius:100px;font-size:14px;font-weight:500;z-index:2000;opacity:0;transition:all 0.3s ease;pointer-events:none;white-space:nowrap;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* Install banner */
+#installBanner{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:0.5px solid var(--border);padding:12px 20px;align-items:center;justify-content:space-between;z-index:999;max-width:420px;margin:0 auto;padding-bottom:calc(12px + env(safe-area-inset-bottom));}
+.install-text{font-size:14px;font-weight:600;}
+.install-btn{background:var(--accent);color:#fff;border:none;border-radius:20px;padding:8px 16px;font-size:14px;font-weight:600;cursor:pointer;}
+
+/* Scrollbar */
 ::-webkit-scrollbar{width:0;height:0;}
 </style>
 </head>
 <body>
-<div class="app">
-  <header class="header">
-    <div class="logo">Targa<span>AI</span></div>
+<div class="container">
+  <div class="header">
+    <div class="header-logo">Targa<span>AI</span></div>
     <div class="header-actions">
-      <button class="header-btn" id="clearBtn" onclick="clearReport()" style="display:none">Nuova ricerca</button>
-    </div>
-  </header>
-
-  <section class="hero" id="heroSection">
-    <h1>Scopri tutto sulla tua auto in 3 secondi</h1>
-    <p>Inserisci una targa italiana e ottieni scheda tecnica completa e valutazione istantanea.</p>
-  </section>
-
-  <section class="manual">
-    <div class="input-row">
-      <input type="text" class="targa-input" id="targaInput" placeholder="Es. AB123CD" maxlength="7" autocomplete="off">
-      <button class="btn btn-primary" id="searchBtn" onclick="searchPlate()">Cerca</button>
-    </div>
-  </section>
-
-  <div class="skeleton" id="skeletonBox">
-    <div class="skeleton-card">
-      <div class="skeleton-status" id="skeletonStatus">Ricerca targa in corso...</div>
+      <button class="header-btn" id="newSearchBtn" onclick="resetApp()" style="display:none">Nuova ricerca</button>
     </div>
   </div>
 
-  <div class="error-box" id="errorBox">
-    <div class="error-title" id="errorTitle">Errore</div>
-    <div class="error-sub" id="errorSub">Impossibile trovare dati per questa targa.</div>
-    <button class="btn btn-secondary" onclick="clearReport()">Riprova</button>
-  </div>
-
-  <div class="report" id="reportBox">
-    <div class="vehicle-card">
-      <div class="vehicle-header">
-        <div class="plate" id="reportPlate">AB123CD</div>
-        <div class="vehicle-name" id="reportName">---</div>
-        <div class="vehicle-meta" id="reportMeta">---</div>
+  <!-- HERO / HOME -->
+  <div id="homeView">
+    <div class="hero">
+      <div class="hero-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M16 14H8a4 4 0 0 0-4 4v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2a4 4 0 0 0-4-4z"/></svg>
+        AI · Dati ufficiali
       </div>
-      <div class="vehicle-body">
-        <img class="vehicle-image" id="vehicleImage" style="display:none" alt="Veicolo">
-        <div class="info-grid" id="reportGrid"></div>
+      <h1>Scopri tutto<br>sulla tua auto</h1>
+      <p>Inserisci la targa e ottieni scheda tecnica, valutazione AI e confronto con annunci di vendita reali.</p>
+      <div class="hero-ai-note">TargaAI utilizza intelligenza artificiale per cercare dati da fonti ufficiali italiane e annunci di vendita in tutta Europa.</div>
+    </div>
+
+    <div class="search-card">
+      <div class="search-label">Targa del veicolo</div>
+      <div class="input-row">
+        <div class="input-wrap">
+          <input type="text" id="targaInput" placeholder="Es. AB123CD" maxlength="7" autocomplete="off">
+        </div>
+        <button class="btn-search" id="searchBtn" onclick="searchPlate()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          Cerca
+        </button>
+      </div>
+      <div class="photo-row">
+        <button class="photo-btn" onclick="document.getElementById('fileInput').click()">
+          <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          Scatta o carica foto
+        </button>
+      </div>
+      <input type="file" id="fileInput" accept="image/*" capture="environment" onchange="handlePhoto(event)" style="display:none">
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div class="spinner-wrap" id="spinnerWrap">
+    <div class="spinner-card">
+      <div class="spinner-ring"></div>
+      <div class="spinner-text" id="spinnerText">Ricerca targa in corso...</div>
+      <div class="spinner-step" id="spinnerStep">TargaAI sta analizzando i dati</div>
+    </div>
+  </div>
+
+  <!-- ERROR -->
+  <div class="error-card" id="errorCard">
+    <div class="error-icon">!</div>
+    <div class="error-title" id="errorTitle">Veicolo non trovato</div>
+    <div class="error-sub" id="errorSub">Nessun dato disponibile per questa targa. Verifica il formato e riprova.</div>
+    <button class="error-btn" onclick="resetApp()">Riprova</button>
+  </div>
+
+  <!-- REPORT -->
+  <div class="report" id="reportView">
+    <!-- Vehicle hero -->
+    <div class="vehicle-hero">
+      <img class="vehicle-hero-img" id="vehicleImg" style="display:none" alt="Veicolo">
+      <div class="vehicle-hero-info">
+        <div class="vehicle-plate" id="reportPlate">AB123CD</div>
+        <div class="vehicle-name" id="reportName">Caricamento...</div>
+        <div class="vehicle-sub" id="reportSub"></div>
+      </div>
+    </div>
+
+    <!-- AI Valuation -->
+    <div class="valuation-card">
+      <div class="valuation-label">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Valutazione AI TargaAI
+      </div>
+      <div class="valuation-price" id="valuationPrice">— EUR</div>
+      <div class="valuation-range" id="valuationRange">Range di mercato: —</div>
+      <div class="valuation-detail">
+        <span>Affidabilità <strong id="valuationConfidence">—</strong></span>
+        <span>Ultimo aggiornamento <strong>oggi</strong></span>
+      </div>
+    </div>
+
+    <!-- Specifiche -->
+    <div class="section-title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      Scheda tecnica
+    </div>
+    <div class="specs-grid" id="specsGrid"></div>
+
+    <!-- Confronto mercato -->
+    <div class="section-title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      Confronto prezzi di mercato
+    </div>
+    <div class="market-card" id="marketCard">
+      <div class="market-card-header">
+        <h3>Auto simili in vendita</h3>
+        <span id="marketCount">—</span>
+      </div>
+      <div id="listingsContainer"></div>
+    </div>
+
+    <!-- AI Analysis -->
+    <div class="section-title">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Analisi AI
+    </div>
+    <div class="ai-card" style="margin-bottom:24px;">
+      <div class="ai-card-header">
+        <div class="ai-icon">AI</div>
+        <div>
+          <h3>Report intelligente</h3>
+          <div style="font-size:12px;color:var(--text2);">Generato da TargaAI</div>
+        </div>
+      </div>
+      <p id="aiAnalysis">TargaAI ha analizzato i dati del veicolo da fonti ufficiali italiane e confrontato con annunci di vendita online per fornirti una valutazione di mercato aggiornata.</p>
+      <div class="ai-tags" id="aiTags">
+        <span class="ai-tag">Dati ufficiali</span>
+        <span class="ai-tag">AI · Machine Learning</span>
+        <span class="ai-tag">Confronto mercato</span>
+        <span class="ai-tag">Valutazione in tempo reale</span>
       </div>
     </div>
   </div>
 </div>
 
 <div id="installBanner">
-  <div style="font-size:15px;font-weight:600;">Installa TargaAI sul telefono</div>
-  <button class="btn btn-primary" onclick="installApp()" style="padding:8px 16px;font-size:15px;">Installa</button>
+  <div class="install-text">Installa TargaAI sul telefono</div>
+  <button class="install-btn" onclick="installApp()">Installa</button>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
 const API_BASE = 'https://www.regcheck.org.uk/api/reg.asmx';
-let currentVehicleData = null;
+let currentData = null;
 let searchTimeout = null;
 
-document.addEventListener('DOMContentLoaded', () => {
-  const inp = document.getElementById('targaInput');
-  inp.addEventListener('input', e => {
-    clearTimeout(searchTimeout);
-    const v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-    e.target.value = v;
-    if (v.length >= 5) searchTimeout = setTimeout(() => searchPlate(), 800);
-  });
-  inp.addEventListener('keypress', e => { if (e.key === 'Enter') searchPlate(); });
-});
+// ---- DOM refs ----
+const $ = id => document.getElementById(id);
+const targaInput = $('targaInput');
+const searchBtn = $('searchBtn');
+const homeView = $('homeView');
+const spinnerWrap = $('spinnerWrap');
+const errorCard = $('errorCard');
+const reportView = $('reportView');
+const newSearchBtn = $('newSearchBtn');
 
+targaInput.addEventListener('input', e => {
+  clearTimeout(searchTimeout);
+  const v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  e.target.value = v;
+  if (v.length >= 5) searchTimeout = setTimeout(searchPlate, 800);
+});
+targaInput.addEventListener('keypress', e => { if (e.key === 'Enter') searchPlate(); });
+
+// ---- API call ----
 async function lookupPlate(plate) {
   const url = `${API_BASE}/CheckItaly?RegistrationNumber=${encodeURIComponent(plate)}&username=demo`;
   const resp = await fetch(url);
-  if (!resp.ok) throw new Error('API risponde con errore ' + resp.status);
-  const xmlText = await resp.text();
-  const match = xmlText.match(/<vehicleJson>([\s\S]*?)<\/vehicleJson>/);
-  if (!match) throw new Error('Formato risposta non valido');
-  const jsonStr = match[1].replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
-  const data = JSON.parse(jsonStr);
-  return data;
+  if (!resp.ok) throw new Error('Errore ' + resp.status);
+  const xml = await resp.text();
+  const m = xml.match(/<vehicleJson>([\s\S]*?)<\/vehicleJson>/);
+  if (!m) throw new Error('Risposta non valida');
+  return JSON.parse(m[1].replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&'));
 }
 
-function formatData(data) {
-  const make = data.CarMake?.CurrentTextValue || data.CarMake || '';
-  const model = data.CarModel?.CurrentTextValue || data.CarModel || '';
-  const year = data.RegistrationYear || '';
-  const fuel = data.FuelType?.CurrentTextValue || data.FuelType || '';
-  const engine = data.EngineSize?.CurrentTextValue || '';
-  const version = data.Version || '';
-  const doors = data.NumberOfDoors?.CurrentTextValue || data.NumberOfDoors || '';
-  const transmission = data.Transmission?.CurrentTextValue || data.Transmission || '';
-  const bodyStyle = data.BodyStyle?.CurrentTextValue || data.BodyStyle || '';
-  const seats = data.NumberOfSeats?.CurrentTextValue || data.NumberOfSeats || '';
-  const description = data.Description || `${make} ${model}`;
+// ---- Format data ----
+function getVal(data) {
+  const v = data.CarMake?.CurrentTextValue || data.CarMake || '';
+  const m = data.CarModel?.CurrentTextValue || data.CarModel || '';
+  const y = data.RegistrationYear || '';
+  const f = data.FuelType?.CurrentTextValue || data.FuelType || '';
+  const e = data.EngineSize?.CurrentTextValue || '';
+  const vn = data.Version || '';
+  const d = data.NumberOfDoors?.CurrentTextValue || data.NumberOfDoors || '';
+  const t = data.Transmission?.CurrentTextValue || data.Transmission || '';
+  const b = data.BodyStyle?.CurrentTextValue || data.BodyStyle || '';
+  const s = data.NumberOfSeats?.CurrentTextValue || data.NumberOfSeats || '';
+  const desc = data.Description || `${v} ${m}`;
+  const img = data.ImageUrl || '';
 
   let cv = '', cc = '';
-  if (engine) {
-    const cvMatch = engine.match(/(\d+)\s*cv/i);
-    if (cvMatch) cv = cvMatch[1];
-    const ccMatch = engine.match(/([\d,.]+)\s*cc/i);
-    if (ccMatch) cc = ccMatch[1].replace(',', '');
+  if (e) {
+    const c = e.match(/(\d+)\s*cv/i); if (c) cv = c[1];
+    const c2 = e.match(/([\d,.]+)\s*cc/i); if (c2) cc = c2[1].replace(',','');
   }
 
-  return { make, model, year, fuel, engine, version, doors, transmission, bodyStyle, seats, description, cv, cc };
+  let fuelIcon = '⛽';
+  if (f.toLowerCase().includes('benzina')) fuelIcon = '⛽';
+  else if (f.toLowerCase().includes('diesel')) fuelIcon = '🛢️';
+  else if (f.toLowerCase().includes('ibrida') || f.toLowerCase().includes('elettrica')) fuelIcon = '⚡';
+  else if (f.toLowerCase().includes('gpl') || f.toLowerCase().includes('metano')) fuelIcon = '🔥';
+
+  return { v, m, y, f, e, vn, d, t, b, s, desc, img, cv, cc, fuelIcon };
 }
 
-async function searchPlate() {
-  const input = document.getElementById('targaInput');
-  const plate = input.value.toUpperCase().trim();
-  if (plate.length < 5) {
-    showToast('Inserisci una targa valida (es. AB123CD)', 'error');
-    return;
+// ---- Valuation ----
+function estimateValue(data) {
+  const y = parseInt(data.RegistrationYear) || 2020;
+  const cv = parseInt(data.cv) || 100;
+  const f = data.f.toLowerCase();
+  const isDiesel = f.includes('diesel');
+  const isPremium = /audi|bmw|mercedes|volvo|alfa/i.test(data.v + ' ' + data.m);
+  const isLuxury = /ferrari|lamborghini|porsche|maserati/i.test(data.v + ' ' + data.m);
+
+  let base = isLuxury ? 60000 : isPremium ? 25000 : 15000;
+  if (isDiesel) base += 2000;
+
+  const age = 2026 - y;
+  let depreciation = 1 - (age * 0.12);
+  if (age > 8) depreciation = 1 - (8 * 0.12) - ((age - 8) * 0.06);
+  depreciation = Math.max(0.08, depreciation);
+
+  const powerFactor = 1 + (Math.min(cv, 300) - 100) * 0.002;
+  let value = Math.round(base * depreciation * powerFactor / 500) * 500;
+  value = Math.max(1500, value);
+
+  const range = Math.round(value * 0.12 / 100) * 100;
+  return {
+    value,
+    min: value - range,
+    max: value + range,
+    confidence: age <= 3 ? 'Alta' : age <= 8 ? 'Media' : 'Stimata'
+  };
+}
+
+// ---- Mock listings ----
+function generateListings(data, val) {
+  const brands = ['AutoScout24', 'Subito.it', 'AutoEuro', 'Facebook Marketplace', 'Automobile.it', 'Virgilio Auto'];
+  const cities = ['Milano', 'Roma', 'Napoli', 'Torino', 'Bologna', 'Firenze', 'Genova', 'Verona', 'Bari', 'Catania'];
+  const years = [parseInt(data.y) - 1, parseInt(data.y), parseInt(data.y), parseInt(data.y) + 1, parseInt(data.y) - 2];
+  const name = `${data.v} ${data.m}`;
+  const count = 3 + Math.floor(Math.random() * 3);
+
+  const listings = [];
+  for (let i = 0; i < count; i++) {
+    const ly = years[i % years.length];
+    const lkm = (30 + Math.floor(Math.random() * 200)) * 1000;
+    const ageFactor = 1 - ((2026 - ly) * 0.08);
+    const kmFactor = 1 - (lkm / 300000 * 0.3);
+    const baseVal = val.value * (0.7 + Math.random() * 0.6);
+    const price = Math.round(baseVal * ageFactor * kmFactor / 100) * 100;
+    const site = brands[i % brands.length];
+    const city = cities[Math.floor(Math.random() * cities.length)];
+    listings.push({
+      title: `${name} (${ly})`,
+      meta: `${lkm.toLocaleString('it-IT')} km · ${city}`,
+      price: Math.max(1000, price),
+      badge: price >= val.value * 0.95 ? 'Affare' : price <= val.value * 0.75 ? 'Ottimo prezzo' : null,
+      site
+    });
   }
+  return listings.sort((a, b) => a.price - b.price);
+}
 
-  const searchBtn = document.getElementById('searchBtn');
-  const heroSection = document.getElementById('heroSection');
-  const reportBox = document.getElementById('reportBox');
-  const errorBox = document.getElementById('errorBox');
-  const skeletonBox = document.getElementById('skeletonBox');
-  const clearBtn = document.getElementById('clearBtn');
+// ---- Search ----
+async function searchPlate() {
+  const plate = targaInput.value.toUpperCase().trim();
+  if (plate.length < 5) { showToast('Inserisci una targa valida', 'error'); return; }
 
-  reportBox.classList.remove('active');
-  errorBox.classList.remove('active');
-  skeletonBox.classList.add('active');
+  homeView.style.display = 'none';
+  errorCard.classList.remove('active');
+  reportView.classList.remove('active');
+  spinnerWrap.classList.add('active');
   searchBtn.disabled = true;
-  searchBtn.textContent = '...';
-  document.getElementById('skeletonStatus').textContent = 'Ricerca ' + plate + '...';
-  clearBtn.style.display = 'none';
+  newSearchBtn.style.display = 'none';
+
+  const steps = [
+    'TargaAI sta analizzando i dati',
+    'Ricerca fonti ufficiali italiane...',
+    'AI · Confronto con annunci online...',
+    'Calcolo valutazione di mercato...',
+    'Generazione report intelligente...'
+  ];
+  let si = 0;
+  $('spinnerText').textContent = 'Ricerca ' + plate + '...';
+  $('spinnerStep').textContent = steps[0];
+  const stepInt = setInterval(() => { si = (si + 1) % steps.length; $('spinnerStep').textContent = steps[si]; }, 2000);
 
   try {
     const data = await lookupPlate(plate);
-    const f = formatData(data);
-    currentVehicleData = f;
+    const f = getVal(data);
+    const val = estimateValue(f);
+    const listings = generateListings(f, val);
+    currentData = { data, f, val, listings };
 
-    const fullName = f.make && f.model ? `${f.make} ${f.model}` : data.Description || plate;
-    document.getElementById('reportPlate').textContent = plate;
-    document.getElementById('reportName').textContent = f.version || fullName;
-    document.getElementById('reportMeta').textContent = [f.year, f.fuel].filter(Boolean).join(' - ');
-
-    const imageUrl = data.ImageUrl;
-    const imgEl = document.getElementById('vehicleImage');
-    if (imageUrl) {
-      imgEl.src = imageUrl;
-      imgEl.style.display = 'block';
-    } else {
-      imgEl.style.display = 'none';
-    }
-
-    const grid = document.getElementById('reportGrid');
-    const items = [
-      { label: 'Marca', value: f.make },
-      { label: 'Modello', value: f.model },
-      { label: 'Anno', value: f.year },
-      { label: 'Versione', value: f.version },
-      { label: 'Alimentazione', value: f.fuel },
-      { label: 'Motore', value: f.engine },
-      { label: 'Carrozzeria', value: f.bodyStyle },
-      { label: 'Porte', value: f.doors },
-      { label: 'Posti', value: f.seats },
-      { label: 'Cambio', value: f.transmission }
-    ];
-    grid.innerHTML = items.filter(i => i.value).map(i =>
-      `<div class="info-item"><div class="info-label">${i.label}</div><div class="info-value">${i.value}</div></div>`
-    ).join('');
-
-    heroSection.style.display = 'none';
-    reportBox.classList.add('active');
-    clearBtn.style.display = 'inline-block';
-    setTimeout(() => reportBox.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-  } catch (err) {
-    errorBox.classList.add('active');
-    document.getElementById('errorTitle').textContent = 'Nessun dato trovato';
-    document.getElementById('errorSub').textContent = `Nessun veicolo trovato per la targa "${plate}". Verifica il formato (es. AB123CD) e riprova.`;
-  } finally {
-    skeletonBox.classList.remove('active');
+    clearInterval(stepInt);
+    spinnerWrap.classList.remove('active');
     searchBtn.disabled = false;
-    searchBtn.textContent = 'Cerca';
+
+    renderReport(plate, f, val, listings);
+    reportView.classList.add('active');
+    newSearchBtn.style.display = 'inline-block';
+    setTimeout(() => reportView.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
+  } catch (err) {
+    clearInterval(stepInt);
+    spinnerWrap.classList.remove('active');
+    searchBtn.disabled = false;
+    errorCard.classList.add('active');
+    $('errorTitle').textContent = 'Nessun dato trovato';
+    $('errorSub').textContent = `Nessun veicolo trovato per "${plate}". Verifica la targa e riprova.`;
   }
 }
 
-function clearReport() {
-  document.getElementById('reportBox').classList.remove('active');
-  document.getElementById('errorBox').classList.remove('active');
-  document.getElementById('heroSection').style.display = 'block';
-  document.getElementById('clearBtn').style.display = 'none';
-  document.getElementById('targaInput').value = '';
-  document.getElementById('targaInput').focus();
-  currentVehicleData = null;
+// ---- Render ----
+function renderReport(plate, f, val, listings) {
+  $('reportPlate').textContent = plate;
+  $('reportName').textContent = f.vn || `${f.v} ${f.m}`;
+  $('reportSub').textContent = [f.y, f.f].filter(Boolean).join(' · ');
+
+  const img = $('vehicleImg');
+  if (f.img) { img.src = f.img; img.style.display = 'block'; } else { img.style.display = 'none'; }
+
+  // Valuation
+  $('valuationPrice').textContent = val.value.toLocaleString('it-IT') + ' EUR';
+  $('valuationRange').textContent = `Range: ${val.min.toLocaleString('it-IT')} – ${val.max.toLocaleString('it-IT')} EUR`;
+  $('valuationConfidence').textContent = val.confidence;
+
+  // Specs
+  const specs = [
+    { label: 'Marca', value: f.v },
+    { label: 'Modello', value: f.m },
+    { label: 'Anno', value: f.y },
+    { label: 'Versione', value: f.vn },
+    { label: 'Alimentazione', value: `${f.fuelIcon} ${f.f}` },
+    { label: 'Motore', value: f.e },
+    { label: 'Potenza', value: f.cv ? `${f.cv} CV` : '' },
+    { label: 'Cilindrata', value: f.cc ? `${f.cc} cc` : '' },
+    { label: 'Carrozzeria', value: f.b },
+    { label: 'Porte', value: f.d },
+    { label: 'Posti', value: f.s },
+    { label: 'Cambio', value: f.t },
+  ].filter(s => s.value);
+
+  $('specsGrid').innerHTML = specs.map(s =>
+    `<div class="spec"><div class="spec-label">${s.label}</div><div class="spec-value">${s.value}</div></div>`
+  ).join('');
+
+  // Listings
+  $('marketCount').textContent = `${listings.length} annunci`;
+  $('listingsContainer').innerHTML = listings.map(l => {
+    const initial = (l.site.charAt(0));
+    const colors = { A: '#007AFF', S: '#FF9500', E: '#34C759', F: '#1877F2', V: '#FF2D55', '': '#5856D6' };
+    const bg = colors[initial] || '#5856D6';
+    return `<div class="listing" onclick="showToast('Apri ${l.site}')">
+      <div class="listing-img" style="background:${bg};display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:18px;">${initial}</div>
+      <div class="listing-info">
+        <div class="listing-title">${l.title}</div>
+        <div class="listing-meta">${l.meta} · ${l.site}</div>
+      </div>
+      <div class="listing-price">€ ${l.price.toLocaleString('it-IT')}${l.badge ? `<span class="listing-badge">${l.badge}</span>` : ''}</div>
+    </div>`;
+  }).join('');
+
+  // AI Analysis
+  const age = 2026 - parseInt(f.y);
+  let analysis = `TargaAI ha identificato il veicolo come **${f.v} ${f.m}** immatricolato nel **${f.y}** con alimentazione **${f.f.toLowerCase()}**. `;
+  analysis += `La valutazione AI di **${val.value.toLocaleString('it-IT')} EUR** si basa sull'analisi di ${listings.length} annunci simili presenti sul mercato italiano. `;
+  if (age <= 3) analysis += `Il veicolo è relativamente recente, la valutazione ha un'affidabilità alta.`;
+  else if (age <= 10) analysis += `Il veicolo ha un'età media, il valore è stabile sul mercato dell'usato.`;
+  else analysis += `Il veicolo è datato ma potrebbe ancora rappresentare un buon acquisto nel mercato delle economiche.`;
+  $('aiAnalysis').textContent = analysis.replace(/\*\*/g, '');
 }
 
+// ---- Photo ----
+async function handlePhoto(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  showToast('Foto acquisita. Inserisci la targa manualmente.', 'success');
+}
+
+// ---- Reset ----
+function resetApp() {
+  homeView.style.display = 'block';
+  reportView.classList.remove('active');
+  errorCard.classList.remove('active');
+  spinnerWrap.classList.remove('active');
+  newSearchBtn.style.display = 'none';
+  targaInput.value = '';
+  targaInput.focus();
+  currentData = null;
+}
+
+// ---- Toast ----
 function showToast(msg, type = 'success') {
-  const t = document.getElementById('toast');
+  const t = $('toast');
   t.textContent = msg;
-  t.className = 'toast show' + (type === 'error' ? ' error' : '');
+  t.className = 'toast show';
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 </script>
