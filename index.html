@@ -364,7 +364,7 @@ function getVal(data) {
   const b = get(data.BodyStyle);
   const s = get(data.NumberOfSeats);
   const desc = data.Description || `${v} ${m}`;
-  const img = data.ImageUrl || '';
+  const img = (data.ImageUrl || '').replace(/^http:\/\//i, 'https://');
 
   let cv = '', cc = '';
   if (e) {
@@ -510,7 +510,7 @@ function renderReport(plate, f, val, listings) {
     { label: 'Modello', value: f.m },
     { label: 'Anno', value: f.y },
     { label: 'Versione', value: f.vn },
-    { label: 'Alimentazione', value: `${f.fuelIcon} ${f.f}` },
+    { label: 'Alimentazione', value: f.f ? `${f.fuelIcon} ${f.f}` : '' },
     { label: 'Motore', value: f.e },
     { label: 'Potenza', value: f.cv ? `${f.cv} CV` : '' },
     { label: 'Cilindrata', value: f.cc ? `${f.cc} cc` : '' },
