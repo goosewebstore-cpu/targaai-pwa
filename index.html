@@ -481,8 +481,9 @@ async function searchPlate() {
     spinnerWrap.classList.remove('active');
     searchBtn.disabled = false;
     errorCard.classList.add('active');
-    $('errorTitle').textContent = 'Nessun dato trovato';
-    $('errorSub').textContent = `Nessun veicolo trovato per "${plate}". Verifica la targa e riprova.`;
+    $('errorTitle').textContent = err.message.includes('Errore') ? 'Errore di connessione' : 'Nessun dato trovato';
+    const detail = err.message.includes('Errore') ? 'Il server non risponde. Verifica la connessione e riprova.' : `Nessun veicolo trovato per "${plate}".`;
+    $('errorSub').textContent = detail + ' (' + err.message + ')';
   }
 }
 
