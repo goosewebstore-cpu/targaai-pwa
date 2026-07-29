@@ -325,18 +325,21 @@ targaInput.addEventListener('input', e => {
 });
 targaInput.addEventListener('keypress', e => { if (e.key === 'Enter') searchPlate(); });
 
-// ---- API call (usiamo CORS proxy per affidabilità) ----
+// ---- API call ----
 async function lookupPlate(plate) {
   const apiUrl = `${API_BASE}/CheckItaly?RegistrationNumber=${encodeURIComponent(plate)}&username=demo`;
-  const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`;
-  let resp;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 12000);
+  let text;
   try {
-    resp = await fetch(proxyUrl);
-  } catch (_) {
-    resp = await fetch(apiUrl);
+    const resp = await fetch(apiUrl, { signal: controller.signal });
+    clearTimeout(timeout);
+    if (!resp.ok) throw new Error('Errore server ' + resp.status);
+    text = await resp.text();
+  } catch (e) {
+    clearTimeout(timeout);
+    throw new Error('Richiesta fallita: ' + e.message);
   }
-  if (!resp.ok) throw new Error('Errore server ' + resp.status);
-  const text = await resp.text();
   const m = text.match(/<vehicleJson>([\s\S]*?)<\/vehicleJson>/i);
   if (!m) throw new Error('Formato risposta non valido');
   return JSON.parse(m[1].replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').replace(/&quot;/g,'"'));
@@ -481,9 +484,9 @@ async function searchPlate() {
     spinnerWrap.classList.remove('active');
     searchBtn.disabled = false;
     errorCard.classList.add('active');
-    $('errorTitle').textContent = err.message.includes('Errore') ? 'Errore di connessione' : 'Nessun dato trovato';
-    const detail = err.message.includes('Errore') ? 'Il server non risponde. Verifica la connessione e riprova.' : `Nessun veicolo trovato per "${plate}".`;
-    $('errorSub').textContent = detail + ' (' + err.message + ')';
+    const failed = err.message.includes('Richiesta fallita') || err.message.includes('Errore');
+    $('errorTitle').textContent = failed ? 'Errore di connessione' : 'Nessun dato trovato';
+    $('errorSub').textContent = failed ? 'Il server non risponde. Verifica la connessione e riprova.' : `Nessun veicolo trovato per "${plate}".`;
   }
 }
 
