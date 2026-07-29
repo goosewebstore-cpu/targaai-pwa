@@ -82,6 +82,8 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .input-wrap input{width:100%;height:60px;padding:0 20px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-size:22px;font-weight:600;text-transform:uppercase;letter-spacing:2px;outline:none;-webkit-appearance:none;transition:border-color 0.2s;}
 .input-wrap input:focus{border-color:var(--accent);background:var(--surface);}
 .input-wrap input::placeholder{color:var(--text3);font-weight:400;font-size:17px;text-transform:none;letter-spacing:0;}
+.price-input{width:100%;height:52px;padding:0 16px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-size:16px;outline:none;margin-top:12px;}
+.price-input:focus{border-color:var(--accent);background:var(--surface);}
 .btn-search{height:60px;padding:0 28px;border-radius:var(--radius-sm);border:none;background:var(--accent);color:#fff;font-size:18px;font-weight:600;cursor:pointer;transition:transform 0.1s,opacity 0.15s;display:flex;align-items:center;gap:8px;}
 .btn-search:active{transform:scale(0.97);opacity:0.9;}
 .btn-search:disabled{opacity:0.5;cursor:not-allowed;}
@@ -145,10 +147,10 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .valuation-stat-label{font-size:12px;opacity:0.7;margin-top:2px;}
 
 /* Specs */
-.specs-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
-.spec{background:var(--surface);border-radius:var(--radius-sm);padding:18px;box-shadow:var(--shadow-sm);min-height:76px;}
+.specs-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.spec{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;min-height:70px;}
 .spec-label{font-size:13px;color:var(--text2);margin-bottom:5px;}
-.spec-value{font-size:18px;font-weight:600;line-height:1.25;}
+.spec-value{font-size:16px;font-weight:650;line-height:1.28;word-break:break-word;}
 
 /* Market */
 .market-card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
@@ -158,7 +160,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .listing{padding:16px 20px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--border);text-decoration:none;color:inherit;min-height:74px;}
 .listing:last-child{border-bottom:none;}
 .listing:active{background:rgba(0,0,0,0.03);}
-.listing-thumb{width:52px;height:52px;border-radius:12px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;flex-shrink:0;}
+.listing-thumb{width:52px;height:52px;border-radius:12px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0;letter-spacing:-.5px;text-align:center;padding:4px;}
 .listing-info{flex:1;min-width:0;}
 .listing-title{font-size:17px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .listing-meta{font-size:14px;color:var(--text2);}
@@ -185,6 +187,12 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .ai-score-fill{height:100%;border-radius:3px;background:var(--accent2);}
 .ai-text{font-size:15px;color:var(--text2);line-height:1.6;margin-bottom:16px;}
 .ai-text strong{color:var(--text);}
+.quick-actions{display:flex;gap:8px;overflow:auto;padding-bottom:2px;margin-bottom:18px;}
+.quick-action{white-space:nowrap;border:1px solid var(--border);border-radius:100px;background:#fff;padding:9px 12px;color:var(--text);font-weight:600;font-size:13px;cursor:pointer;}
+.checklist{display:grid;gap:10px;}
+.check-row{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:14px;background:var(--surface2);}
+.check-icon{width:24px;height:24px;border-radius:50%;background:#e8f4ff;color:var(--accent);font-weight:800;display:grid;place-items:center;flex:none;}
+.check-row strong{font-size:15px;display:block;margin-bottom:2px;}.check-row span{font-size:13px;color:var(--text2);line-height:1.4;}
 .ai-issues-title{font-size:15px;font-weight:600;margin-bottom:10px;}
 .ai-issues-list{list-style:none;}
 .ai-issues-list li{font-size:14px;color:var(--text2);padding:8px 0;padding-left:22px;position:relative;border-bottom:1px solid var(--border);}
@@ -267,6 +275,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
           Cerca
         </button>
       </div>
+      <input class="price-input" type="number" id="askingPriceInput" min="0" inputmode="numeric" placeholder="Prezzo richiesto (facoltativo, es. 12.900)">
       <input type="file" id="fileInput" accept="image/*" onchange="handlePhoto(event)" style="display:none">
       <button class="photo-btn" onclick="document.getElementById('fileInput').click()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
@@ -431,9 +440,9 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 
     <!-- Problems -->
     <section class="section">
-      <h2 class="section-title">Problemi noti</h2>
+      <h2 class="section-title">Cosa controllare prima dell'acquisto</h2>
       <div class="problems-card" id="problemsCard">
-        <p>Stiamo caricando i dati sui problemi comuni di questo modello.</p>
+        <p>Prepariamo la checklist per questa vettura.</p>
       </div>
     </section>
 
@@ -456,12 +465,21 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 
 <div class="toast" id="toast"></div>
 
+<div class="modal" id="expertModal" role="dialog" aria-modal="true" aria-labelledby="expertModalTitle">
+  <div class="modal-card" style="position:relative">
+    <button class="modal-close" onclick="closeExpertModal()" aria-label="Chiudi">×</button>
+    <div class="modal-title" id="expertModalTitle">Parere di AutoEsperto</div>
+    <div class="modal-text" id="expertModalText"></div>
+  </div>
+</div>
+
 <script>
 const API_BASE = 'https://www.regcheck.org.uk/api/reg.asmx';
 let currentData = null;
 const $ = id => document.getElementById(id);
 
 const targaInput = $('targaInput');
+const askingPriceInput = $('askingPriceInput');
 const searchBtn = $('searchBtn');
 const homeView = $('homeView');
 const loadingView = $('loadingView');
@@ -651,15 +669,16 @@ function getVehicleInfo(make, model) {
   return vehicleKB[key] || { reliabilityScore: 6, maintenance: 'medi', common: ['Consultare documentazione ufficiale', 'Verificare manutenzione storica'], engine: 'Motore da valutare in officina specializzata.', robust: 'Robustezza da verificare in base allo stato.' };
 }
 
-function computeAnalysis(f, val, listings) {
+function computeAnalysis(f, val, listings, askingPrice = 0) {
   const info = getVehicleInfo(f.v, f.m);
   const age = 2026 - parseInt(f.y);
   const avgPrice = listings.reduce((a, l) => a + l.price, 0) / listings.length;
-  const diffPct = Math.round(((val.value - avgPrice) / avgPrice) * 100);
+  const referencePrice = askingPrice > 0 ? askingPrice : val.value;
+  const diffPct = Math.round(((referencePrice - avgPrice) / avgPrice) * 100);
   let score = info.reliabilityScore * 5 + (age <= 5 ? 20 : age <= 10 ? 10 : 0) + (info.maintenance === 'bassi' ? 15 : info.maintenance === 'medi' ? 8 : 0);
-  if (diffPct > 10) score += 10;
-  else if (diffPct > -10) score += 5;
-  else score += 0;
+  if (diffPct <= -8) score += 12;
+  else if (diffPct <= 5) score += 6;
+  else score -= Math.min(18, diffPct - 5);
   score = Math.min(100, Math.max(20, score));
   let verdict, verdictIcon, verdictClass;
   if (score >= 80) { verdict = 'Compra'; verdictIcon = '✓'; verdictClass = 'buy'; }
@@ -688,11 +707,12 @@ async function searchPlate() {
     const f = getVal(data);
     const val = estimateValue(f);
     const listings = generateListings(f, val);
-    currentData = { plate, data, f, val, listings };
+    const askingPrice = Number(String(askingPriceInput.value).replace(/[^0-9]/g, '')) || 0;
+    currentData = { plate, data, f, val, listings, askingPrice };
     clearInterval(stepInt);
     loadingView.classList.remove('active');
     searchBtn.disabled = false;
-    renderReport(plate, f, val, listings);
+    renderReport(plate, f, val, listings, askingPrice);
     reportView.classList.add('active');
     newSearchBtn.style.display = 'inline-block';
   } catch (err) {
@@ -706,25 +726,25 @@ async function searchPlate() {
   }
 }
 
-function renderReport(plate, f, val, listings) {
+function renderReport(plate, f, val, listings, askingPrice = 0) {
   $('reportPlate').textContent = plate;
   $('reportName').textContent = f.vn || `${f.v} ${f.m}`;
   $('reportSub').textContent = [f.y, f.f, f.b].filter(Boolean).join(' · ') || 'Dati veicolo';
   const img = $('heroImg');
   if (f.img) { img.src = f.img; img.style.display = 'block'; } else { img.style.display = 'none'; }
 
-  const analysis = computeAnalysis(f, val, listings);
+  const analysis = computeAnalysis(f, val, listings, askingPrice);
   const scoreEl = $('scoreValue');
   scoreEl.textContent = (analysis.score / 10).toFixed(1);
   scoreEl.className = 'score-value ' + (analysis.score >= 80 ? 'good' : analysis.score >= 60 ? 'fair' : 'bad');
   $('scoreLabel').textContent = analysis.verdict;
   $('scoreDesc').textContent = analysis.subVerdict;
 
-  $('valuationPrice').textContent = val.value.toLocaleString('it-IT') + ' EUR';
-  $('valuationRange').textContent = `Range: ${val.min.toLocaleString('it-IT')} – ${val.max.toLocaleString('it-IT')} EUR`;
+  $('valuationPrice').textContent = val.value.toLocaleString('it-IT') + ' €';
+  $('valuationRange').textContent = `Forchetta stimata: ${val.min.toLocaleString('it-IT')} – ${val.max.toLocaleString('it-IT')} € · affidabilità ${val.confidence}`;
   const trend = analysis.diffPct;
   const trendEl = $('valuationTrend');
-  trendEl.textContent = trend > 5 ? '+' + trend + '% vs mercato' : trend < -5 ? trend + '% vs mercato' : 'Allineata al mercato';
+  trendEl.textContent = askingPrice ? (trend > 5 ? '+' + trend + '% richiesta' : trend < -5 ? trend + '% richiesta' : 'Prezzo in linea') : 'Inserisci il prezzo';
   trendEl.style.background = trend > 5 ? 'rgba(255,59,48,0.2)' : trend < -5 ? 'rgba(52,199,89,0.2)' : 'rgba(255,255,255,0.15)';
   trendEl.style.color = trend > 5 ? '#FF453A' : trend < -5 ? '#32D74B' : '#fff';
 
@@ -750,16 +770,16 @@ function renderReport(plate, f, val, listings) {
   ].filter(s => s.value);
   $('specsGrid').innerHTML = specs.map(s => `<div class="spec"><div class="spec-label">${s.label}</div><div class="spec-value">${s.value}</div></div>`).join('');
 
-  $('marketCount').textContent = listings.length + ' stime';
+  $('marketCount').textContent = listings.length + ' comparabili';
   $('listingsContainer').innerHTML = listings.map(l => {
-    const initial = l.site.charAt(0);
+    const initial = l.site === 'AutoScout24' ? 'AUTO<br>SCOUT24' : l.site === 'Subito.it' ? 'subito' : l.site === 'Automobile.it' ? 'automobile.it' : 'facebook';
     const bg = siteColors[l.site] || '#8E8E93';
     return `<a href="${l.url}" target="_blank" rel="noopener" class="listing">
       <div class="listing-thumb" style="background:${bg}">${initial}</div>
       <div class="listing-info">
         <div class="listing-title">${l.title}</div>
         <div class="listing-meta">${l.meta}</div>
-        <div class="listing-site">${l.site} · Stima indicativa</div>
+        <div class="listing-site">${l.site} · Apri ricerca</div>
       </div>
       <div class="listing-price-area">
         <div class="listing-price">€${l.price.toLocaleString('it-IT')}</div>
@@ -781,7 +801,7 @@ function renderReport(plate, f, val, listings) {
     { label: 'Qualità/prezzo', value: Math.min(10, Math.max(4, 10 - Math.abs(trend) / 5)) },
     { label: 'Rivendita', value: Math.max(4, 10 - analysis.age * 0.4) }
   ];
-  $('aiGrid').innerHTML = scores.map(s => {
+  $('aiGrid').innerHTML = `<div class="quick-actions"><button class="quick-action" onclick="askAutoEsperto('price')">Prezzo</button><button class="quick-action" onclick="askAutoEsperto('risks')">Rischi</button><button class="quick-action" onclick="askAutoEsperto('checklist')">Verifiche</button></div>` + scores.map(s => {
     const v = Math.round(s.value);
     return `<div class="ai-item">
       <div class="ai-item-label">${s.label}</div>
@@ -792,11 +812,15 @@ function renderReport(plate, f, val, listings) {
     </div>`;
   }).join('');
 
-  const priceComment = trend > 5 ? `Il prezzo stimato è circa il ${trend}% sopra la media degli annunci simili.` : trend < -5 ? `Il prezzo stimato è circa il ${Math.abs(trend)}% sotto la media: potrebbe essere un'occasione.` : 'Il prezzo stimato è allineato agli annunci simili.';
+  const priceComment = askingPrice ? (trend > 5 ? `Il prezzo richiesto è circa il ${trend}% sopra la fascia stimata.` : trend < -5 ? `Il prezzo richiesto è circa il ${Math.abs(trend)}% sotto la fascia stimata: approfondisci il motivo.` : 'Il prezzo richiesto è nella fascia stimata.') : 'Aggiungi il prezzo richiesto per ricevere un parere sulla trattativa.';
   $('aiText').innerHTML = `<p><strong>${f.v} ${f.m}</strong> del <strong>${f.y}</strong>. ${priceComment} ${analysis.info.engine}</p><p><strong>Manutenzione:</strong> costi ${analysis.info.maintenance}. ${analysis.info.robust}</p>`;
   $('aiIssuesList').innerHTML = analysis.info.common.map(i => `<li>${i}</li>`).join('');
 
-  $('problemsCard').innerHTML = `<p><strong>${f.v} ${f.m}</strong> — problemi segnalati più frequentemente: ${analysis.info.common.join('; ')}. Consigliamo sempre una verifica in officina specializzata prima dell'acquisto.</p>`;
+  $('problemsCard').innerHTML = `<div class="checklist">
+    <div class="check-row"><div class="check-icon">1</div><div><strong>Storico manutenzione</strong><span>Chiedi fatture, tagliandi e verifica la coerenza dei chilometri.</span></div></div>
+    <div class="check-row"><div class="check-icon">2</div><div><strong>Prova su strada</strong><span>Controlla frizione, cambio, frenata, rumori e spie sul cruscotto.</span></div></div>
+    <div class="check-row"><div class="check-icon">3</div><div><strong>Ispezione indipendente</strong><span>Prima di firmare, fai controllare ${f.v} ${f.m} da un meccanico di fiducia.</span></div></div>
+  </div>`;
 }
 
 function handlePhoto(e) {
@@ -823,41 +847,45 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-function askAutoEsperto() {
+function askAutoEsperto(topic = 'summary') {
   if (!currentData) return;
-  const { f, val, listings } = currentData;
-  const analysis = computeAnalysis(f, val, listings);
-  const message = analysis.verdict === 'Compra'
-    ? `AutoEsperto: ${analysis.subVerdict} Prima dell'acquisto controlla sempre storico manutenzione e prova su strada.`
-    : analysis.verdict === 'Tratta il prezzo'
-      ? `AutoEsperto: ${analysis.subVerdict} Usa la stima di ${val.value.toLocaleString('it-IT')} € come base per trattare.`
-      : `AutoEsperto: ${analysis.subVerdict} Richiedi una verifica indipendente prima di procedere.`;
-  showToast(message);
+  const { f, val, listings, askingPrice } = currentData;
+  const analysis = computeAnalysis(f, val, listings, askingPrice);
+  const answer = topic === 'price'
+    ? (askingPrice ? `<strong>Prezzo richiesto: ${askingPrice.toLocaleString('it-IT')} €.</strong><br><br>La fascia stimata per questa configurazione è ${val.min.toLocaleString('it-IT')}–${val.max.toLocaleString('it-IT')} €. ${analysis.diffPct > 5 ? 'Chiedi uno sconto o una garanzia scritta prima di procedere.' : 'Il prezzo è ragionevole solo dopo aver verificato lo storico.'}` : `Inserisci il <strong>prezzo richiesto</strong> nella ricerca: così confronto la richiesta con la fascia stimata e ti suggerisco quanto trattare.`)
+    : topic === 'risks'
+      ? `<strong>I rischi da verificare per ${f.v} ${f.m}</strong><br><br>${analysis.info.common.map(x => `• ${x}`).join('<br>')}<br><br>Non sono una diagnosi: conferma tutto con una prova su strada e una verifica indipendente.`
+      : topic === 'checklist'
+        ? `<strong>Prima di comprare:</strong><br><br>1. Controlla VIN, libretto e storico tagliandi.<br>2. Fai una prova di almeno 20 minuti.<br>3. Richiedi un controllo in officina e un preventivo per gli interventi necessari.`
+        : `<strong>${analysis.verdict}: ${analysis.subVerdict}</strong><br><br>AutoEsperto valuta affidabilità, età e fascia di mercato. ${askingPrice ? `Con il prezzo inserito, la richiesta è ${Math.abs(analysis.diffPct)}% ${analysis.diffPct > 0 ? 'sopra' : 'sotto'} la media stimata.` : 'Aggiungi il prezzo richiesto per un parere sulla trattativa.'}`;
+  $('expertModalText').innerHTML = answer;
+  $('expertModal').classList.add('active');
 }
+
+function closeExpertModal() { $('expertModal').classList.remove('active'); }
 
 async function generatePDF() {
   if (!currentData) return;
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
-  const { plate, f, val, listings } = currentData;
-  const analysis = computeAnalysis(f, val, listings);
+  const { plate, f, val, listings, askingPrice } = currentData;
+  const analysis = computeAnalysis(f, val, listings, askingPrice);
   doc.setFont('helvetica');
-  doc.setFontSize(22);
-  doc.text('AutoEsperto - Report', 20, 25);
-  doc.setFontSize(14);
-  doc.text(`Targa: ${plate}`, 20, 45);
-  doc.text(`Veicolo: ${f.vn || f.v + ' ' + f.m}`, 20, 55);
-  doc.text(`Anno: ${f.y}`, 20, 65);
-  doc.text(`Valutazione: ${val.value.toLocaleString('it-IT')} EUR`, 20, 80);
-  doc.text(`Indice convenienza: ${(analysis.score/10).toFixed(1)}/10`, 20, 95);
-  doc.text(`Verdetto: ${analysis.verdict}`, 20, 110);
-  doc.setFontSize(12);
-  doc.text('Problemi comuni:', 20, 130);
-  let y = 140;
-  getVehicleInfo(f.v, f.m).common.forEach(p => { doc.text('- ' + p, 20, y); y += 8; });
-  doc.text('Annunci simili (prezzi stimati):', 20, y + 5);
-  y += 15;
-  listings.forEach(l => { doc.text(`${l.site}: ${l.price.toLocaleString('it-IT')} EUR`, 20, y); y += 8; });
+  doc.setFillColor(0, 113, 227); doc.rect(0, 0, 210, 36, 'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(24); doc.text('AutoEsperto', 18, 20);
+  doc.setFontSize(10); doc.text('Report di valutazione veicolo', 18, 28);
+  doc.setTextColor(20,20,20); doc.setFontSize(16); doc.text(f.vn || `${f.v} ${f.m}`, 18, 50);
+  doc.setFontSize(11); doc.text(`Targa ${plate}  •  Anno ${f.y || 'n.d.'}`, 18, 58);
+  doc.setFillColor(245,247,250); doc.roundedRect(18, 68, 174, 33, 4, 4, 'F');
+  doc.setFontSize(10); doc.text('FASCIA DI MERCATO STIMATA', 25, 79);
+  doc.setFontSize(18); doc.text(`${val.min.toLocaleString('it-IT')} - ${val.max.toLocaleString('it-IT')} EUR`, 25, 92);
+  doc.setFontSize(10); doc.text(`Prezzo richiesto: ${askingPrice ? askingPrice.toLocaleString('it-IT') + ' EUR' : 'non inserito'}`, 118, 79);
+  doc.setFontSize(15); doc.text(`${(analysis.score/10).toFixed(1)}/10  ${analysis.verdict}`, 118, 92);
+  let y = 118; doc.setFontSize(14); doc.text('Il parere di AutoEsperto', 18, y); y += 9;
+  doc.setFontSize(10); const opinion = doc.splitTextToSize(`${analysis.subVerdict} ${askingPrice ? `Il prezzo è ${Math.abs(analysis.diffPct)}% ${analysis.diffPct > 0 ? 'sopra' : 'sotto'} la media stimata.` : 'Inserisci il prezzo richiesto per completare la valutazione.'}`, 174); doc.text(opinion,18,y); y += opinion.length*5+12;
+  doc.setFontSize(14); doc.text('Verifiche consigliate', 18, y); y += 8; doc.setFontSize(10);
+  getVehicleInfo(f.v, f.m).common.slice(0,3).forEach(p => { const lines=doc.splitTextToSize('• '+p,174); doc.text(lines,18,y); y += lines.length*5+3; });
+  y += 8; doc.setTextColor(110,110,115); doc.setFontSize(8); doc.text('Stima informativa: non sostituisce una perizia, i dati di mercato e l’ispezione professionale.',18,y);
   doc.save(`AutoEsperto-${plate}.pdf`);
 }
 </script>
