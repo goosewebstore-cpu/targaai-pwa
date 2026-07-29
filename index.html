@@ -158,6 +158,22 @@ body{background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smooth
 
 /* Scrollbar */
 ::-webkit-scrollbar{width:0;height:0;}
+
+/* Plans — Apple style */
+.plans-container{padding:0 16px 24px;display:flex;flex-direction:column;gap:12px;}
+.plan-card{background:var(--surface);border-radius:var(--radius);padding:24px 20px;border:0.5px solid var(--border);position:relative;}
+.plan-featured{border:2px solid var(--accent);}
+.plan-badge-popular{position:absolute;top:-10px;left:20px;background:var(--accent);color:#fff;font-size:11px;font-weight:600;padding:3px 12px;border-radius:12px;}
+.plan-badge-current{display:inline-block;font-size:12px;font-weight:600;color:var(--text2);background:var(--bg);padding:4px 12px;border-radius:8px;margin-top:12px;}
+.plan-name{font-size:17px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.plan-price{font-size:32px;font-weight:700;letter-spacing:-1px;color:var(--text);}
+.plan-period{font-size:13px;color:var(--text2);margin-bottom:16px;}
+.plan-features{list-style:none;padding:0;margin:0 0 16px;}
+.plan-features li{font-size:14px;color:var(--text2);padding:6px 0;padding-left:24px;position:relative;}
+.plan-features li::before{content:'';position:absolute;left:0;top:10px;width:14px;height:14px;border-radius:50%;background:rgba(52,199,89,0.15);}
+.plan-features li::after{content:'';position:absolute;left:4px;top:14px;width:6px;height:3px;border-left:1.5px solid var(--accent2);border-bottom:1.5px solid var(--accent2);transform:rotate(-45deg);}
+.plan-btn{width:100%;padding:12px;border-radius:var(--radius-sm);border:none;background:var(--accent);color:#fff;font-size:15px;font-weight:600;cursor:pointer;}
+.plan-btn:active{opacity:0.7;}
 </style>
 </head>
 <body>
@@ -190,10 +206,52 @@ body{background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smooth
       <div class="photo-row">
         <button class="photo-btn" onclick="document.getElementById('fileInput').click()">
           <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-           Carica foto targa
+           Scatta o carica foto
         </button>
       </div>
-      <input type="file" id="fileInput" accept="image/*" capture="environment" onchange="handlePhoto(event)" style="display:none">
+      <input type="file" id="fileInput" accept="image/*" onchange="handlePhoto(event)" style="display:none">
+    </div>
+
+    <!-- Piani -->
+    <div class="section-title">Piani</div>
+    <div class="plans-container">
+      <div class="plan-card">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">€0</div>
+        <div class="plan-period">per sempre</div>
+        <ul class="plan-features">
+          <li>3 ricerche al mese</li>
+          <li>Scheda tecnica</li>
+          <li>Valutazione di mercato</li>
+        </ul>
+        <div class="plan-badge-current">Piano attuale</div>
+      </div>
+      <div class="plan-card plan-featured">
+        <div class="plan-badge-popular">Più scelto</div>
+        <div class="plan-name">Plus</div>
+        <div class="plan-price">€4,99</div>
+        <div class="plan-period">al mese</div>
+        <ul class="plan-features">
+          <li>30 ricerche al mese</li>
+          <li>Report completo veicolo</li>
+          <li>Confronto prezzi di mercato</li>
+          <li>Problemi noti e affidabilità</li>
+          <li>Senza pubblicità</li>
+        </ul>
+        <button class="plan-btn" onclick="showToast('Abbonamento Plus — disponibile presto')">Passa a Plus</button>
+      </div>
+      <div class="plan-card">
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">€9,99</div>
+        <div class="plan-period">al mese</div>
+        <ul class="plan-features">
+          <li>Ricerche illimitate</li>
+          <li>Storico ricerche</li>
+          <li>Export PDF report</li>
+          <li>Priorità supporto</li>
+        </ul>
+        <button class="plan-btn" onclick="showToast('Abbonamento Pro — disponibile presto')">Passa a Pro</button>
+      </div>
     </div>
   </div>
 
@@ -496,33 +554,33 @@ async function searchPlate() {
 // ---- Vehicle knowledge base ----
 const vehicleKB = {
   'fiat': {
-    reliability: 'Affidabilità media. Le Fiat italiane sono robuste per l\'uso urbano, ma possono presentare problemi elettrici con l\'età.',
-    commonIssues: ['Problemi elettrici (sensori, centralina)', 'Frizione dura su modelli precedenti al 2015', 'Rumore sospensioni anteriori'],
-    engine: 'Motori Fire e Multijet collaudati, consumi contenuti. Evitare motori 1.4 T-Jet con alto chilometraggio.',
-    robust: 'Buona robustezza strutturale per l\'uso cittadino. Non adatta a lunghi percorsi autostradali frequenti.'
+    reliability: 'Affidabilità media. Motori collaudati,_ma_elettronica delicata con l\'età.',
+    commonIssues: ['Cambio Dualogic robotizzato — scatti e usura frizione sui modelli 2010-2018', 'Problemi elettrici (sensori, centralina)', 'Rumore sospensioni anteriori su 500/Panda'],
+    engine: 'Motori Fire e Multijet tra i più collaudati d\'Italia. 1.3 Mjet e 1.6 Mjet affidabili. 1.4 T-Jet: verificare turbo ad alto km.',
+    robust: 'Buona robustezza strutturale. 500X e Tipo adatte anche a lunghi percorsi. citycar (500, Panda) più adatte all\'urbano.'
   },
   'ford': {
     reliability: 'Affidabilità buona. Ford costruisce veicoli solidi, specialmente i motori Diesel TDCi.',
-    commonIssues: ['Problemi al sistema Sync su modelli precedenti', 'Usura prematura gommini sospensione', 'Filtro antiparticolato su diesel urbano'],
-    engine: 'Motorizzazioni Ecoboost e TDCi sono affidabili. Attenzione alla catena distribuzione su 1.0 Ecoboost pre-2017.',
-    robust: 'Struttura robusta, buona tenuta di strada. Ottima scelta per famiglie e viaggi.'
+    commonIssues: ['Cambio PowerShift (DPS6) — scatti e usura su Focus 2011-2017', 'Problemi sistema SYNC su modelli precedenti', 'Filtro antiparticolato intasato su diesel cittadino'],
+    engine: '1.0 EcoBoost: catena distribuzione da verificare su pre-2017. TDCi eccellenti per durata. 1.5/2.0 TDCi tra i migliori diesel.',
+    robust: 'Struttura robusta, tenuta di strada eccellente. Focus e Fiesta sono tra le compatte più guidabili.'
   },
   'volkswagen': {
-    reliability: 'Affidabilità alta. VW mantiene standard costruttivi elevati su tutta la gamma.',
-    commonIssues: ['Problemi cambio DSG su prime generazioni', 'Costi manutenzione superiori alla media', 'Elettronica complessa con l\'età'],
-    engine: 'TDI e TSI sono motori eccellenti. Il 1.6 TDI è un\'icona di affidabilità. Attenzione alla pompa acqua su TSI.',
+    reliability: 'Affidabilità alta. VW mantiene standard costruttivi elevati.',
+    commonIssues: ['Cambio DSG DQ200 (7 marce a secco) — recall mondiale per perdita potenza', 'Costi manutenzione superiori alla media', 'Elettronica complessa da diagnosticare con l\'età'],
+    engine: '1.6 TDI icona di affidabilità. TSI nuovi (EA211) molto migliorati. Attenzione pompa acqua su TSI vecchi (EA111).',
     robust: 'Struttura molto robusta, sicurezza elevata. Auto pensata per durare nel tempo.'
   },
   'audi': {
     reliability: 'Affidabilità alta ma costi di manutenzione elevati.',
-    commonIssues: ['Problemi cambio S-tronic su modelli precedenti', 'Usura sospensioni sportive', 'Consumo olio su motori TFSI'],
-    engine: 'TDI e TFSI eccellenti per prestazioni. Attenzione alla distribuzione su motori con catena.',
+    commonIssues: ['S-tronic/DL382: usura doppia frizione su modelli pre-2015', 'Usura sospensioni sportive su S-line', 'Consumo olio su motori 2.0 TFSI vecchi (Gen2)'],
+    engine: 'TDI e TFSI eccellenti per prestazioni. 2.0 TDI ea288 molto affidabile. Attenzione distribuzione catena su TFSI Gen2.',
     robust: 'Struttura premium molto robusta. Sicurezza e qualità costruttiva top di gamma.'
   },
   'bmw': {
-    reliability: 'Affidabilità media-alta, ma manutenzione costosa con l\'età.',
-    commonIssues: ['Problemi sistema iDrive su modelli vecchi', 'Usura bracci sospensione', 'Perdite olio su motori 6 cilindri'],
-    engine: 'Motori BMW eccellenti per guidabilità. Diesel N47 con catena distribuzione da verificare.',
+    reliability: 'Affidabilità media-alta, manutenzione costosa con l\'età.',
+    commonIssues: ['Diesel N47: catena distribuzione soggetta a rottura (modelli 2007-2012)', 'Usura bracci sospensione anteriori', 'Perdite olio su motori 6 cilindri vecchi'],
+    engine: 'Motori BMW eccellenti. N47 problematico sostituito da B47 (molto più affidabile). Benzina B48 molto valido.',
     robust: 'Struttura sportiva robusta, materiali premium. Longevità legata alla manutenzione regolare.'
   },
   'mercedes': {
@@ -538,16 +596,16 @@ const vehicleKB = {
     robust: 'Robustezza eccellente. Toyota costruisce auto per durare 20+ anni con manutenzione base.'
   },
   'renault': {
-    reliability: 'Affidabilità media. Renault offre buon rapporto qualità-prezzo.',
-    commonIssues: ['Problemi elettrici su Clio III', 'Frizione dura su modelli precedenti', 'Turbo 0.9 TCe da controllare'],
-    engine: 'DCI affidabile per i consumi. Il 1.5 dCi è un motore collaudato. Benzina TCe potente ma richiede manutenzione attenta.',
-    robust: 'Robustezza media. Struttura adeguata per uso urbano e extraurbano. Non per uso intensivo.'
+    reliability: 'Affidabilità media. Rapporto qualità-prezzo buono.',
+    commonIssues: ['1.2 TCe: consumo olio elevato, possibile rottura motore (recall)', 'Problemi elettronici su Clio III/IV', 'Filtro antiparticolato su diesel urbano'],
+    engine: '1.5 dCi molto affidabile. 1.3 TCe (co-sviluppato con Mercedes) ha sostituito 1.2 TCe problematico. Benzina moderno valido.',
+    robust: 'Robustezza media. Clio e Captur adatte all\'uso quotidiano. Megane E-Tech migliorata molto.'
   },
   'peugeot': {
-    reliability: 'Affidabilità media-buona. Peugeot è migliorata negli ultimi anni.',
-    commonIssues: ['Problemi elettrici su modelli precedenti al 2015', 'Usura ammortizzatori posteriori', 'Filtro antiparticolato su diesel urbano'],
-    engine: 'BlueHDi e PureTech eccellenti per consumi. Attenzione alla cinghia distribuzione su PureTech 1.2.',
-    robust: 'Robustezza buona. Nuovi modelli con piattaforma CMP/EMP2 molto solidi.'
+    reliability: 'Affidabilità media. Peugeot è migliorata con i nuovi modelli.',
+    commonIssues: ['PureTech 1.2 — cinghia distribuzione bagno olio degrada prima del previsto (recall 2021)', 'Problemi elettronici su 208/308 precedenti', 'Filtro antiparticolato intasato su diesel urbano'],
+    engine: 'BlueHDi eccellente per durata. PureTech: verificare sempre stato cinghia. 1.5 BlueHDi tra i migliori diesel.',
+    robust: 'Piattaforma CMP/EMP2 molto solida. 208/3008 robuste, adatte a uso quotidiano.'
   },
   'citroen': {
     reliability: 'Affidabilità media. Citroen punta sul comfort più che sulla sportività.',
