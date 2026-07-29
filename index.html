@@ -143,13 +143,13 @@ body{background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smooth
 .listing-price{font-size:16px;font-weight:800;color:var(--accent2);flex-shrink:0;}
 .listing-badge{font-size:10px;font-weight:700;color:#fff;background:var(--accent2);padding:2px 6px;border-radius:4px;margin-left:6px;}
 
-/* Mascot card */
-.mascot-card{background:var(--surface);border-radius:var(--radius);margin:0 16px 0;padding:20px;border:0.5px solid var(--border);overflow:hidden;position:relative;}
-.mascot-card::after{content:'';position:absolute;bottom:-20px;right:-20px;width:100px;height:100px;border-radius:50%;background:rgba(255,184,0,0.04);}
-.mascot-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
-.mascot-icon{width:48px;height:48px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
-.mascot-header h3{font-size:15px;font-weight:700;}
-.mascot-card p{font-size:13px;color:var(--text2);line-height:1.6;}
+/* Report card */
+.report-card{background:var(--surface);border-radius:var(--radius);margin:0 16px 0;padding:0;border:0.5px solid var(--border);overflow:hidden;}
+.report-section{padding:16px 20px;border-bottom:0.5px solid var(--border);}
+.report-section:last-child{border-bottom:none;}
+.report-section h4{font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;letter-spacing:-0.2px;}
+.report-section p{font-size:13px;color:var(--text2);line-height:1.6;}
+.report-section .tag{display:inline-block;font-size:11px;font-weight:600;color:var(--accent);background:rgba(0,122,255,0.08);padding:3px 10px;border-radius:10px;margin-top:8px;}
 
 /* Toast */
 .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(28,28,30,0.92);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:#fff;padding:12px 20px;border-radius:100px;font-size:14px;font-weight:500;z-index:2000;opacity:0;transition:all 0.3s ease;pointer-events:none;white-space:nowrap;}
@@ -238,7 +238,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smooth
     <div class="valuation-card">
       <div class="valuation-label">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-        Valutazione CercaAuto
+        Valutazione di mercato
       </div>
       <div class="valuation-price" id="valuationPrice">— EUR</div>
       <div class="valuation-range" id="valuationRange">Range di mercato: —</div>
@@ -268,40 +268,28 @@ body{background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smooth
       <div id="listingsContainer"></div>
     </div>
 
-    <!-- Mascot + Report -->
+    <!-- Report veicolo -->
     <div class="section-title">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8E8E93" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
       Report veicolo
     </div>
-    <div class="mascot-card" style="margin-bottom:24px;">
-      <div class="mascot-header">
-        <div class="mascot-icon">
-          <svg viewBox="0 0 80 80" width="48" height="48">
-            <circle cx="40" cy="40" r="38" fill="#E8F4FD" stroke="#007AFF" stroke-width="1.5"/>
-            <ellipse cx="40" cy="52" rx="16" ry="12" fill="#fff" stroke="#ddd" stroke-width="1"/>
-            <path d="M32 30 Q28 20 36 16 Q40 14 42 16 Q50 18 48 28" fill="#fff" stroke="#ddd" stroke-width="1"/>
-            <circle cx="46" cy="20" r="7" fill="#fff" stroke="#ddd" stroke-width="1"/>
-            <circle cx="48" cy="18" r="1.5" fill="#1C1C1E"/>
-            <circle cx="49" cy="17" r="0.5" fill="#fff"/>
-            <path d="M53 21 Q58 18 55 14" fill="none" stroke="#FF8C00" stroke-width="3" stroke-linecap="round"/>
-            <path d="M52 22 Q56 21 54 17" fill="none" stroke="#FFB800" stroke-width="2" stroke-linecap="round"/>
-            <ellipse cx="40" cy="50" rx="6" ry="3" fill="#FF8C00"/>
-            <path d="M36 50 L38 58 L42 58 L44 50" fill="#FF8C00"/>
-            <line x1="30" y1="62" x2="28" y2="68" stroke="#FF8C00" stroke-width="2.5" stroke-linecap="round"/>
-            <line x1="50" y1="62" x2="52" y2="68" stroke="#FF8C00" stroke-width="2.5" stroke-linecap="round"/>
-            <circle cx="30" cy="44" r="2" fill="#007AFF" opacity="0.3"/>
-            <circle cx="50" cy="44" r="2" fill="#007AFF" opacity="0.3"/>
-            <path d="M18 46 Q12 42 14 38" stroke="#FFB800" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-            <path d="M62 46 Q68 42 66 38" stroke="#FFB800" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-            <text x="40" y="78" font-size="7" text-anchor="middle" fill="#007AFF" font-weight="700" opacity="0.5">🐤</text>
-          </svg>
-        </div>
-        <div>
-          <h3>CercaAuto dice...</h3>
-          <div style="font-size:12px;color:var(--text2);" id="mascotPhrase">Inserisci una targa per iniziare!</div>
-        </div>
+    <div class="report-card" style="margin-bottom:24px;">
+      <div class="report-section" id="reportPrice">
+        <h4>Valutazione di mercato</h4>
+        <p>La valutazione si basa sull'età del veicolo, i chilometri percorsi, lo stato generale e i prezzi degli annunci simili trovati online.</p>
       </div>
-      <p id="vehicleReport">Inserisci la targa del veicolo per ottenere scheda tecnica, valutazione di mercato e confronto prezzi.</p>
+      <div class="report-section" id="reportReliability">
+        <h4>Affidabilità e robustezza</h4>
+        <p>Analisi dell'affidabilità generale del modello in base ai dati di mercato.</p>
+      </div>
+      <div class="report-section" id="reportIssues">
+        <h4>Problemi comuni e recall</h4>
+        <p>Problemi noti e campagne di richiamo per questo modello.</p>
+      </div>
+      <div class="report-section" id="reportEngine">
+        <h4>Motore e prestazioni</h4>
+        <p>Valutazione del motore e delle prestazioni del veicolo.</p>
+      </div>
     </div>
   </div>
 </div>
@@ -377,10 +365,24 @@ function getVal(data) {
   const desc = data.Description || `${v} ${m}`;
   const img = (data.ImageUrl || '').replace(/^http:\/\//i, 'https://');
 
+  // Dati extra se disponibili
+  const km = data.Mileage || data.Kilometres || data.KM || '';
+  const insurance = data.InsuranceGroup || data.Insurance || '';
+  const co2 = data.Co2 || data.CO2Emissions || '';
+  const weight = data.Weight || '';
+  const regDate = data.RegistrationDate || '';
+  const vin = data.Vin || '';
+  const powerCV = data.PowerCV || '';
+  const powerKW = data.PowerKW || '';
+
   let cv = '', cc = '';
   if (e) {
     const c = e.match(/(\d+)\s*cv/i); if (c) cv = c[1];
     const c2 = e.match(/([\d,.]+)\s*cc/i); if (c2) cc = c2[1].replace(',','');
+  }
+  // Se PowerCV è disponibile, usalo
+  if (!cv && powerCV && parseFloat(powerCV) > 0) {
+    cv = Math.round(parseFloat(powerCV)).toString();
   }
 
   let fuelIcon = '⛽';
@@ -389,7 +391,7 @@ function getVal(data) {
   else if (f.toLowerCase().includes('ibrida') || f.toLowerCase().includes('elettrica')) fuelIcon = '⚡';
   else if (f.toLowerCase().includes('gpl') || f.toLowerCase().includes('metano')) fuelIcon = '🔥';
 
-  return { v, m, y, f, e, vn, d, t, b, s, desc, img, cv, cc, fuelIcon };
+  return { v, m, y, f, e, vn, d, t, b, s, desc, img, cv, cc, fuelIcon, km, insurance, co2, weight, regDate, vin, powerKW };
 }
 
 // ---- Valuation ----
@@ -510,11 +512,198 @@ async function searchPlate() {
   }
 }
 
+// ---- Vehicle knowledge base ----
+const vehicleKB = {
+  'fiat': {
+    reliability: 'Affidabilità media. Le Fiat italiane sono robuste per l\'uso urbano, ma possono presentare problemi elettrici con l\'età.',
+    commonIssues: ['Problemi elettrici (sensori, centralina)', 'Frizione dura su modelli precedenti al 2015', 'Rumore sospensioni anteriori'],
+    engine: 'Motori Fire e Multijet collaudati, consumi contenuti. Evitare motori 1.4 T-Jet con alto chilometraggio.',
+    robust: 'Buona robustezza strutturale per l\'uso cittadino. Non adatta a lunghi percorsi autostradali frequenti.'
+  },
+  'ford': {
+    reliability: 'Affidabilità buona. Ford costruisce veicoli solidi, specialmente i motori Diesel TDCi.',
+    commonIssues: ['Problemi al sistema Sync su modelli precedenti', 'Usura prematura gommini sospensione', 'Filtro antiparticolato su diesel urbano'],
+    engine: 'Motorizzazioni Ecoboost e TDCi sono affidabili. Attenzione alla catena distribuzione su 1.0 Ecoboost pre-2017.',
+    robust: 'Struttura robusta, buona tenuta di strada. Ottima scelta per famiglie e viaggi.'
+  },
+  'volkswagen': {
+    reliability: 'Affidabilità alta. VW mantiene standard costruttivi elevati su tutta la gamma.',
+    commonIssues: ['Problemi cambio DSG su prime generazioni', 'Costi manutenzione superiori alla media', 'Elettronica complessa con l\'età'],
+    engine: 'TDI e TSI sono motori eccellenti. Il 1.6 TDI è un\'icona di affidabilità. Attenzione alla pompa acqua su TSI.',
+    robust: 'Struttura molto robusta, sicurezza elevata. Auto pensata per durare nel tempo.'
+  },
+  'audi': {
+    reliability: 'Affidabilità alta ma costi di manutenzione elevati.',
+    commonIssues: ['Problemi cambio S-tronic su modelli precedenti', 'Usura sospensioni sportive', 'Consumo olio su motori TFSI'],
+    engine: 'TDI e TFSI eccellenti per prestazioni. Attenzione alla distribuzione su motori con catena.',
+    robust: 'Struttura premium molto robusta. Sicurezza e qualità costruttiva top di gamma.'
+  },
+  'bmw': {
+    reliability: 'Affidabilità media-alta, ma manutenzione costosa con l\'età.',
+    commonIssues: ['Problemi sistema iDrive su modelli vecchi', 'Usura bracci sospensione', 'Perdite olio su motori 6 cilindri'],
+    engine: 'Motori BMW eccellenti per guidabilità. Diesel N47 con catena distribuzione da verificare.',
+    robust: 'Struttura sportiva robusta, materiali premium. Longevità legata alla manutenzione regolare.'
+  },
+  'mercedes': {
+    reliability: 'Affidabilità alta. Mercedes costruisce per durare.',
+    commonIssues: ['Costi manutenzione molto alti', 'Problemi sospensioni Airmatic su versioni dotate', 'Elettronica complessa da diagnosticare'],
+    engine: 'CDI e benzina eccellenti per durata. I motori OM651 e OM654 sono tra i migliori diesel mai prodotti.',
+    robust: 'Robustezza eccezionale. Auto costruite per durare centinaia di migliaia di km con manutenzione corretta.'
+  },
+  'toyota': {
+    reliability: 'Affidabilità eccellente. Toyota è sinonimo di longevità.',
+    commonIssues: ['Rumore interni su modelli entry-level', 'Infotainment datato', 'Usura pastiglie freno leggermente superiore'],
+    engine: 'Motorizzazioni Hybrid e benzina tra le più affidabili al mondo. Hybrid Synergy Drive collaudato da milioni di esemplari.',
+    robust: 'Robustezza eccellente. Toyota costruisce auto per durare 20+ anni con manutenzione base.'
+  },
+  'renault': {
+    reliability: 'Affidabilità media. Renault offre buon rapporto qualità-prezzo.',
+    commonIssues: ['Problemi elettrici su Clio III', 'Frizione dura su modelli precedenti', 'Turbo 0.9 TCe da controllare'],
+    engine: 'DCI affidabile per i consumi. Il 1.5 dCi è un motore collaudato. Benzina TCe potente ma richiede manutenzione attenta.',
+    robust: 'Robustezza media. Struttura adeguata per uso urbano e extraurbano. Non per uso intensivo.'
+  },
+  'peugeot': {
+    reliability: 'Affidabilità media-buona. Peugeot è migliorata negli ultimi anni.',
+    commonIssues: ['Problemi elettrici su modelli precedenti al 2015', 'Usura ammortizzatori posteriori', 'Filtro antiparticolato su diesel urbano'],
+    engine: 'BlueHDi e PureTech eccellenti per consumi. Attenzione alla cinghia distribuzione su PureTech 1.2.',
+    robust: 'Robustezza buona. Nuovi modelli con piattaforma CMP/EMP2 molto solidi.'
+  },
+  'citroen': {
+    reliability: 'Affidabilità media. Citroen punta sul comfort più che sulla sportività.',
+    commonIssues: ['Problemi sospensioni idrauliche su modelli dotati', 'Elettronica con l\'età', 'Rumore interni su modelli entry-level'],
+    engine: 'Stessi motori di Peugeot (BlueHDi/PureTech). Affidabili se mantenuti correttamente.',
+    robust: 'Comfort eccellente, robustezza media. Non adatta a guida sportiva intensiva.'
+  },
+  'opel': {
+    reliability: 'Affidabilità media. Opel offre buon rapporto qualità-prezzo.',
+    commonIssues: ['Problemi elettrici su Astra H e Corsa D', 'Usura pompa acqua su diesel', 'Rumore sospensioni con l\'età'],
+    engine: 'CDTI collaudati ma datati. Nuovi motori con PSA più efficienti e affidabili.',
+    robust: 'Robustezza media. Buona per uso familiare e cittadino.'
+  },
+  'nissan': {
+    reliability: 'Affidabilità buona. Nissan offre solidità giapponese.',
+    commonIssues: ['Problemi frizione su Qashqai dCi', 'Usura cuscinetti su Note e Micra', 'Elettronica datata su modelli vecchi'],
+    engine: 'DCI Renault (affidabili) e motori benzina propri Nissan eccellenti. Attenzione ai CVT con l\'età.',
+    robust: 'Robustezza buona. Materiali solidi, adatti a uso intensivo.'
+  },
+  'hyundai': {
+    reliability: 'Affidabilità molto buona. Hyundai ha fatto enormi passi avanti.',
+    commonIssues: ['Pochi problemi noti su modelli recenti', 'Infotainment lento su prime versioni', 'Vernice delicata su alcuni colori'],
+    engine: 'CRDi e benzina T-GDI eccellenti per affidabilità e consumi. Garanzia 5 anni standard.',
+    robust: 'Robustezza molto buona. Materiali e assemblaggio migliorati drasticamente dal 2015.'
+  },
+  'kia': {
+    reliability: 'Affidabilità molto buona, come Hyundai (stesso gruppo).',
+    commonIssues: ['Pochi problemi noti', 'Infotainment lento su prime versioni', 'Rumore a velività autostradale su modelli entry'],
+    engine: 'Stessi motori di Hyundai, affidabili e collaudati. Garanzia 7 anni migliore del mercato.',
+    robust: 'Robustezza molto buona. Ottimo rapporto qualità-prezzo con garanzia lunghissima.'
+  },
+  'mazda': {
+    reliability: 'Affidabilità molto buona. Mazda sottovalutata ma costruisce auto eccellenti.',
+    commonIssues: ['Problemi infotainment su prime versioni Mazda Connect', 'Rumore a velocità autostradale', 'Usura pastiglie freno leggermente superiore'],
+    engine: 'SkyActiv eccellenti per affidabilità e consumi reali. Motori benzina e diesel senza turbo (più semplici e affidabili).',
+    robust: 'Robustezza molto buona. Costruzione giapponese tradizionale, materiali solidi.'
+  },
+  'seat': {
+    reliability: 'Affidabilità buona. Seat = VW con stile spagnolo.',
+    commonIssues: ['Stessi problemi di VW (DSG, elettronica)', 'Rumore interni su modelli entry-level', 'Usura sospensioni sportive su FR/Cupra'],
+    engine: 'Stessi motori VW (TSI/TDI). Eccellenti per prestazioni e consumi.',
+    robust: 'Robustezza buona, come VW. Struttura solida, sicurezza elevata.'
+  },
+  'skoda': {
+    reliability: 'Affidabilità molto buona. Skoda = VW a prezzo inferiore.',
+    commonIssues: ['Stessi problemi di VW', 'Elettronica meno raffinata', 'Vernice meno spessa'],
+    engine: 'Stessi motori VW (TSI/TDI). Eccellenti per durata e consumi.',
+    robust: 'Robustezza molto buona. Spazio interno eccellente, costruzione solida.'
+  },
+  'jeep': {
+    reliability: 'Affidabilità media. Jeep punta sul fuoristrada.',
+    commonIssues: ['Problemi elettrici su Renegade e Compass', 'Consumi elevati', 'Costi manutenzione superiori alla media'],
+    engine: 'Multijet Fiat su modelli italiani, affidabili. Motorizzazioni USA potenti ma assetate.',
+    robust: 'Robustezza strutturale eccellente per fuoristrada. Meno adatta a uso esclusivamente urbano.'
+  },
+  'dacia': {
+    reliability: 'Affidabilità buona per il prezzo. Dacia = Renault semplificata.',
+    commonIssues: ['Materiali interni economici', 'Rumore isolamento acustico', 'Elettronica minimale'],
+    engine: 'Stessi motori Renault (dCi/TCe). Semplici e facili da manutenere.',
+    robust: 'Robustezza buona. Costruita per essere economica e funzionale, senza fronzoli.'
+  },
+  'suzuki': {
+    reliability: 'Affidabilità buona. Suzuki = semplicità giapponese.',
+    commonIssues: ['Pochi problemi noti', 'Spazio interno ridotto', 'Materiali interni economici'],
+    engine: 'Motorizzazioni benzina eccellenti per affidabilità. Hybrid mild affidabilissimo.',
+    robust: 'Robustezza buona. Auto leggere, semplici, longeve con manutenzione base.'
+  },
+  'honda': {
+    reliability: 'Affidabilità eccellente. Honda costruisce motori leggendari.',
+    commonIssues: ['Problemi cambio CVT su Civic precedenti', 'Elettronica datata su modelli vecchi', 'Rumore interni su HR-V'],
+    engine: 'i-VTEC e i-DTEC eccellenti per affidabilità. Il 1.6 i-DTEC è un diesel leggendario.',
+    robust: 'Robustezza eccellente. Honda costruisce per durare, specialmente i motori.'
+  },
+  'subaru': {
+    reliability: 'Affidabilità molto buona. Subaru = trazione integrale e boxer.',
+    commonIssues: ['Consumi elevati su boxer', 'Costi manutenzione superiori (trazione integrale)', 'Infotainment datato'],
+    engine: 'Boxer Subaru eccellenti per durata. Attenzione alla testata su modelli EJ precedenti.',
+    robust: 'Robustezza eccellente. Trazione integrale Symmetrical AWD tra le migliori al mondo.'
+  },
+  'alfa romeo': {
+    reliability: 'Affidabilità media. Alfa Romeo = stile italiano, cuore sportivo.',
+    commonIssues: ['Problemi elettrici su Giulietta e MiTo', 'Usura sospensioni anteriori', 'Elettronica complessa'],
+    engine: 'Motorizzazioni Multijet e benzina eccellenti per emozioni. Manutenzione curata richiesta.',
+    robust: 'Robustezza media. Struttura sportiva, non pensata per comfort ma per guidabilità.'
+  },
+  'lancia': {
+    reliability: 'Affidabilità media. Lancia = eleganza italiana.',
+    commonIssues: ['Problemi elettrici su Ypsilon', 'Ruggine su modelli precedenti', 'Pezzi di ricambio scarsi'],
+    engine: 'Stessi motori Fiat (Fire/Multijet). Collaudati ma datati.',
+    robust: 'Robustezza media. Auto storica, adatta a chi ama il marchio.'
+  },
+  'smart': {
+    reliability: 'Affidabilità media. Smart = città e parcheggio.',
+    commonIssues: ['Problemi cambio robotizzato su prime generazioni', 'Spazio ridotto', 'Costi manutenzione superiori per la categoria'],
+    engine: 'Motori Renault 0.9 TCe e 1.0. Adatti all\'uso urbano, non per lunghi tragitti.',
+    robust: 'Robustezza media. Struttura Tridion sicura ma dimensioni minime.'
+  },
+  'mini': {
+    reliability: 'Affidabilità media. Mini = BMW in formato compatta.',
+    commonIssues: ['Problemi elettrici su R56 (2006-2013)', 'Usura sospensioni sportive', 'Costi manutenzione BMW'],
+    engine: 'Motori BMW (Prince). Potenti ma richiedono manutenzione attenta. Evitare 1.6 con catena distribuzione.',
+    robust: 'Robustezza buona. Struttura solida, ma usura sospensioni sportive elevata.'
+  },
+  'volvo': {
+    reliability: 'Affidabilità molto buona. Volvo = sicurezza svedese.',
+    commonIssues: ['Costi manutenzione elevati', 'Elettronica complessa', 'Consumi su motori vecchi'],
+    engine: 'D4 e D5 eccellenti per durata. Nuovi motori ibridi Volvo molto efficienti.',
+    robust: 'Robustezza eccellente. Sicurezza top, struttura pensata per proteggere gli occupanti.'
+  },
+  'land rover': {
+    reliability: 'Affidabilità media. Land Rover = fuoristrada di lusso.',
+    commonIssues: ['Problemi elettrici su Discovery e Range Rover', 'Costi manutenzione molto elevati', 'Avarie sospensioni pneumatiche'],
+    engine: 'Ingenium nuovi migliorati. Vecchi TDV6 e SDV6 potenti ma problematici.',
+    robust: 'Robustezza strutturale eccellente per fuoristrada. Tecnologia complessa richiede manutenzione costante.'
+  }
+};
+
+// Helper per cercare nel KB
+function getVehicleInfo(make, model) {
+  const makeKey = make.toLowerCase().trim();
+  const info = vehicleKB[makeKey];
+  if (!info) {
+    return {
+      reliability: 'Dati specifici non disponibili per questa marca. Valutazione basata su parametri generali.',
+      commonIssues: ['Consultare la documentazione ufficiale del costruttore', 'Verificare la manutenzione storica del veicolo'],
+      engine: 'Motore da valutare in officina specializzata.',
+      robust: 'Robustezza da verificare in base allo stato generale del veicolo.'
+    };
+  }
+  return info;
+}
+
 // ---- Render ----
 function renderReport(plate, f, val, listings) {
   $('reportPlate').textContent = plate;
   $('reportName').textContent = f.vn || `${f.v} ${f.m}`;
-    $('reportSub').textContent = [f.y, f.f].filter(Boolean).join(' · ') || 'Dati veicolo';
+  $('reportSub').textContent = [f.y, f.f].filter(Boolean).join(' · ') || 'Dati veicolo';
 
   const img = $('vehicleImg');
   if (f.img) { img.src = f.img; img.style.display = 'block'; } else { img.style.display = 'none'; }
@@ -539,6 +728,11 @@ function renderReport(plate, f, val, listings) {
     { label: 'Posti', value: f.s },
     { label: 'Cambio', value: f.t },
   ].filter(s => s.value);
+  // Aggiungi km e assicurazione se disponibili
+  if (f.km) specs.push({ label: 'KM', value: parseInt(f.km).toLocaleString('it-IT') });
+  if (f.insurance) specs.push({ label: 'Classe assicurativa', value: f.insurance });
+  if (f.co2) specs.push({ label: 'CO2', value: f.co2 + ' g/km' });
+  if (f.weight) specs.push({ label: 'Peso', value: f.weight + ' kg' });
 
   $('specsGrid').innerHTML = specs.map(s =>
     `<div class="spec"><div class="spec-label">${s.label}</div><div class="spec-value">${s.value}</div></div>`
@@ -560,26 +754,28 @@ function renderReport(plate, f, val, listings) {
     </a>`;
   }).join('');
 
-  // Report description
+  // Report veicolo reale
   const age = 2026 - parseInt(f.y);
-  const fuelName = f.f || 'non specificata';
-  let analysis = `Veicolo: **${f.v} ${f.m}** (${f.y}), alimentazione **${fuelName}**. `;
-  if (f.e) analysis += `Motore **${f.e}**. `;
-  analysis += `Valutazione di mercato **${val.value.toLocaleString('it-IT')} EUR**, basata su ${listings.length} annunci simili. `;
-  if (age <= 3) analysis += `Il veicolo è recente, il valore è ancora alto sul mercato dell'usato.`;
-  else if (age <= 10) analysis += `Il veicolo ha un'età media, il valore si è stabilizzato.`;
-  else analysis += `Il veicolo è datato ma rappresenta un acquisto economico.`;
-  $('vehicleReport').textContent = analysis.replace(/\*\*/g, '');
+  const info = getVehicleInfo(f.v, f.m);
 
-  // Mascot phrase
-  const mascotPhrases = [
-    `Ecco tutto su ${f.v} ${f.m}!`,
-    `${f.v} ${f.m} — ottima scelta!`,
-    `Ho trovato ${listings.length} annunci per ${f.v} ${f.m}.`,
-    `Valutazione: ${val.value.toLocaleString('it-IT')} EUR per ${f.v} ${f.m}.`,
-    `${f.v} ${f.m} del ${f.y} — dati completi!`
-  ];
-  $('mascotPhrase').textContent = mascotPhrases[Math.floor(Math.random() * mascotPhrases.length)];
+  // Prezzo
+  let priceText = `Il prezzo di <strong>${val.value.toLocaleString('it-IT')} EUR</strong> è calcolato in base all'età del veicolo (${age} anni)`;
+  if (f.km) priceText += ` e ai chilometri percorsi (${parseInt(f.km).toLocaleString('it-IT')} km)`;
+  priceText += `. Abbiamo analizzato ${listings.length} annunci simili in vendita. `;
+  if (val.confidence === 'Alta') priceText += 'La valutazione è affidabile perché il veicolo è recente.';
+  else if (val.confidence === 'Media') priceText += 'Il valore si è stabilizzato nel tempo, la valutazione è solida.';
+  else priceText += 'Il veicolo è datato, il prezzo riflette il mercato delle economiche.';
+  $('reportPrice').innerHTML = `<h4>Valutazione di mercato</h4><p>${priceText}</p>`;
+
+  // Affidabilità
+  $('reportReliability').innerHTML = `<h4>Affidabilità e robustezza</h4><p>${info.reliability} ${info.robust}</p>`;
+
+  // Problemi
+  const issuesList = info.commonIssues.map(i => `<span class="tag">${i}</span>`).join('');
+  $('reportIssues').innerHTML = `<h4>Problemi comuni e recall</h4><p>${issuesList}</p><p style="margin-top:8px">Controllare sempre la manutenzione storica e eventuali richiami ufficiali presso il costruttore.</p>`;
+
+  // Motore
+  $('reportEngine').innerHTML = `<h4>Motore e prestazioni</h4><p>${info.engine}</p>`;
 }
 
 // ---- Photo ----
