@@ -525,6 +525,17 @@ function getVal(data) {
     const c2 = e.match(/([\d,.]+)\s*cc/i); if (c2) cc = c2[1].replace(',','');
   }
   if (!cv && powerCV && parseFloat(powerCV) > 0) cv = Math.round(parseFloat(powerCV)).toString();
+  if (!cv && vn) {
+    const vc = vn.match(/(\d+)\s*cv/i);
+    if (vc) cv = vc[1];
+  }
+  if (!f && vn) {
+    const vLower = vn.toLowerCase();
+    if (/\b\d+\.?\d*d\b/.test(vLower)) f = 'Diesel';
+    else if (/\b\d+\.?\d*h\b|hybrid|e-power|mhev|phev|plugin/.test(vLower)) f = 'Ibrida';
+    else if (/gpl|metano|cng|lpg/.test(vLower)) f = 'GPL/Metano';
+    else if (/elettric|ev|zero|electric|bev/.test(vLower)) f = 'Elettrica';
+  }
   let fuelIcon = '⛽';
   if (f.toLowerCase().includes('benzina')) fuelIcon = '⛽';
   else if (f.toLowerCase().includes('diesel')) fuelIcon = '🛢️';
@@ -534,22 +545,30 @@ function getVal(data) {
 }
 
 function estimateValue(data) {
-  const y = parseInt(data.RegistrationYear) || 2020;
+  const y = parseInt(data.y) || parseInt(data.RegistrationYear) || 2020;
   const cv = parseInt(data.cv) || 100;
-  const f = data.f.toLowerCase();
+  const f = (data.f || '').toLowerCase();
+  const body = (data.b || '').toLowerCase();
   const isDiesel = f.includes('diesel');
+  const isHybrid = f.includes('ibrida') || f.includes('elettrica');
+  const isGas = f.includes('gpl') || f.includes('metano');
   const isPremium = /audi|bmw|mercedes|volvo|alfa/i.test(data.v + ' ' + data.m);
-  const isLuxury = /ferrari|lamborghini|porsche|maserati/i.test(data.v + ' ' + data.m);
-  let base = isLuxury ? 60000 : isPremium ? 28000 : 16000;
-  if (isDiesel) base += 2000;
+  const isLuxury = /ferrari|lamborghini|porsche|maserati|bentley|rolls/i.test(data.v + ' ' + data.m);
+  const isSuv = /suv|crossover|fuoristrada/i.test(body);
+  let base = isLuxury ? 75000 : isPremium ? 32000 : 22000;
+  if (isSuv) base += 3500;
+  if (isDiesel) base += 1500;
+  if (isHybrid) base += 2500;
+  if (isGas) base -= 1500;
   const age = 2026 - y;
-  let depreciation = 1 - (age * 0.12);
-  if (age > 8) depreciation = 1 - (8 * 0.12) - ((age - 8) * 0.06);
-  depreciation = Math.max(0.08, depreciation);
-  const powerFactor = 1 + (Math.min(cv, 300) - 100) * 0.002;
+  let depreciation;
+  if (age <= 10) depreciation = 1 - (age * 0.05);
+  else depreciation = 0.50 - ((age - 10) * 0.04);
+  depreciation = Math.max(0.12, depreciation);
+  const powerFactor = 1 + (Math.min(cv, 300) - 100) * 0.003;
   let value = Math.round(base * depreciation * powerFactor / 500) * 500;
-  value = Math.max(1500, value);
-  const range = Math.round(value * 0.12 / 100) * 100;
+  value = Math.max(2000, value);
+  const range = Math.round(value * 0.10 / 100) * 100;
   return { value, min: value - range, max: value + range, confidence: age <= 3 ? 'Alta' : age <= 8 ? 'Media' : 'Stimata' };
 }
 
