@@ -3,14 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>CercaAuto — Scopri tutto sulla tua auto</title>
-<meta name="description" content="Ricerca targa: scheda tecnica, valutazione e confronto prezzi di mercato. Dati ufficiali in tempo reale.">
+<title>CercaAuto — Analisi auto usate</title>
+<meta name="description" content="Scopri se un'auto usata vale davvero la pena. Analisi AI, prezzi di mercato, problemi noti e consiglio d'acquisto.">
 <meta name="theme-color" content="#007AFF">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="CercaAuto">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -38,300 +39,417 @@ if (window.matchMedia('(display-mode: standalone)').matches) {
 }
 </script>
 <style>
-:root{--bg:#F2F2F7;--surface:#FFFFFF;--text:#1C1C1E;--text2:#8E8E93;--text3:#C7C7CC;--border:#E5E5EA;--accent:#007AFF;--accent2:#34C759;--radius:20px;--radius-sm:16px;--shadow:0 2px 16px rgba(0,0,0,0.08);}
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:-apple-system,"SF Pro Display","SF Pro Text","Helvetica Neue",sans-serif;}
-html{-webkit-text-size-adjust:100%;}
-body{background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);overflow-x:hidden;}
-.container{width:100%;max-width:460px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;}
+:root{
+  --bg:#F5F5F7;
+  --surface:#FFFFFF;
+  --surface2:#FAFAFA;
+  --text:#000000;
+  --text2:#6E6E73;
+  --text3:#A1A1A6;
+  --border:#E5E5EA;
+  --accent:#0071E3;
+  --accent2:#34C759;
+  --accent3:#FF9F0A;
+  --danger:#FF3B30;
+  --radius:20px;
+  --radius-sm:14px;
+  --shadow:0 4px 24px rgba(0,0,0,0.08);
+  --shadow-sm:0 2px 12px rgba(0,0,0,0.06);
+}
+*{-webkit-tap-highlight-color:transparent;box-sizing:border-box;margin:0;padding:0;}
+html{-webkit-text-size-adjust:100%;font-size:16px;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);}
+.app{width:100%;max-width:520px;margin:0 auto;min-height:100vh;position:relative;background:var(--bg);}
 
 /* Header */
-.header{background:rgba(242,242,247,0.72);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);position:sticky;top:0;z-index:100;padding:16px 24px;padding-top:calc(16px + env(safe-area-inset-top));display:flex;align-items:center;justify-content:space-between;max-width:460px;}
-.header-logo{font-size:24px;font-weight:700;letter-spacing:-0.4px;color:var(--text);}
+.header{position:sticky;top:0;z-index:100;background:rgba(245,245,247,0.82);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);padding:14px 24px;padding-top:calc(14px + env(safe-area-inset-top));display:flex;align-items:center;justify-content:space-between;}
+.header-logo{font-size:22px;font-weight:700;letter-spacing:-0.4px;}
 .header-logo span{color:var(--accent);}
-.header-btn{font-size:17px;font-weight:600;color:var(--accent);background:none;border:none;cursor:pointer;padding:12px 18px;min-height:44px;min-width:44px;border-radius:22px;transition:background 0.2s;display:flex;align-items:center;}
-.header-btn:active{background:rgba(0,122,255,0.12);}
+.header-btn{font-size:16px;font-weight:600;color:var(--accent);background:none;border:none;cursor:pointer;padding:10px 16px;border-radius:20px;min-height:44px;}
+.header-btn:active{background:rgba(0,113,227,0.12);}
 
-/* Hero */
-.hero{padding:40px 24px 30px;text-align:left;}
-.hero h1{font-size:38px;font-weight:700;letter-spacing:-1px;line-height:1.08;margin-bottom:12px;}
-.hero p{font-size:19px;color:var(--text2);line-height:1.45;font-weight:400;}
+/* Home */
+.home{padding:32px 24px 40px;}
+.hero{margin-bottom:32px;}
+.hero h1{font-size:36px;font-weight:700;letter-spacing:-1px;line-height:1.05;margin-bottom:14px;}
+.hero p{font-size:19px;color:var(--text2);line-height:1.45;}
 
 /* Search card */
-.search-card{background:var(--surface);border-radius:var(--radius);padding:24px;margin:0 20px 20px;box-shadow:var(--shadow);}
-.search-label{font-size:15px;font-weight:500;color:var(--text2);margin-bottom:12px;}
-.input-row{display:flex;gap:12px;align-items:stretch;}
+.search-card{background:var(--surface);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);margin-bottom:24px;}
+.search-label{font-size:14px;font-weight:600;color:var(--text2);margin-bottom:12px;display:block;}
+.input-row{display:flex;gap:12px;margin-bottom:16px;}
 .input-wrap{flex:1;}
-.input-wrap input{width:100%;padding:20px;border-radius:var(--radius-sm);border:none;background:var(--bg);color:var(--text);font-size:24px;font-weight:600;text-transform:uppercase;letter-spacing:2px;outline:none;transition:background 0.2s;-webkit-appearance:none;min-height:60px;}
-.input-wrap input:focus{background:#E8E8ED;}
-.input-wrap input::placeholder{color:var(--text3);font-weight:400;font-size:18px;letter-spacing:0;text-transform:none;}
-.btn-search{background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:0 32px;font-size:19px;font-weight:600;cursor:pointer;transition:opacity 0.15s;white-space:nowrap;display:flex;align-items:center;gap:8px;min-height:60px;}
-.btn-search:active{opacity:0.75;}
-.btn-search:disabled{opacity:0.4;cursor:not-allowed;}
-.photo-row{margin-top:16px;padding-top:16px;border-top:0.5px solid var(--border);}
-.photo-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:16px;border-radius:var(--radius-sm);border:none;background:var(--bg);color:var(--text2);font-size:17px;font-weight:500;cursor:pointer;transition:background 0.2s;min-height:54px;}
-.photo-btn:active{background:#E8E8ED;}
-.photo-btn svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.input-wrap input{width:100%;height:60px;padding:0 20px;border-radius:var(--radius-sm);border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font-size:22px;font-weight:600;text-transform:uppercase;letter-spacing:2px;outline:none;-webkit-appearance:none;transition:border-color 0.2s;}
+.input-wrap input:focus{border-color:var(--accent);background:var(--surface);}
+.input-wrap input::placeholder{color:var(--text3);font-weight:400;font-size:17px;text-transform:none;letter-spacing:0;}
+.btn-search{height:60px;padding:0 28px;border-radius:var(--radius-sm);border:none;background:var(--accent);color:#fff;font-size:18px;font-weight:600;cursor:pointer;transition:transform 0.1s,opacity 0.15s;display:flex;align-items:center;gap:8px;}
+.btn-search:active{transform:scale(0.97);opacity:0.9;}
+.btn-search:disabled{opacity:0.5;cursor:not-allowed;}
+.photo-btn{width:100%;height:52px;border-radius:var(--radius-sm);border:1.5px dashed var(--border);background:var(--surface2);color:var(--text2);font-size:16px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;}
+.photo-btn:active{background:var(--border);}
 
 /* Loading */
-.spinner-wrap{padding:0 20px 20px;display:none;}
-.spinner-wrap.active{display:block;}
-.spinner-card{background:var(--surface);border-radius:var(--radius);padding:36px;text-align:center;box-shadow:var(--shadow);}
-.spinner-ring{width:40px;height:40px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 16px;}
+.loading{padding:0 24px 24px;display:none;}
+.loading.active{display:block;}
+.loading-card{background:var(--surface);border-radius:var(--radius);padding:48px 24px;text-align:center;box-shadow:var(--shadow);}
+.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 18px;}
 @keyframes spin{to{transform:rotate(360deg);}}
-.spinner-text{font-size:18px;font-weight:600;color:var(--text);}
-.spinner-step{font-size:15px;color:var(--text2);margin-top:6px;}
+.loading-title{font-size:18px;font-weight:600;margin-bottom:6px;}
+.loading-step{font-size:15px;color:var(--text2);}
 
 /* Error */
-.error-card{background:var(--surface);border-radius:var(--radius);padding:36px 28px;text-align:center;margin:0 20px 20px;display:none;box-shadow:var(--shadow);}
-.error-card.active{display:block;}
-.error-emoji{font-size:48px;margin-bottom:12px;}
-.error-title{font-size:22px;font-weight:700;color:var(--text);margin-bottom:8px;}
-.error-sub{font-size:17px;color:var(--text2);line-height:1.5;margin-bottom:24px;}
-.error-btn{background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:16px 40px;font-size:18px;font-weight:600;cursor:pointer;min-height:54px;}
-.error-btn:active{opacity:0.75;}
+.error{padding:0 24px 24px;display:none;}
+.error.active{display:block;}
+.error-card{background:var(--surface);border-radius:var(--radius);padding:40px 28px;text-align:center;box-shadow:var(--shadow);}
+.error-emoji{font-size:56px;margin-bottom:12px;}
+.error-title{font-size:22px;font-weight:700;margin-bottom:8px;}
+.error-sub{font-size:16px;color:var(--text2);line-height:1.5;margin-bottom:24px;}
+.error-btn{height:52px;padding:0 36px;border-radius:var(--radius-sm);border:none;background:var(--accent);color:#fff;font-size:17px;font-weight:600;cursor:pointer;}
 
 /* Report */
 .report{display:none;padding-bottom:40px;}
-.report.active{display:block;animation:fadeUp 0.35s ease;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.report.active{display:block;animation:fadeIn 0.35s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
 
 /* Vehicle hero */
-.vehicle-hero{background:var(--surface);margin:0 20px 16px;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
-.vehicle-hero-img{width:100%;height:200px;object-fit:cover;background:linear-gradient(135deg,#E8E8ED,#F2F2F7);display:block;}
-.vehicle-hero-info{padding:24px 24px 28px;}
-.vehicle-plate{display:inline-block;background:#1C1C1E;color:#fff;padding:8px 18px;border-radius:12px;font-weight:700;font-size:19px;letter-spacing:2px;margin-bottom:14px;}
-.vehicle-name{font-size:28px;font-weight:700;letter-spacing:-0.5px;margin-bottom:6px;line-height:1.15;}
-.vehicle-sub{font-size:17px;color:var(--text2);}
+.hero-card{background:var(--surface);border-radius:var(--radius);margin:0 24px 20px;overflow:hidden;box-shadow:var(--shadow);}
+.hero-img{width:100%;height:220px;object-fit:cover;background:linear-gradient(135deg,#E8E8ED,#F2F2F7);}
+.hero-info{padding:24px;}
+.hero-plate{display:inline-block;background:var(--text);color:#fff;padding:8px 16px;border-radius:10px;font-size:18px;font-weight:700;letter-spacing:2px;margin-bottom:14px;}
+.hero-name{font-size:28px;font-weight:700;letter-spacing:-0.5px;line-height:1.15;margin-bottom:6px;}
+.hero-sub{font-size:17px;color:var(--text2);}
 
-/* Section title */
-.section-title{padding:32px 24px 16px;font-size:24px;font-weight:700;color:var(--text);letter-spacing:-0.5px;}
+/* Section */
+.section{padding:0 24px;margin-bottom:20px;}
+.section-title{font-size:22px;font-weight:700;margin-bottom:14px;letter-spacing:-0.4px;}
 
-/* Specs grid */
-.specs-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 20px 16px;}
-.spec{background:var(--surface);border-radius:var(--radius-sm);padding:20px;box-shadow:var(--shadow);min-height:70px;}
-.spec-label{font-size:14px;font-weight:400;color:var(--text2);margin-bottom:6px;}
-.spec-value{font-size:19px;font-weight:600;color:var(--text);line-height:1.2;}
+/* Convenience index */
+.score-card{background:var(--surface);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);text-align:center;}
+.score-value{font-size:56px;font-weight:800;letter-spacing:-2px;line-height:1;margin-bottom:8px;}
+.score-value.good{color:var(--accent2);}
+.score-value.fair{color:var(--accent3);}
+.score-value.bad{color:var(--danger);}
+.score-label{font-size:18px;font-weight:700;margin-bottom:6px;}
+.score-desc{font-size:15px;color:var(--text2);line-height:1.5;}
 
-/* Valuation card */
-.valuation-card{background:linear-gradient(135deg,#1C1C1E,#2C2C2E);border-radius:var(--radius);margin:0 20px 16px;padding:30px;color:#fff;box-shadow:var(--shadow);position:relative;overflow:hidden;}
-.valuation-card::after{content:'';position:absolute;top:-40%;right:-20%;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,0.06);}
-.valuation-label{font-size:15px;font-weight:500;opacity:0.7;margin-bottom:6px;position:relative;z-index:1;}
-.valuation-price{font-size:42px;font-weight:700;letter-spacing:-1.5px;margin-bottom:6px;position:relative;z-index:1;}
-.valuation-range{font-size:18px;opacity:0.8;position:relative;z-index:1;}
-.valuation-detail{margin-top:20px;padding-top:18px;border-top:0.5px solid rgba(255,255,255,0.15);display:flex;justify-content:space-between;font-size:16px;opacity:0.7;position:relative;z-index:1;}
-.valuation-detail strong{font-weight:600;opacity:1;}
+/* Valuation */
+.valuation-card{background:var(--text);border-radius:var(--radius);padding:26px;color:#fff;box-shadow:var(--shadow);}
+.valuation-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
+.valuation-label{font-size:14px;font-weight:500;opacity:0.7;}
+.valuation-trend{font-size:13px;font-weight:600;padding:4px 10px;border-radius:20px;background:rgba(255,255,255,0.15);}
+.valuation-price{font-size:38px;font-weight:700;letter-spacing:-1.2px;margin-bottom:4px;}
+.valuation-range{font-size:16px;opacity:0.8;margin-bottom:18px;}
+.valuation-stats{display:flex;justify-content:space-between;padding-top:16px;border-top:1px solid rgba(255,255,255,0.15);}
+.valuation-stat{text-align:center;}
+.valuation-stat-value{font-size:18px;font-weight:700;}
+.valuation-stat-label{font-size:12px;opacity:0.7;margin-top:2px;}
 
-/* Market card */
-.market-card{background:var(--surface);border-radius:var(--radius);margin:0 20px 16px;overflow:hidden;box-shadow:var(--shadow);}
-.market-card-header{padding:20px 24px 8px;display:flex;align-items:baseline;justify-content:space-between;}
-.market-card-header h3{font-size:16px;font-weight:400;color:var(--text2);}
-.market-card-header span{font-size:16px;font-weight:400;color:var(--text2);}
-.listing{padding:18px 24px;display:flex;align-items:center;border-bottom:0.5px solid var(--border);cursor:pointer;transition:background 0.15s;text-decoration:none;color:inherit;min-height:64px;}
+/* Specs */
+.specs-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.spec{background:var(--surface);border-radius:var(--radius-sm);padding:18px;box-shadow:var(--shadow-sm);min-height:76px;}
+.spec-label{font-size:13px;color:var(--text2);margin-bottom:5px;}
+.spec-value{font-size:18px;font-weight:600;line-height:1.25;}
+
+/* Market */
+.market-card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
+.market-header{padding:18px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);}
+.market-header h3{font-size:15px;font-weight:600;color:var(--text2);}
+.market-header span{font-size:15px;color:var(--text2);}
+.listing{padding:16px 20px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--border);text-decoration:none;color:inherit;min-height:74px;}
 .listing:last-child{border-bottom:none;}
-.listing:active{background:rgba(0,0,0,0.04);}
+.listing:active{background:rgba(0,0,0,0.03);}
+.listing-thumb{width:52px;height:52px;border-radius:12px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff;flex-shrink:0;}
 .listing-info{flex:1;min-width:0;}
-.listing-title{font-size:18px;font-weight:600;color:var(--text);margin-bottom:4px;}
-.listing-meta{font-size:15px;color:var(--text2);}
-.listing-site{font-size:13px;font-weight:500;color:var(--accent);margin-top:4px;}
-.listing-price-area{text-align:right;white-space:nowrap;display:flex;align-items:center;}
-.listing-price{font-size:20px;font-weight:700;color:var(--text);}
-.listing-arrow{font-size:24px;color:var(--text3);margin-left:8px;}
+.listing-title{font-size:17px;font-weight:600;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.listing-meta{font-size:14px;color:var(--text2);}
+.listing-site{font-size:12px;color:var(--accent);font-weight:600;margin-top:2px;}
+.listing-price-area{text-align:right;}
+.listing-price{font-size:19px;font-weight:700;}
+.listing-arrow{font-size:22px;color:var(--text3);}
 
-/* Report card */
-.report-card{background:var(--surface);border-radius:var(--radius);margin:0 20px 0;overflow:hidden;box-shadow:var(--shadow);}
-.report-section{padding:22px 24px;border-bottom:0.5px solid var(--border);}
-.report-section:last-child{border-bottom:none;}
-.report-section h4{font-size:18px;font-weight:600;color:var(--text);margin-bottom:8px;}
-.report-section p{font-size:16px;color:var(--text2);line-height:1.6;margin:0;}
-.report-section p + p{margin-top:8px;}
+/* AI Analysis */
+.ai-card{background:var(--surface);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);}
+.ai-verdict{display:flex;align-items:center;gap:12px;margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--border);}
+.ai-verdict-icon{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.ai-verdict-icon.buy{background:rgba(52,199,89,0.12);}
+.ai-verdict-icon.negotiate{background:rgba(255,159,10,0.12);}
+.ai-verdict-icon.avoid{background:rgba(255,59,48,0.12);}
+.ai-verdict-title{font-size:18px;font-weight:700;margin-bottom:2px;}
+.ai-verdict-sub{font-size:14px;color:var(--text2);}
+.ai-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:22px;}
+.ai-item{background:var(--surface2);border-radius:var(--radius-sm);padding:16px;}
+.ai-item-label{font-size:13px;color:var(--text2);margin-bottom:6px;}
+.ai-item-value{font-size:17px;font-weight:600;}
+.ai-score{display:inline-flex;align-items:center;gap:6px;}
+.ai-score-bar{width:60px;height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.ai-score-fill{height:100%;border-radius:3px;background:var(--accent2);}
+.ai-text{font-size:15px;color:var(--text2);line-height:1.6;margin-bottom:16px;}
+.ai-text strong{color:var(--text);}
+.ai-issues-title{font-size:15px;font-weight:600;margin-bottom:10px;}
+.ai-issues-list{list-style:none;}
+.ai-issues-list li{font-size:14px;color:var(--text2);padding:8px 0;padding-left:22px;position:relative;border-bottom:1px solid var(--border);}
+.ai-issues-list li:last-child{border-bottom:none;}
+.ai-issues-list li::before{content:"•";position:absolute;left:0;color:var(--accent);font-weight:700;}
 
-/* Toast */
-.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(28,28,30,0.92);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:#fff;padding:14px 24px;border-radius:100px;font-size:15px;font-weight:500;z-index:2000;opacity:0;transition:all 0.3s ease;pointer-events:none;white-space:nowrap;max-width:90%;}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+/* Problems */
+.problems-card{background:var(--surface);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);}
+.problems-card p{font-size:15px;color:var(--text2);line-height:1.6;}
+
+/* Actions */
+.action-bar{padding:0 24px 24px;display:flex;gap:12px;}
+.action-btn{flex:1;height:54px;border-radius:var(--radius-sm);border:none;background:var(--surface);color:var(--text);font-size:16px;font-weight:600;cursor:pointer;box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:center;gap:8px;}
+.action-btn.primary{background:var(--accent);color:#fff;}
+.action-btn:active{opacity:0.85;}
+
+/* Plans */
+.plans-section{padding:0 24px 40px;}
+.plans-grid{display:flex;flex-direction:column;gap:16px;}
+.plan-card{background:var(--surface);border-radius:var(--radius);padding:26px 24px;box-shadow:var(--shadow);position:relative;}
+.plan-featured{border:2px solid var(--accent);}
+.plan-badge{position:absolute;top:-11px;left:24px;background:var(--accent);color:#fff;font-size:12px;font-weight:600;padding:5px 14px;border-radius:12px;}
+.plan-name{font-size:20px;font-weight:700;margin-bottom:4px;}
+.plan-price{font-size:36px;font-weight:700;letter-spacing:-1px;}
+.plan-period{font-size:15px;color:var(--text2);margin-bottom:18px;}
+.plan-features{list-style:none;margin-bottom:20px;}
+.plan-features li{font-size:16px;padding:9px 0;padding-left:30px;position:relative;color:var(--text);}
+.plan-features li::before{content:"";position:absolute;left:0;top:12px;width:18px;height:18px;border-radius:50%;background:rgba(52,199,89,0.12);}
+.plan-features li::after{content:"";position:absolute;left:6px;top:17px;width:6px;height:3px;border-left:2px solid var(--accent2);border-bottom:2px solid var(--accent2);transform:rotate(-45deg);}
+.plan-btn{width:100%;height:54px;border-radius:var(--radius-sm);border:none;background:var(--accent);color:#fff;font-size:17px;font-weight:600;cursor:pointer;}
+.plan-btn.secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+
+/* Modal */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:2000;align-items:flex-end;justify-content:center;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);}
+.modal.active{display:flex;}
+.modal-card{background:var(--surface);border-radius:var(--radius) var(--radius) 0 0;padding:28px 24px;width:100%;max-width:520px;max-height:85vh;overflow:auto;animation:slideUp 0.25s ease;}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.modal-title{font-size:22px;font-weight:700;margin-bottom:8px;}
+.modal-text{font-size:16px;color:var(--text2);line-height:1.5;margin-bottom:24px;}
+.modal-close{position:absolute;top:20px;right:20px;width:36px;height:36px;border-radius:50%;border:none;background:var(--bg);font-size:20px;cursor:pointer;}
 
 /* Install banner */
-#installBanner{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:0.5px solid var(--border);padding:16px 24px;align-items:center;justify-content:space-between;z-index:999;max-width:460px;margin:0 auto;padding-bottom:calc(16px + env(safe-area-inset-bottom));}
+#installBanner{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);padding:14px 24px;align-items:center;justify-content:space-between;z-index:999;max-width:520px;margin:0 auto;padding-bottom:calc(14px + env(safe-area-inset-bottom));}
 .install-text{font-size:16px;font-weight:600;}
-.install-btn{background:var(--accent);color:#fff;border:none;border-radius:22px;padding:12px 24px;font-size:16px;font-weight:600;cursor:pointer;min-height:44px;}
+.install-btn{height:40px;padding:0 20px;border-radius:20px;border:none;background:var(--accent);color:#fff;font-size:15px;font-weight:600;cursor:pointer;}
+
+/* Toast */
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(28,28,30,0.92);color:#fff;padding:14px 24px;border-radius:100px;font-size:15px;font-weight:500;z-index:3000;opacity:0;transition:all 0.3s ease;pointer-events:none;max-width:90%;text-align:center;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
 ::-webkit-scrollbar{width:0;height:0;}
 
-/* Plans */
-.plans-container{padding:0 20px 32px;display:flex;flex-direction:column;gap:16px;}
-.plan-card{background:var(--surface);border-radius:var(--radius);padding:28px 24px;box-shadow:var(--shadow);position:relative;}
-.plan-featured{border:2px solid var(--accent);}
-.plan-badge-popular{position:absolute;top:-12px;left:24px;background:var(--accent);color:#fff;font-size:12px;font-weight:600;padding:5px 16px;border-radius:14px;}
-.plan-badge-current{display:inline-block;font-size:14px;font-weight:600;color:var(--text2);background:var(--bg);padding:8px 16px;border-radius:12px;margin-top:16px;}
-.plan-name{font-size:20px;font-weight:700;color:var(--text);margin-bottom:6px;}
-.plan-price{font-size:36px;font-weight:700;letter-spacing:-1px;color:var(--text);}
-.plan-period{font-size:16px;color:var(--text2);margin-bottom:20px;}
-.plan-features{list-style:none;padding:0;margin:0 0 20px;}
-.plan-features li{font-size:17px;color:var(--text);padding:10px 0;padding-left:32px;position:relative;}
-.plan-features li::before{content:'';position:absolute;left:0;top:14px;width:18px;height:18px;border-radius:50%;background:rgba(52,199,89,0.12);}
-.plan-features li::after{content:'';position:absolute;left:6px;top:18px;width:6px;height:3px;border-left:2px solid var(--accent2);border-bottom:2px solid var(--accent2);transform:rotate(-45deg);}
-.plan-btn{width:100%;padding:18px;border-radius:var(--radius-sm);border:none;background:var(--accent);color:#fff;font-size:18px;font-weight:600;cursor:pointer;min-height:54px;}
-.plan-btn:active{opacity:0.75;}
+@media (min-width:520px){
+  .app{border-left:1px solid var(--border);border-right:1px solid var(--border);}
+}
 </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
+<div class="app">
+  <header class="header">
     <div class="header-logo">Cerca<span>Auto</span></div>
-    <div class="header-actions">
-    <div class="header-actions">
-      <button class="header-btn" id="newSearchBtn" onclick="resetApp()" style="display:none">Nuova ricerca</button>
-    </div>
-  </div>
+    <button class="header-btn" id="newSearchBtn" onclick="resetApp()" style="display:none">Nuova ricerca</button>
+  </header>
 
-  <!-- HERO / HOME -->
-  <div id="homeView">
+  <!-- HOME -->
+  <main class="home" id="homeView">
     <div class="hero">
-      <h1>Trova la tua<br>auto.</h1>
-      <p>Inserisci la targa italiana e scopri scheda tecnica, valutazione e prezzi di mercato.</p>
+      <h1>Valuta un'auto<br>usata.</h1>
+      <p>Inserisci la targa o scatta una foto. Scopri prezzo di mercato, problemi noti e se conviene acquistarla.</p>
     </div>
 
     <div class="search-card">
-      <div class="search-label">Targa italiana</div>
+      <label class="search-label">Targa italiana</label>
       <div class="input-row">
         <div class="input-wrap">
           <input type="text" id="targaInput" placeholder="Es. AB123CD" maxlength="7" autocomplete="off">
         </div>
         <button class="btn-search" id="searchBtn" onclick="searchPlate()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
           Cerca
         </button>
       </div>
-      <div class="photo-row">
-        <button class="photo-btn" onclick="document.getElementById('fileInput').click()">
-          <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-           Scatta o carica foto
-        </button>
-      </div>
       <input type="file" id="fileInput" accept="image/*" onchange="handlePhoto(event)" style="display:none">
+      <button class="photo-btn" onclick="document.getElementById('fileInput').click()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        Scatta o carica foto targa
+      </button>
     </div>
 
-    <!-- Piani -->
-    <div class="section-title">Piani</div>
-    <div class="plans-container">
-      <div class="plan-card">
-        <div class="plan-name">Free</div>
-        <div class="plan-price">€0</div>
-        <div class="plan-period">per sempre</div>
-        <ul class="plan-features">
-          <li>3 ricerche al mese</li>
-          <li>Scheda tecnica</li>
-          <li>Valutazione di mercato</li>
-        </ul>
-        <div class="plan-badge-current">Piano attuale</div>
-      </div>
-      <div class="plan-card plan-featured">
-        <div class="plan-badge-popular">Più scelto</div>
-        <div class="plan-name">Plus</div>
-        <div class="plan-price">€4,99</div>
-        <div class="plan-period">al mese</div>
-        <ul class="plan-features">
-          <li>30 ricerche al mese</li>
-          <li>Report completo veicolo</li>
-          <li>Confronto prezzi di mercato</li>
-          <li>Problemi noti e affidabilità</li>
-          <li>Senza pubblicità</li>
-        </ul>
-        <button class="plan-btn" onclick="showToast('Abbonamento Plus — disponibile presto')">Passa a Plus</button>
-      </div>
-      <div class="plan-card">
-        <div class="plan-name">Pro</div>
-        <div class="plan-price">€9,99</div>
-        <div class="plan-period">al mese</div>
-        <ul class="plan-features">
-          <li>Ricerche illimitate</li>
-          <li>Storico ricerche</li>
-          <li>Export PDF report</li>
-          <li>Priorità supporto</li>
-        </ul>
-        <button class="plan-btn" onclick="showToast('Abbonamento Pro — disponibile presto')">Passa a Pro</button>
+    <!-- Plans -->
+    <div class="plans-section">
+      <h2 class="section-title">Scegli il tuo piano</h2>
+      <div class="plans-grid">
+        <div class="plan-card">
+          <div class="plan-name">Free</div>
+          <div class="plan-price">€0</div>
+          <div class="plan-period">per sempre</div>
+          <ul class="plan-features">
+            <li>1 ricerca</li>
+            <li>Dati base veicolo</li>
+            <li>Prezzo stimato</li>
+          </ul>
+          <button class="plan-btn secondary" disabled>Piano attuale</button>
+        </div>
+        <div class="plan-card plan-featured">
+          <div class="plan-badge">Più scelto</div>
+          <div class="plan-name">Plus</div>
+          <div class="plan-price">€5,99</div>
+          <div class="plan-period">al mese</div>
+          <ul class="plan-features">
+            <li>30 ricerche</li>
+            <li>Report completo</li>
+            <li>Prezzi di mercato</li>
+            <li>Problemi e richiami</li>
+            <li>Report PDF</li>
+            <li>Senza pubblicità</li>
+          </ul>
+          <button class="plan-btn" onclick="showToast('Abbonamento disponibile presto')">Passa a Plus</button>
+        </div>
+        <div class="plan-card">
+          <div class="plan-name">Pro</div>
+          <div class="plan-price">€14,99</div>
+          <div class="plan-period">al mese</div>
+          <ul class="plan-features">
+            <li>Ricerche illimitate</li>
+            <li>AI Smart Analysis</li>
+            <li>Confronto concorrenti</li>
+            <li>Video e guide</li>
+            <li>Supporto prioritario</li>
+          </ul>
+          <button class="plan-btn" onclick="showToast('Abbonamento disponibile presto')">Passa a Pro</button>
+        </div>
       </div>
     </div>
-  </div>
+  </main>
 
   <!-- LOADING -->
-  <div class="spinner-wrap" id="spinnerWrap">
-    <div class="spinner-card">
-      <div class="spinner-ring"></div>
-      <div class="spinner-text" id="spinnerText">Ricerca targa in corso...</div>
-      <div class="spinner-step" id="spinnerStep">CercaAuto sta analizzando i dati</div>
+  <section class="loading" id="loadingView">
+    <div class="loading-card">
+      <div class="spinner"></div>
+      <div class="loading-title" id="loadingTitle">Analisi in corso...</div>
+      <div class="loading-step" id="loadingStep">Ricerca dati veicolo</div>
     </div>
-  </div>
+  </section>
 
   <!-- ERROR -->
-  <div class="error-card" id="errorCard">
-    <div class="error-emoji">🚗</div>
-    <div class="error-title" id="errorTitle">Veicolo non trovato</div>
-    <div class="error-sub" id="errorSub">Nessun dato disponibile per questa targa. Verifica e riprova.</div>
-    <button class="error-btn" onclick="resetApp()">Riprova</button>
-  </div>
+  <section class="error" id="errorView">
+    <div class="error-card">
+      <div class="error-emoji">🚗</div>
+      <div class="error-title" id="errorTitle">Veicolo non trovato</div>
+      <div class="error-sub" id="errorSub">Nessun dato disponibile per questa targa. Verifica il formato e riprova.</div>
+      <button class="error-btn" onclick="resetApp()">Riprova</button>
+    </div>
+  </section>
 
   <!-- REPORT -->
-  <div class="report" id="reportView">
-    <!-- Vehicle hero -->
-    <div class="vehicle-hero">
-      <img class="vehicle-hero-img" id="vehicleImg" style="display:none" alt="Veicolo">
-      <div class="vehicle-hero-info">
-        <div class="vehicle-plate" id="reportPlate">AB123CD</div>
-        <div class="vehicle-name" id="reportName">Caricamento...</div>
-        <div class="vehicle-sub" id="reportSub"></div>
+  <main class="report" id="reportView">
+    <!-- Hero -->
+    <div class="hero-card">
+      <img class="hero-img" id="heroImg" style="display:none" alt="Veicolo">
+      <div class="hero-info">
+        <div class="hero-plate" id="reportPlate">AB123CD</div>
+        <div class="hero-name" id="reportName">Caricamento...</div>
+        <div class="hero-sub" id="reportSub"></div>
       </div>
     </div>
+
+    <!-- Convenience index -->
+    <section class="section">
+      <h2 class="section-title">Indice di convenienza</h2>
+      <div class="score-card" id="scoreCard">
+        <div class="score-value" id="scoreValue">—</div>
+        <div class="score-label" id="scoreLabel">Analisi in corso</div>
+        <div class="score-desc" id="scoreDesc">Calcoliamo se questa auto rappresenta un buon affare.</div>
+      </div>
+    </section>
 
     <!-- Valuation -->
-    <div class="valuation-card">
-      <div class="valuation-label">Valutazione</div>
-      <div class="valuation-price" id="valuationPrice">— EUR</div>
-      <div class="valuation-range" id="valuationRange">Range di mercato: —</div>
-      <div class="valuation-detail">
-        <span>Affidabilità <strong id="valuationConfidence">—</strong></span>
-        <span>Aggiornato oggi</span>
+    <section class="section">
+      <h2 class="section-title">Prezzo di mercato</h2>
+      <div class="valuation-card">
+        <div class="valuation-header">
+          <div class="valuation-label">Valore stimato</div>
+          <div class="valuation-trend" id="valuationTrend">—</div>
+        </div>
+        <div class="valuation-price" id="valuationPrice">—</div>
+        <div class="valuation-range" id="valuationRange">Range: —</div>
+        <div class="valuation-stats">
+          <div class="valuation-stat">
+            <div class="valuation-stat-value" id="statMin">—</div>
+            <div class="valuation-stat-label">Minimo</div>
+          </div>
+          <div class="valuation-stat">
+            <div class="valuation-stat-value" id="statAvg">—</div>
+            <div class="valuation-stat-label">Media</div>
+          </div>
+          <div class="valuation-stat">
+            <div class="valuation-stat-value" id="statMax">—</div>
+            <div class="valuation-stat-label">Massimo</div>
+          </div>
+          <div class="valuation-stat">
+            <div class="valuation-stat-value" id="statCount">—</div>
+            <div class="valuation-stat-label">Annunci</div>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Specifiche -->
-    <div class="section-title">Scheda tecnica</div>
-    <div class="specs-grid" id="specsGrid"></div>
+    <!-- Specs -->
+    <section class="section">
+      <h2 class="section-title">Scheda tecnica</h2>
+      <div class="specs-grid" id="specsGrid"></div>
+    </section>
 
-    <!-- Confronto mercato -->
-    <div class="section-title">Prezzi di mercato</div>
-    <div class="market-card" id="marketCard">
-      <div class="market-card-header">
-        <h3>Annunci simili in vendita</h3>
-        <span id="marketCount">—</span>
+    <!-- Market -->
+    <section class="section">
+      <h2 class="section-title">Annunci simili</h2>
+      <div class="market-card" id="marketCard">
+        <div class="market-header">
+          <h3>Auto simili in vendita</h3>
+          <span id="marketCount">— annunci</span>
+        </div>
+        <div id="listingsContainer"></div>
       </div>
-      <div id="listingsContainer"></div>
-    </div>
+    </section>
 
-    <!-- Report veicolo -->
-    <div class="section-title">Informazioni</div>
-    <div class="report-card" style="margin-bottom:24px;">
-      <div class="report-section" id="reportPrice">
-        <h4>Valutazione</h4>
-        <p>Prezzo calcolato in base all'età, ai chilometri e agli annunci attuali.</p>
+    <!-- AI Analysis -->
+    <section class="section">
+      <h2 class="section-title">Analisi AI</h2>
+      <div class="ai-card" id="aiCard">
+        <div class="ai-verdict" id="aiVerdict">
+          <div class="ai-verdict-icon buy" id="aiVerdictIcon">✓</div>
+          <div>
+            <div class="ai-verdict-title" id="aiVerdictTitle">Analisi in corso</div>
+            <div class="ai-verdict-sub" id="aiVerdictSub">Stiamo valutando tutti i parametri.</div>
+          </div>
+        </div>
+        <div class="ai-grid" id="aiGrid"></div>
+        <div class="ai-text" id="aiText"></div>
+        <div class="ai-issues-title">Problemi più comuni</div>
+        <ul class="ai-issues-list" id="aiIssuesList"></ul>
       </div>
-      <div class="report-section" id="reportReliability">
-        <h4>Affidabilità</h4>
-        <p>Valutazione del modello su affidabilità e durata.</p>
+    </section>
+
+    <!-- Problems -->
+    <section class="section">
+      <h2 class="section-title">Problemi noti</h2>
+      <div class="problems-card" id="problemsCard">
+        <p>Stiamo caricando i dati sui problemi comuni di questo modello.</p>
       </div>
-      <div class="report-section" id="reportIssues">
-        <h4>Problemi noti</h4>
-        <p>Controlli e campagne di richiamo per questo modello.</p>
-      </div>
-      <div class="report-section" id="reportEngine">
-        <h4>Motore</h4>
-        <p>Prestazioni e affidabilità della motorizzazione.</p>
-      </div>
+    </section>
+
+    <!-- Actions -->
+    <div class="action-bar">
+      <button class="action-btn primary" onclick="generatePDF()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Scarica PDF
+      </button>
+      <button class="action-btn" onclick="resetApp()">Nuova ricerca</button>
     </div>
-  </div>
+  </main>
 </div>
 
 <div id="installBanner">
-  <div class="install-text">Installa CercaAuto sul telefono</div>
+  <div class="install-text">Installa CercaAuto</div>
   <button class="install-btn" onclick="installApp()">Installa</button>
 </div>
 
@@ -340,14 +458,13 @@ body{background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smooth
 <script>
 const API_BASE = 'https://www.regcheck.org.uk/api/reg.asmx';
 let currentData = null;
-
-// ---- DOM refs ----
 const $ = id => document.getElementById(id);
+
 const targaInput = $('targaInput');
 const searchBtn = $('searchBtn');
 const homeView = $('homeView');
-const spinnerWrap = $('spinnerWrap');
-const errorCard = $('errorCard');
+const loadingView = $('loadingView');
+const errorView = $('errorView');
 const reportView = $('reportView');
 const newSearchBtn = $('newSearchBtn');
 
@@ -357,7 +474,6 @@ targaInput.addEventListener('input', e => {
 });
 targaInput.addEventListener('keydown', e => { if (e.key === 'Enter') searchPlate(); });
 
-// ---- API call ----
 async function lookupPlate(plate) {
   const apiUrl = `${API_BASE}/CheckItaly?RegistrationNumber=${encodeURIComponent(plate)}&username=demo`;
   const controller = new AbortController();
@@ -377,14 +493,12 @@ async function lookupPlate(plate) {
   return JSON.parse(m[1].replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&').replace(/&quot;/g,'"'));
 }
 
-// ---- Format data ----
 function getVal(data) {
-  const get = (obj, prop) => {
+  const get = (obj) => {
     if (!obj) return '';
     if (typeof obj === 'string') return obj;
     return obj.CurrentTextValue || obj.CurrentValue || '';
   };
-
   const v = get(data.CarMake);
   const m = get(data.CarModel);
   const y = data.RegistrationYear || '';
@@ -395,39 +509,30 @@ function getVal(data) {
   const t = get(data.Transmission);
   const b = get(data.BodyStyle);
   const s = get(data.NumberOfSeats);
+  const col = data.Colour || '';
+  const euro = data.EuroStatus || '';
   const desc = data.Description || `${v} ${m}`;
   const img = (data.ImageUrl || '').replace(/^http:\/\//i, 'https://');
-
-  // Dati extra se disponibili
   const km = data.Mileage || data.Kilometres || data.KM || '';
   const insurance = data.InsuranceGroup || data.Insurance || '';
   const co2 = data.Co2 || data.CO2Emissions || '';
   const weight = data.Weight || '';
-  const regDate = data.RegistrationDate || '';
   const vin = data.Vin || '';
   const powerCV = data.PowerCV || '';
-  const powerKW = data.PowerKW || '';
-
   let cv = '', cc = '';
   if (e) {
     const c = e.match(/(\d+)\s*cv/i); if (c) cv = c[1];
     const c2 = e.match(/([\d,.]+)\s*cc/i); if (c2) cc = c2[1].replace(',','');
   }
-  // Se PowerCV è disponibile, usalo
-  if (!cv && powerCV && parseFloat(powerCV) > 0) {
-    cv = Math.round(parseFloat(powerCV)).toString();
-  }
-
+  if (!cv && powerCV && parseFloat(powerCV) > 0) cv = Math.round(parseFloat(powerCV)).toString();
   let fuelIcon = '⛽';
   if (f.toLowerCase().includes('benzina')) fuelIcon = '⛽';
   else if (f.toLowerCase().includes('diesel')) fuelIcon = '🛢️';
   else if (f.toLowerCase().includes('ibrida') || f.toLowerCase().includes('elettrica')) fuelIcon = '⚡';
   else if (f.toLowerCase().includes('gpl') || f.toLowerCase().includes('metano')) fuelIcon = '🔥';
-
-  return { v, m, y, f, e, vn, d, t, b, s, desc, img, cv, cc, fuelIcon, km, insurance, co2, weight, regDate, vin, powerKW };
+  return { v, m, y, f, e, vn, d, t, b, s, col, euro, desc, img, cv, cc, fuelIcon, km, insurance, co2, weight, vin };
 }
 
-// ---- Valuation ----
 function estimateValue(data) {
   const y = parseInt(data.RegistrationYear) || 2020;
   const cv = parseInt(data.cv) || 100;
@@ -435,29 +540,28 @@ function estimateValue(data) {
   const isDiesel = f.includes('diesel');
   const isPremium = /audi|bmw|mercedes|volvo|alfa/i.test(data.v + ' ' + data.m);
   const isLuxury = /ferrari|lamborghini|porsche|maserati/i.test(data.v + ' ' + data.m);
-
-  let base = isLuxury ? 60000 : isPremium ? 25000 : 15000;
+  let base = isLuxury ? 60000 : isPremium ? 28000 : 16000;
   if (isDiesel) base += 2000;
-
   const age = 2026 - y;
   let depreciation = 1 - (age * 0.12);
   if (age > 8) depreciation = 1 - (8 * 0.12) - ((age - 8) * 0.06);
   depreciation = Math.max(0.08, depreciation);
-
   const powerFactor = 1 + (Math.min(cv, 300) - 100) * 0.002;
   let value = Math.round(base * depreciation * powerFactor / 500) * 500;
   value = Math.max(1500, value);
-
   const range = Math.round(value * 0.12 / 100) * 100;
-  return {
-    value,
-    min: value - range,
-    max: value + range,
-    confidence: age <= 3 ? 'Alta' : age <= 8 ? 'Media' : 'Stimata'
-  };
+  return { value, min: value - range, max: value + range, confidence: age <= 3 ? 'Alta' : age <= 8 ? 'Media' : 'Stimata' };
 }
 
-// ---- Mock listings — Apple style, realistic prices ----
+const siteColors = {
+  'AutoScout24': '#007AFF',
+  'Subito.it': '#FF9500',
+  'Automobile.it': '#34C759',
+  'Facebook Marketplace': '#1877F2',
+  'Milano': '#5856D6',
+  'Roma': '#FF2D55'
+};
+
 function generateListings(data, val) {
   const brands = [
     { name: 'AutoScout24', url: 'https://www.autoscout24.it/' },
@@ -470,368 +574,254 @@ function generateListings(data, val) {
   const cities = ['Milano', 'Roma', 'Napoli', 'Torino', 'Bologna', 'Firenze', 'Genova', 'Verona', 'Bari', 'Catania'];
   const years = [parseInt(data.y) - 2, parseInt(data.y) - 1, parseInt(data.y), parseInt(data.y) + 1, parseInt(data.y) + 2];
   const name = `${data.v} ${data.m}`;
-  const count = 4 + Math.floor(Math.random() * 2);
-
+  const count = 5;
   const listings = [];
   for (let i = 0; i < count; i++) {
     const ly = years[i % years.length];
-    const lkm = (45 + Math.floor(Math.random() * 170)) * 1000;
+    const lkm = (50 + Math.floor(Math.random() * 160)) * 1000;
     const ageFactor = Math.max(0.4, 1 - ((2026 - ly) * 0.06));
     const kmFactor = Math.max(0.5, 1 - (lkm / 400000));
-    const conditionFactor = 0.85 + (Math.random() * 0.3); // variazione condizione
+    const conditionFactor = 0.85 + (Math.random() * 0.3);
     const price = Math.round(val.value * ageFactor * kmFactor * conditionFactor / 50) * 50;
     const brand = brands[i % brands.length];
     const city = cities[Math.floor(Math.random() * cities.length)];
-    listings.push({
-      title: `${name}`,
-      year: ly,
-      meta: `${ly} · ${lkm.toLocaleString('it-IT')} km · ${city}`,
-      price: Math.max(800, price),
-      site: brand.name,
-      url: brand.url
-    });
+    listings.push({ title: `${name} ${ly}`, meta: `${lkm.toLocaleString('it-IT')} km · ${city}`, price: Math.max(800, price), site: brand.name, url: brand.url });
   }
   return listings.sort((a, b) => a.price - b.price);
 }
 
-// ---- Search ----
+const vehicleKB = {
+  'fiat': { reliabilityScore: 6, maintenance: 'medi', common: ['Cambio Dualogic robotizzato scattoso sui modelli 2010-2018', 'Problemi elettrici con sensori e centralina', 'Rumore sospensioni anteriori su 500 e Panda'], engine: 'Motori Fire e Multijet collaudati. 1.3 e 1.6 Mjet affidabili. 1.4 T-Jet verificare turbo ad alto chilometraggio.', robust: 'Buona robustezza strutturale. 500X e Tipo adatte anche a lunghi viaggi.' },
+  'ford': { reliabilityScore: 7, maintenance: 'medi', common: ['Cambio PowerShift DPS6 scattoso su Focus 2011-2017', 'Filtro antiparticolato intasato su diesel urbano', 'Problemi sistema SYNC su modelli precedenti'], engine: '1.0 EcoBoost: verificare catena distribuzione su pre-2017. TDCi eccellenti per durata.', robust: 'Struttura robusta, tenuta di strada eccellente.' },
+  'volkswagen': { reliabilityScore: 7, maintenance: 'alti', common: ['DSG DQ200 7 marce: recall perdita potenza', 'Costi manutenzione superiori alla media', 'Elettronica complessa da diagnosticare con l\'età'], engine: '1.6 TDI icona di affidabilità. TSI EA211 molto migliorati. Verificare pompa acqua su TSI vecchi.', robust: 'Struttura molto robusta, sicurezza elevata.' },
+  'audi': { reliabilityScore: 7, maintenance: 'alti', common: ['S-tronic DL382 usura frizione pre-2015', 'Consumo olio su 2.0 TFSI Gen2', 'Costi manutenzione elevati'], engine: '2.0 TDI EA288 molto affidabile. TFSI Gen2: attenzione catena distribuzione.', robust: 'Struttura premium molto solida.' },
+  'bmw': { reliabilityScore: 7, maintenance: 'alti', common: ['Diesel N47: catena distribuzione soggetta a rottura (2007-2012)', 'Usura bracci sospensione anteriori', 'Perdite olio su motori 6 cilindri vecchi'], engine: 'N47 problematico sostituito da B47. Benzina B48 molto valido.', robust: 'Struttura sportiva robusta, materiali premium.' },
+  'mercedes': { reliabilityScore: 8, maintenance: 'molto alti', common: ['Costi manutenzione molto alti', 'Problemi sospensioni Airmatic', 'Elettronica complessa da diagnosticare'], engine: 'CDI e benzina eccellenti per durata. OM651 e OM654 tra i migliori diesel.', robust: 'Robustezza eccezionale, auto pensate per durare.' },
+  'toyota': { reliabilityScore: 9, maintenance: 'bassi', common: ['Rumore interni su modelli entry-level', 'Infotainment datato', 'Usura pastiglie freno leggermente superiore'], engine: 'Hybrid e benzina tra le più affidabili al mondo. Hybrid Synergy Drive collaudato.', robust: 'Robustezza eccellente, auto progettate per durare decenni.' },
+  'renault': { reliabilityScore: 6, maintenance: 'medi', common: ['1.2 TCe: consumo olio elevato, possibili rotture motore', 'Problemi elettrici su Clio III/IV', 'Filtro antiparticolato su diesel urbano'], engine: '1.5 dCi molto affidabile. 1.3 TCe co-sviluppato con Mercedes ha sostituito 1.2 TCe.', robust: 'Robustezza media, adatta all\'uso quotidiano.' },
+  'peugeot': { reliabilityScore: 6, maintenance: 'medi', common: ['PureTech 1.2: cinghia distribuzione bagno olio degrada prima del previsto', 'Problemi elettronici su 208/308 precedenti', 'Filtro antiparticolato intasato su diesel urbano'], engine: 'BlueHDi eccellente per durata. PureTech verificare sempre stato cinghia.', robust: 'Piattaforma CMP/EMP2 molto solida.' },
+  'citroen': { reliabilityScore: 6, maintenance: 'medi', common: ['Sospensioni idrauliche su modelli dotati', 'Elettronica con l\'età', 'Rumore interni su modelli entry-level'], engine: 'Stessi motori PSA, affidabili se mantenuti correttamente.', robust: 'Comfort eccellente, robustezza media.' },
+  'opel': { reliabilityScore: 6, maintenance: 'medi', common: ['Problemi elettrici su Astra H e Corsa D', 'Usura pompa acqua su diesel', 'Rumore sospensioni con l\'età'], engine: 'CDTI collaudati ma datati. Nuovi motori PSA più efficienti.', robust: 'Robustezza media, buona per uso familiare.' },
+  'nissan': { reliabilityScore: 7, maintenance: 'medi', common: ['Problemi frizione su Qashqai dCi', 'Usura cuscinetti su Note e Micra', 'CVT con l\'età'], engine: 'DCI Renault affidabili e motori benzina Nissan eccellenti.', robust: 'Robustezza buona, materiali solidi.' },
+  'hyundai': { reliabilityScore: 8, maintenance: 'bassi', common: ['Infotainment lento su prime versioni', 'Vernice delicata su alcuni colori'], engine: 'CRDi e T-GDI eccellenti per affidabilità e consumi. Garanzia 5 anni.', robust: 'Robustezza molto buona, migliorata drasticamente dal 2015.' },
+  'kia': { reliabilityScore: 8, maintenance: 'bassi', common: ['Infotainment lento su prime versioni', 'Rumore a velocità autostradale'], engine: 'Stessi motori Hyundai, affidabili. Garanzia 7 anni.', robust: 'Robustezza molto buona, ottimo rapporto qualità-prezzo.' },
+  'mazda': { reliabilityScore: 8, maintenance: 'bassi', common: ['Infotainment Mazda Connect su prime versioni', 'Rumore a velocità autostradale', 'Usura pastiglie freno'], engine: 'SkyActiv eccellenti per affidabilità e consumi reali. Motori senza turbo più semplici.', robust: 'Robustezza molto buona, costruzione giapponese tradizionale.' },
+  'seat': { reliabilityScore: 7, maintenance: 'alti', common: ['Stessi problemi VW (DSG, elettronica)', 'Rumore interni su modelli entry-level'], engine: 'Stessi motori VW, eccellenti per prestazioni e consumi.', robust: 'Robustezza buona, come VW.' },
+  'skoda': { reliabilityScore: 8, maintenance: 'alti', common: ['Stessi problemi VW', 'Elettronica meno raffinata'], engine: 'Stessi motori VW, eccellenti per durata.', robust: 'Robustezza molto buona, spazio interno eccellente.' },
+  'jeep': { reliabilityScore: 6, maintenance: 'alti', common: ['Problemi elettrici su Renegade e Compass', 'Consumi elevati', 'Costi manutenzione superiori'], engine: 'Multijet Fiat affidabili. Motorizzazioni USA potenti ma assetate.', robust: 'Robustezza strutturale eccellente per fuoristrada.' },
+  'dacia': { reliabilityScore: 7, maintenance: 'bassi', common: ['Materiali interni economici', 'Rumore isolamento acustico'], engine: 'Stessi motori Renault, semplici e facili da manutenere.', robust: 'Robustezza buona, costruita per essere economica.' },
+  'suzuki': { reliabilityScore: 7, maintenance: 'bassi', common: ['Spazio interno ridotto', 'Materiali interni economici'], engine: 'Benzina eccellenti per affidabilità. Hybrid mild affidabilissimo.', robust: 'Robustezza buona, auto leggere e semplici.' },
+  'honda': { reliabilityScore: 9, maintenance: 'bassi', common: ['Cambio CVT su Civic precedenti', 'Elettronica datata'], engine: 'i-VTEC e i-DTEC eccellenti. 1.6 i-DTEC è un diesel leggendario.', robust: 'Robustezza eccellente, specialmente i motori.' },
+  'subaru': { reliabilityScore: 8, maintenance: 'medi', common: ['Consumi elevati su boxer', 'Costi manutenzione superiori'], engine: 'Boxer eccellenti per durata. Attenzione testata su modelli EJ precedenti.', robust: 'Robustezza eccellente, AWD tra le migliori.' },
+  'alfa romeo': { reliabilityScore: 6, maintenance: 'alti', common: ['Problemi elettrici su Giulietta e MiTo', 'Usura sospensioni anteriori'], engine: 'Multijet e benzina eccellenti per emozioni. Manutenzione curata richiesta.', robust: 'Robustezza media, struttura sportiva.' },
+  'lancia': { reliabilityScore: 5, maintenance: 'medi', common: ['Problemi elettrici su Ypsilon', 'Ruggine su modelli precedenti', 'Pezzi di ricambio scarsi'], engine: 'Stessi motori Fiat, collaudati ma datati.', robust: 'Robustezza media, auto storica.' },
+  'smart': { reliabilityScore: 6, maintenance: 'medi', common: ['Cambio robotizzato su prime generazioni', 'Spazio ridotto'], engine: 'Motori Renault adatti all\'urbano, non a lunghi tragitti.', robust: 'Robustezza media, struttura Tridion sicura.' },
+  'mini': { reliabilityScore: 6, maintenance: 'alti', common: ['Problemi elettrici su R56 2006-2013', 'Usura sospensioni sportive'], engine: 'Motori BMW Prince potenti ma richiedono manutenzione. Evitare 1.6 con catena.', robust: 'Robustezza buona ma usura sospensioni elevata.' },
+  'volvo': { reliabilityScore: 8, maintenance: 'molto alti', common: ['Costi manutenzione elevati', 'Elettronica complessa'], engine: 'D4 e D5 eccellenti per durata. Nuovi ibridi molto efficienti.', robust: 'Robustezza eccellente, sicurezza top.' },
+  'land rover': { reliabilityScore: 5, maintenance: 'molto alti', common: ['Problemi elettrici su Discovery e Range Rover', 'Sospensioni pneumatiche', 'Costi manutenzione molto elevati'], engine: 'Ingenium nuovi migliorati. Vecchi TDV6 potenti ma problematici.', robust: 'Robustezza strutturale eccellente per fuoristrada.' }
+};
+
+function getVehicleInfo(make, model) {
+  const key = make.toLowerCase().trim();
+  return vehicleKB[key] || { reliabilityScore: 6, maintenance: 'medi', common: ['Consultare documentazione ufficiale', 'Verificare manutenzione storica'], engine: 'Motore da valutare in officina specializzata.', robust: 'Robustezza da verificare in base allo stato.' };
+}
+
+function computeAnalysis(f, val, listings) {
+  const info = getVehicleInfo(f.v, f.m);
+  const age = 2026 - parseInt(f.y);
+  const avgPrice = listings.reduce((a, l) => a + l.price, 0) / listings.length;
+  const diffPct = Math.round(((val.value - avgPrice) / avgPrice) * 100);
+  let score = info.reliabilityScore * 5 + (age <= 5 ? 20 : age <= 10 ? 10 : 0) + (info.maintenance === 'bassi' ? 15 : info.maintenance === 'medi' ? 8 : 0);
+  if (diffPct > 10) score += 10;
+  else if (diffPct > -10) score += 5;
+  else score += 0;
+  score = Math.min(100, Math.max(20, score));
+  let verdict, verdictIcon, verdictClass;
+  if (score >= 80) { verdict = 'Compra'; verdictIcon = '✓'; verdictClass = 'buy'; }
+  else if (score >= 60) { verdict = 'Tratta il prezzo'; verdictIcon = '↔'; verdictClass = 'negotiate'; }
+  else { verdict = 'Evita'; verdictIcon = '✕'; verdictClass = 'avoid'; }
+  const subVerdict = score >= 80 ? 'Questa vettura sembra una scelta solida.' : score >= 60 ? 'Può andare bene, ma prova a ribassare il prezzo.' : 'Ci sono troppi rischi rispetto al valore.';
+  return { score, verdict, verdictIcon, verdictClass, subVerdict, info, avgPrice, diffPct, age };
+}
+
 async function searchPlate() {
   const plate = targaInput.value.toUpperCase().trim();
-  if (plate.length < 5) { showToast('Inserisci una targa valida', 'error'); return; }
-
+  if (plate.length < 5) { showToast('Inserisci una targa valida'); return; }
   homeView.style.display = 'none';
-  errorCard.classList.remove('active');
   reportView.classList.remove('active');
-  spinnerWrap.classList.add('active');
+  errorView.classList.remove('active');
+  loadingView.classList.add('active');
   searchBtn.disabled = true;
   newSearchBtn.style.display = 'none';
-
-  const steps = [
-    'Ricerca dati veicolo...',
-    'Analisi annunci...',
-    'Calcolo valutazione...',
-    'Preparazione report...'
-  ];
+  const steps = ['Ricerca dati veicolo', 'Analisi annunci di mercato', 'Valutazione prezzo', 'Generazione report AI'];
   let si = 0;
-  $('spinnerText').textContent = 'Ricerca ' + plate + '...';
-  $('spinnerStep').textContent = steps[0];
-  const stepInt = setInterval(() => { si = (si + 1) % steps.length; $('spinnerStep').textContent = steps[si]; }, 2000);
-
+  $('loadingTitle').textContent = 'Analisi ' + plate;
+  $('loadingStep').textContent = steps[0];
+  const stepInt = setInterval(() => { si = (si + 1) % steps.length; $('loadingStep').textContent = steps[si]; }, 1800);
   try {
     const data = await lookupPlate(plate);
     const f = getVal(data);
     const val = estimateValue(f);
     const listings = generateListings(f, val);
-    currentData = { data, f, val, listings };
-
+    currentData = { plate, data, f, val, listings };
     clearInterval(stepInt);
-    spinnerWrap.classList.remove('active');
+    loadingView.classList.remove('active');
     searchBtn.disabled = false;
-
     renderReport(plate, f, val, listings);
     reportView.classList.add('active');
     newSearchBtn.style.display = 'inline-block';
-    setTimeout(() => reportView.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
   } catch (err) {
     clearInterval(stepInt);
-    spinnerWrap.classList.remove('active');
+    loadingView.classList.remove('active');
     searchBtn.disabled = false;
-    errorCard.classList.add('active');
+    errorView.classList.add('active');
     const failed = err.message.includes('Richiesta fallita') || err.message.includes('Errore');
-    $('errorTitle').textContent = failed ? 'Errore di connessione' : 'Nessun dato trovato';
+    $('errorTitle').textContent = failed ? 'Errore di connessione' : 'Veicolo non trovato';
     $('errorSub').textContent = failed ? 'Il server non risponde. Verifica la connessione e riprova.' : `Nessun veicolo trovato per "${plate}".`;
   }
 }
 
-// ---- Vehicle knowledge base ----
-const vehicleKB = {
-  'fiat': {
-    reliability: 'Affidabilità media. Motori collaudati,_ma_elettronica delicata con l\'età.',
-    commonIssues: ['Cambio Dualogic robotizzato — scatti e usura frizione sui modelli 2010-2018', 'Problemi elettrici (sensori, centralina)', 'Rumore sospensioni anteriori su 500/Panda'],
-    engine: 'Motori Fire e Multijet tra i più collaudati d\'Italia. 1.3 Mjet e 1.6 Mjet affidabili. 1.4 T-Jet: verificare turbo ad alto km.',
-    robust: 'Buona robustezza strutturale. 500X e Tipo adatte anche a lunghi percorsi. citycar (500, Panda) più adatte all\'urbano.'
-  },
-  'ford': {
-    reliability: 'Affidabilità buona. Ford costruisce veicoli solidi, specialmente i motori Diesel TDCi.',
-    commonIssues: ['Cambio PowerShift (DPS6) — scatti e usura su Focus 2011-2017', 'Problemi sistema SYNC su modelli precedenti', 'Filtro antiparticolato intasato su diesel cittadino'],
-    engine: '1.0 EcoBoost: catena distribuzione da verificare su pre-2017. TDCi eccellenti per durata. 1.5/2.0 TDCi tra i migliori diesel.',
-    robust: 'Struttura robusta, tenuta di strada eccellente. Focus e Fiesta sono tra le compatte più guidabili.'
-  },
-  'volkswagen': {
-    reliability: 'Affidabilità alta. VW mantiene standard costruttivi elevati.',
-    commonIssues: ['Cambio DSG DQ200 (7 marce a secco) — recall mondiale per perdita potenza', 'Costi manutenzione superiori alla media', 'Elettronica complessa da diagnosticare con l\'età'],
-    engine: '1.6 TDI icona di affidabilità. TSI nuovi (EA211) molto migliorati. Attenzione pompa acqua su TSI vecchi (EA111).',
-    robust: 'Struttura molto robusta, sicurezza elevata. Auto pensata per durare nel tempo.'
-  },
-  'audi': {
-    reliability: 'Affidabilità alta ma costi di manutenzione elevati.',
-    commonIssues: ['S-tronic/DL382: usura doppia frizione su modelli pre-2015', 'Usura sospensioni sportive su S-line', 'Consumo olio su motori 2.0 TFSI vecchi (Gen2)'],
-    engine: 'TDI e TFSI eccellenti per prestazioni. 2.0 TDI ea288 molto affidabile. Attenzione distribuzione catena su TFSI Gen2.',
-    robust: 'Struttura premium molto robusta. Sicurezza e qualità costruttiva top di gamma.'
-  },
-  'bmw': {
-    reliability: 'Affidabilità media-alta, manutenzione costosa con l\'età.',
-    commonIssues: ['Diesel N47: catena distribuzione soggetta a rottura (modelli 2007-2012)', 'Usura bracci sospensione anteriori', 'Perdite olio su motori 6 cilindri vecchi'],
-    engine: 'Motori BMW eccellenti. N47 problematico sostituito da B47 (molto più affidabile). Benzina B48 molto valido.',
-    robust: 'Struttura sportiva robusta, materiali premium. Longevità legata alla manutenzione regolare.'
-  },
-  'mercedes': {
-    reliability: 'Affidabilità alta. Mercedes costruisce per durare.',
-    commonIssues: ['Costi manutenzione molto alti', 'Problemi sospensioni Airmatic su versioni dotate', 'Elettronica complessa da diagnosticare'],
-    engine: 'CDI e benzina eccellenti per durata. I motori OM651 e OM654 sono tra i migliori diesel mai prodotti.',
-    robust: 'Robustezza eccezionale. Auto costruite per durare centinaia di migliaia di km con manutenzione corretta.'
-  },
-  'toyota': {
-    reliability: 'Affidabilità eccellente. Toyota è sinonimo di longevità.',
-    commonIssues: ['Rumore interni su modelli entry-level', 'Infotainment datato', 'Usura pastiglie freno leggermente superiore'],
-    engine: 'Motorizzazioni Hybrid e benzina tra le più affidabili al mondo. Hybrid Synergy Drive collaudato da milioni di esemplari.',
-    robust: 'Robustezza eccellente. Toyota costruisce auto per durare 20+ anni con manutenzione base.'
-  },
-  'renault': {
-    reliability: 'Affidabilità media. Rapporto qualità-prezzo buono.',
-    commonIssues: ['1.2 TCe: consumo olio elevato, possibile rottura motore (recall)', 'Problemi elettronici su Clio III/IV', 'Filtro antiparticolato su diesel urbano'],
-    engine: '1.5 dCi molto affidabile. 1.3 TCe (co-sviluppato con Mercedes) ha sostituito 1.2 TCe problematico. Benzina moderno valido.',
-    robust: 'Robustezza media. Clio e Captur adatte all\'uso quotidiano. Megane E-Tech migliorata molto.'
-  },
-  'peugeot': {
-    reliability: 'Affidabilità media. Peugeot è migliorata con i nuovi modelli.',
-    commonIssues: ['PureTech 1.2 — cinghia distribuzione bagno olio degrada prima del previsto (recall 2021)', 'Problemi elettronici su 208/308 precedenti', 'Filtro antiparticolato intasato su diesel urbano'],
-    engine: 'BlueHDi eccellente per durata. PureTech: verificare sempre stato cinghia. 1.5 BlueHDi tra i migliori diesel.',
-    robust: 'Piattaforma CMP/EMP2 molto solida. 208/3008 robuste, adatte a uso quotidiano.'
-  },
-  'citroen': {
-    reliability: 'Affidabilità media. Citroen punta sul comfort più che sulla sportività.',
-    commonIssues: ['Problemi sospensioni idrauliche su modelli dotati', 'Elettronica con l\'età', 'Rumore interni su modelli entry-level'],
-    engine: 'Stessi motori di Peugeot (BlueHDi/PureTech). Affidabili se mantenuti correttamente.',
-    robust: 'Comfort eccellente, robustezza media. Non adatta a guida sportiva intensiva.'
-  },
-  'opel': {
-    reliability: 'Affidabilità media. Opel offre buon rapporto qualità-prezzo.',
-    commonIssues: ['Problemi elettrici su Astra H e Corsa D', 'Usura pompa acqua su diesel', 'Rumore sospensioni con l\'età'],
-    engine: 'CDTI collaudati ma datati. Nuovi motori con PSA più efficienti e affidabili.',
-    robust: 'Robustezza media. Buona per uso familiare e cittadino.'
-  },
-  'nissan': {
-    reliability: 'Affidabilità buona. Nissan offre solidità giapponese.',
-    commonIssues: ['Problemi frizione su Qashqai dCi', 'Usura cuscinetti su Note e Micra', 'Elettronica datata su modelli vecchi'],
-    engine: 'DCI Renault (affidabili) e motori benzina propri Nissan eccellenti. Attenzione ai CVT con l\'età.',
-    robust: 'Robustezza buona. Materiali solidi, adatti a uso intensivo.'
-  },
-  'hyundai': {
-    reliability: 'Affidabilità molto buona. Hyundai ha fatto enormi passi avanti.',
-    commonIssues: ['Pochi problemi noti su modelli recenti', 'Infotainment lento su prime versioni', 'Vernice delicata su alcuni colori'],
-    engine: 'CRDi e benzina T-GDI eccellenti per affidabilità e consumi. Garanzia 5 anni standard.',
-    robust: 'Robustezza molto buona. Materiali e assemblaggio migliorati drasticamente dal 2015.'
-  },
-  'kia': {
-    reliability: 'Affidabilità molto buona, come Hyundai (stesso gruppo).',
-    commonIssues: ['Pochi problemi noti', 'Infotainment lento su prime versioni', 'Rumore a velività autostradale su modelli entry'],
-    engine: 'Stessi motori di Hyundai, affidabili e collaudati. Garanzia 7 anni migliore del mercato.',
-    robust: 'Robustezza molto buona. Ottimo rapporto qualità-prezzo con garanzia lunghissima.'
-  },
-  'mazda': {
-    reliability: 'Affidabilità molto buona. Mazda sottovalutata ma costruisce auto eccellenti.',
-    commonIssues: ['Problemi infotainment su prime versioni Mazda Connect', 'Rumore a velocità autostradale', 'Usura pastiglie freno leggermente superiore'],
-    engine: 'SkyActiv eccellenti per affidabilità e consumi reali. Motori benzina e diesel senza turbo (più semplici e affidabili).',
-    robust: 'Robustezza molto buona. Costruzione giapponese tradizionale, materiali solidi.'
-  },
-  'seat': {
-    reliability: 'Affidabilità buona. Seat = VW con stile spagnolo.',
-    commonIssues: ['Stessi problemi di VW (DSG, elettronica)', 'Rumore interni su modelli entry-level', 'Usura sospensioni sportive su FR/Cupra'],
-    engine: 'Stessi motori VW (TSI/TDI). Eccellenti per prestazioni e consumi.',
-    robust: 'Robustezza buona, come VW. Struttura solida, sicurezza elevata.'
-  },
-  'skoda': {
-    reliability: 'Affidabilità molto buona. Skoda = VW a prezzo inferiore.',
-    commonIssues: ['Stessi problemi di VW', 'Elettronica meno raffinata', 'Vernice meno spessa'],
-    engine: 'Stessi motori VW (TSI/TDI). Eccellenti per durata e consumi.',
-    robust: 'Robustezza molto buona. Spazio interno eccellente, costruzione solida.'
-  },
-  'jeep': {
-    reliability: 'Affidabilità media. Jeep punta sul fuoristrada.',
-    commonIssues: ['Problemi elettrici su Renegade e Compass', 'Consumi elevati', 'Costi manutenzione superiori alla media'],
-    engine: 'Multijet Fiat su modelli italiani, affidabili. Motorizzazioni USA potenti ma assetate.',
-    robust: 'Robustezza strutturale eccellente per fuoristrada. Meno adatta a uso esclusivamente urbano.'
-  },
-  'dacia': {
-    reliability: 'Affidabilità buona per il prezzo. Dacia = Renault semplificata.',
-    commonIssues: ['Materiali interni economici', 'Rumore isolamento acustico', 'Elettronica minimale'],
-    engine: 'Stessi motori Renault (dCi/TCe). Semplici e facili da manutenere.',
-    robust: 'Robustezza buona. Costruita per essere economica e funzionale, senza fronzoli.'
-  },
-  'suzuki': {
-    reliability: 'Affidabilità buona. Suzuki = semplicità giapponese.',
-    commonIssues: ['Pochi problemi noti', 'Spazio interno ridotto', 'Materiali interni economici'],
-    engine: 'Motorizzazioni benzina eccellenti per affidabilità. Hybrid mild affidabilissimo.',
-    robust: 'Robustezza buona. Auto leggere, semplici, longeve con manutenzione base.'
-  },
-  'honda': {
-    reliability: 'Affidabilità eccellente. Honda costruisce motori leggendari.',
-    commonIssues: ['Problemi cambio CVT su Civic precedenti', 'Elettronica datata su modelli vecchi', 'Rumore interni su HR-V'],
-    engine: 'i-VTEC e i-DTEC eccellenti per affidabilità. Il 1.6 i-DTEC è un diesel leggendario.',
-    robust: 'Robustezza eccellente. Honda costruisce per durare, specialmente i motori.'
-  },
-  'subaru': {
-    reliability: 'Affidabilità molto buona. Subaru = trazione integrale e boxer.',
-    commonIssues: ['Consumi elevati su boxer', 'Costi manutenzione superiori (trazione integrale)', 'Infotainment datato'],
-    engine: 'Boxer Subaru eccellenti per durata. Attenzione alla testata su modelli EJ precedenti.',
-    robust: 'Robustezza eccellente. Trazione integrale Symmetrical AWD tra le migliori al mondo.'
-  },
-  'alfa romeo': {
-    reliability: 'Affidabilità media. Alfa Romeo = stile italiano, cuore sportivo.',
-    commonIssues: ['Problemi elettrici su Giulietta e MiTo', 'Usura sospensioni anteriori', 'Elettronica complessa'],
-    engine: 'Motorizzazioni Multijet e benzina eccellenti per emozioni. Manutenzione curata richiesta.',
-    robust: 'Robustezza media. Struttura sportiva, non pensata per comfort ma per guidabilità.'
-  },
-  'lancia': {
-    reliability: 'Affidabilità media. Lancia = eleganza italiana.',
-    commonIssues: ['Problemi elettrici su Ypsilon', 'Ruggine su modelli precedenti', 'Pezzi di ricambio scarsi'],
-    engine: 'Stessi motori Fiat (Fire/Multijet). Collaudati ma datati.',
-    robust: 'Robustezza media. Auto storica, adatta a chi ama il marchio.'
-  },
-  'smart': {
-    reliability: 'Affidabilità media. Smart = città e parcheggio.',
-    commonIssues: ['Problemi cambio robotizzato su prime generazioni', 'Spazio ridotto', 'Costi manutenzione superiori per la categoria'],
-    engine: 'Motori Renault 0.9 TCe e 1.0. Adatti all\'uso urbano, non per lunghi tragitti.',
-    robust: 'Robustezza media. Struttura Tridion sicura ma dimensioni minime.'
-  },
-  'mini': {
-    reliability: 'Affidabilità media. Mini = BMW in formato compatta.',
-    commonIssues: ['Problemi elettrici su R56 (2006-2013)', 'Usura sospensioni sportive', 'Costi manutenzione BMW'],
-    engine: 'Motori BMW (Prince). Potenti ma richiedono manutenzione attenta. Evitare 1.6 con catena distribuzione.',
-    robust: 'Robustezza buona. Struttura solida, ma usura sospensioni sportive elevata.'
-  },
-  'volvo': {
-    reliability: 'Affidabilità molto buona. Volvo = sicurezza svedese.',
-    commonIssues: ['Costi manutenzione elevati', 'Elettronica complessa', 'Consumi su motori vecchi'],
-    engine: 'D4 e D5 eccellenti per durata. Nuovi motori ibridi Volvo molto efficienti.',
-    robust: 'Robustezza eccellente. Sicurezza top, struttura pensata per proteggere gli occupanti.'
-  },
-  'land rover': {
-    reliability: 'Affidabilità media. Land Rover = fuoristrada di lusso.',
-    commonIssues: ['Problemi elettrici su Discovery e Range Rover', 'Costi manutenzione molto elevati', 'Avarie sospensioni pneumatiche'],
-    engine: 'Ingenium nuovi migliorati. Vecchi TDV6 e SDV6 potenti ma problematici.',
-    robust: 'Robustezza strutturale eccellente per fuoristrada. Tecnologia complessa richiede manutenzione costante.'
-  }
-};
-
-// Helper per cercare nel KB
-function getVehicleInfo(make, model) {
-  const makeKey = make.toLowerCase().trim();
-  const info = vehicleKB[makeKey];
-  if (!info) {
-    return {
-      reliability: 'Dati specifici non disponibili per questa marca. Valutazione basata su parametri generali.',
-      commonIssues: ['Consultare la documentazione ufficiale del costruttore', 'Verificare la manutenzione storica del veicolo'],
-      engine: 'Motore da valutare in officina specializzata.',
-      robust: 'Robustezza da verificare in base allo stato generale del veicolo.'
-    };
-  }
-  return info;
-}
-
-// ---- Render ----
 function renderReport(plate, f, val, listings) {
   $('reportPlate').textContent = plate;
   $('reportName').textContent = f.vn || `${f.v} ${f.m}`;
-  $('reportSub').textContent = [f.y, f.f].filter(Boolean).join(' · ') || 'Dati veicolo';
-
-  const img = $('vehicleImg');
+  $('reportSub').textContent = [f.y, f.f, f.b].filter(Boolean).join(' · ') || 'Dati veicolo';
+  const img = $('heroImg');
   if (f.img) { img.src = f.img; img.style.display = 'block'; } else { img.style.display = 'none'; }
 
-  // Valuation
+  const analysis = computeAnalysis(f, val, listings);
+  const scoreEl = $('scoreValue');
+  scoreEl.textContent = (analysis.score / 10).toFixed(1);
+  scoreEl.className = 'score-value ' + (analysis.score >= 80 ? 'good' : analysis.score >= 60 ? 'fair' : 'bad');
+  $('scoreLabel').textContent = analysis.verdict;
+  $('scoreDesc').textContent = analysis.subVerdict;
+
   $('valuationPrice').textContent = val.value.toLocaleString('it-IT') + ' EUR';
   $('valuationRange').textContent = `Range: ${val.min.toLocaleString('it-IT')} – ${val.max.toLocaleString('it-IT')} EUR`;
-  $('valuationConfidence').textContent = val.confidence;
+  const trend = analysis.diffPct;
+  const trendEl = $('valuationTrend');
+  trendEl.textContent = trend > 5 ? '+' + trend + '% vs mercato' : trend < -5 ? trend + '% vs mercato' : 'Allineata al mercato';
+  trendEl.style.background = trend > 5 ? 'rgba(255,59,48,0.2)' : trend < -5 ? 'rgba(52,199,89,0.2)' : 'rgba(255,255,255,0.15)';
+  trendEl.style.color = trend > 5 ? '#FF453A' : trend < -5 ? '#32D74B' : '#fff';
 
-  // Specs
+  const avg = Math.round(listings.reduce((a, l) => a + l.price, 0) / listings.length);
+  $('statMin').textContent = listings[0].price.toLocaleString('it-IT') + '€';
+  $('statAvg').textContent = avg.toLocaleString('it-IT') + '€';
+  $('statMax').textContent = listings[listings.length - 1].price.toLocaleString('it-IT') + '€';
+  $('statCount').textContent = listings.length;
+
   const specs = [
     { label: 'Marca', value: f.v },
     { label: 'Modello', value: f.m },
-    { label: 'Anno', value: f.y },
     { label: 'Versione', value: f.vn },
+    { label: 'Anno', value: f.y },
     { label: 'Alimentazione', value: f.f ? `${f.fuelIcon} ${f.f}` : '' },
-    { label: 'Motore', value: f.e },
     { label: 'Potenza', value: f.cv ? `${f.cv} CV` : '' },
     { label: 'Cilindrata', value: f.cc ? `${f.cc} cc` : '' },
     { label: 'Carrozzeria', value: f.b },
-    { label: 'Porte', value: f.d },
-    { label: 'Posti', value: f.s },
     { label: 'Cambio', value: f.t },
+    { label: 'Porte', value: f.d },
+    { label: 'Colore', value: f.col },
+    { label: 'Classe Euro', value: f.euro },
   ].filter(s => s.value);
-  // Aggiungi km e assicurazione se disponibili
-  if (f.km) specs.push({ label: 'KM', value: parseInt(f.km).toLocaleString('it-IT') });
-  if (f.insurance) specs.push({ label: 'Classe assicurativa', value: f.insurance });
-  if (f.co2) specs.push({ label: 'CO2', value: f.co2 + ' g/km' });
-  if (f.weight) specs.push({ label: 'Peso', value: f.weight + ' kg' });
+  $('specsGrid').innerHTML = specs.map(s => `<div class="spec"><div class="spec-label">${s.label}</div><div class="spec-value">${s.value}</div></div>`).join('');
 
-  $('specsGrid').innerHTML = specs.map(s =>
-    `<div class="spec"><div class="spec-label">${s.label}</div><div class="spec-value">${s.value}</div></div>`
-  ).join('');
-
-  // Listings — Apple style
-  $('marketCount').textContent = `${listings.length} annunci`;
+  $('marketCount').textContent = listings.length + ' annunci';
   $('listingsContainer').innerHTML = listings.map(l => {
+    const initial = l.site.charAt(0);
+    const bg = siteColors[l.site] || '#8E8E93';
     return `<a href="${l.url}" target="_blank" rel="noopener" class="listing">
+      <div class="listing-thumb" style="background:${bg}">${initial}</div>
       <div class="listing-info">
         <div class="listing-title">${l.title}</div>
         <div class="listing-meta">${l.meta}</div>
         <div class="listing-site">${l.site}</div>
       </div>
       <div class="listing-price-area">
-        <span class="listing-price">€${l.price.toLocaleString('it-IT')}</span>
-        <span class="listing-arrow">›</span>
+        <div class="listing-price">€${l.price.toLocaleString('it-IT')}</div>
+        <div class="listing-arrow">›</div>
       </div>
     </a>`;
   }).join('');
 
-  // Report veicolo — breve, pulito
-  const age = 2026 - parseInt(f.y);
-  const info = getVehicleInfo(f.v, f.m);
+  $('aiVerdictIcon').textContent = analysis.verdictIcon;
+  $('aiVerdictIcon').className = 'ai-verdict-icon ' + analysis.verdictClass;
+  $('aiVerdictTitle').textContent = analysis.verdict;
+  $('aiVerdictSub').textContent = analysis.subVerdict;
 
-  // Prezzo
-  let priceText = `Stimato a <strong>${val.value.toLocaleString('it-IT')} EUR</strong> in base a ${listings.length} annunci. `;
-  if (val.confidence === 'Alta') priceText += 'Prezzo solido per un veicolo recente.';
-  else if (val.confidence === 'Media') priceText += 'Valore di mercato consolidato.';
-  else priceText += 'Prezzo da verificare in sede.';
-  $('reportPrice').innerHTML = `<h4>Valutazione</h4><p>${priceText}</p>`;
+  const scores = [
+    { label: 'Affidabilità', value: analysis.info.reliabilityScore },
+    { label: 'Sicurezza', value: Math.max(5, Math.min(10, 10 - analysis.age * 0.3)) },
+    { label: 'Prestazioni', value: f.cv ? Math.min(10, Math.max(5, parseInt(f.cv) / 20)) : 6 },
+    { label: 'Comfort', value: 7 },
+    { label: 'Qualità/prezzo', value: Math.min(10, Math.max(4, 10 - Math.abs(trend) / 5)) },
+    { label: 'Rivendita', value: Math.max(4, 10 - analysis.age * 0.4) }
+  ];
+  $('aiGrid').innerHTML = scores.map(s => {
+    const v = Math.round(s.value);
+    return `<div class="ai-item">
+      <div class="ai-item-label">${s.label}</div>
+      <div class="ai-item-value">
+        <span class="ai-score">${v}/10</span>
+        <span class="ai-score-bar"><span class="ai-score-fill" style="width:${v*10}%;background:${v>=8?'var(--accent2)':v>=6?'var(--accent3)':'var(--danger)'}"></span></span>
+      </div>
+    </div>`;
+  }).join('');
 
-  // Affidabilità
-  $('reportReliability').innerHTML = `<h4>Affidabilità</h4><p>${info.reliability}</p><p style="margin-top:6px">${info.robust}</p>`;
+  const priceComment = trend > 5 ? `Il prezzo stimato è circa il ${trend}% sopra la media degli annunci simili.` : trend < -5 ? `Il prezzo stimato è circa il ${Math.abs(trend)}% sotto la media: potrebbe essere un'occasione.` : 'Il prezzo stimato è allineato agli annunci simili.';
+  $('aiText').innerHTML = `<p><strong>${f.v} ${f.m}</strong> del <strong>${f.y}</strong>. ${priceComment} ${analysis.info.engine}</p><p><strong>Manutenzione:</strong> costi ${analysis.info.maintenance}. ${analysis.info.robust}</p>`;
+  $('aiIssuesList').innerHTML = analysis.info.common.map(i => `<li>${i}</li>`).join('');
 
-  // Problemi
-  const issuesList = info.commonIssues.map(i => `• ${i}`).join('<br>');
-  $('reportIssues').innerHTML = `<h4>Problemi noti</h4><p style="line-height:1.8">${issuesList}</p>`;
-
-  // Motore
-  $('reportEngine').innerHTML = `<h4>Motore</h4><p>${info.engine}</p>`;
+  $('problemsCard').innerHTML = `<p><strong>${f.v} ${f.m}</strong> — problemi segnalati più frequentemente: ${analysis.info.common.join('; ')}. Consigliamo sempre una verifica in officina specializzata prima dell'acquisto.</p>`;
 }
 
-// ---- Photo ----
-async function handlePhoto(e) {
+function handlePhoto(e) {
   const file = e.target.files[0];
   if (!file) return;
-  showToast('Foto acquisita. Inserisci la targa manualmente.', 'success');
+  showToast('Foto caricata. Inserisci la targa manualmente per ora.');
 }
 
-// ---- Reset ----
 function resetApp() {
   homeView.style.display = 'block';
   reportView.classList.remove('active');
-  errorCard.classList.remove('active');
-  spinnerWrap.classList.remove('active');
+  errorView.classList.remove('active');
+  loadingView.classList.remove('active');
   newSearchBtn.style.display = 'none';
   targaInput.value = '';
   targaInput.focus();
   currentData = null;
 }
 
-// ---- Toast ----
-function showToast(msg, type = 'success') {
+function showToast(msg) {
   const t = $('toast');
   t.textContent = msg;
   t.className = 'toast show';
   setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+async function generatePDF() {
+  if (!currentData) return;
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  const { plate, f, val, listings } = currentData;
+  const analysis = computeAnalysis(f, val, listings);
+  doc.setFont('helvetica');
+  doc.setFontSize(22);
+  doc.text('CercaAuto - Report', 20, 25);
+  doc.setFontSize(14);
+  doc.text(`Targa: ${plate}`, 20, 45);
+  doc.text(`Veicolo: ${f.vn || f.v + ' ' + f.m}`, 20, 55);
+  doc.text(`Anno: ${f.y}`, 20, 65);
+  doc.text(`Valutazione: ${val.value.toLocaleString('it-IT')} EUR`, 20, 80);
+  doc.text(`Indice convenienza: ${(analysis.score/10).toFixed(1)}/10`, 20, 95);
+  doc.text(`Verdetto: ${analysis.verdict}`, 20, 110);
+  doc.setFontSize(12);
+  doc.text('Problemi comuni:', 20, 130);
+  let y = 140;
+  getVehicleInfo(f.v, f.m).common.forEach(p => { doc.text('- ' + p, 20, y); y += 8; });
+  doc.text('Annunci simili (prezzi stimati):', 20, y + 5);
+  y += 15;
+  listings.forEach(l => { doc.text(`${l.site}: ${l.price.toLocaleString('it-IT')} EUR`, 20, y); y += 8; });
+  doc.save(`CercaAuto-${plate}.pdf`);
 }
 </script>
 </body>
