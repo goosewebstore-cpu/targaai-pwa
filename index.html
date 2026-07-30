@@ -90,6 +90,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .btn-search:disabled{opacity:0.5;cursor:not-allowed;}
 .photo-btn{width:100%;height:52px;border-radius:var(--radius-sm);border:1.5px dashed var(--border);background:var(--surface2);color:var(--text2);font-size:16px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;}
 .photo-btn:active{background:var(--border);}
+.search-footnote{font-size:13px;line-height:1.45;color:var(--text3);padding:0 4px;}
 
 /* Loading */
 .loading{padding:0 24px 24px;display:none;}
@@ -203,6 +204,8 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 
 /* Problems */
 .problems-card{background:var(--surface);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);}
+.source-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+.source-link{font-size:13px;font-weight:600;color:var(--accent);text-decoration:none;background:#eef6ff;border-radius:999px;padding:8px 11px;}
 .problems-card p{font-size:15px;color:var(--text2);line-height:1.6;}
 
 /* Actions */
@@ -264,7 +267,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   <main class="home" id="homeView">
     <div class="hero">
       <h1>Valuta un'auto<br>usata con AutoEsperto.</h1>
-      <p>Inserisci la targa o scatta una foto. Scopri prezzo di mercato, problemi noti e se conviene acquistarla.</p>
+      <p>Inserisci la targa. Trova i dati del veicolo, il valore di mercato e le verifiche davvero rilevanti prima dell'acquisto.</p>
     </div>
 
     <div class="search-card">
@@ -278,62 +281,14 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
           Cerca
         </button>
       </div>
-      <div class="input-pair">
-        <input class="price-input" type="number" id="askingPriceInput" min="0" inputmode="numeric" placeholder="Prezzo richiesto (€)">
-        <input class="price-input" type="number" id="mileageInput" min="0" inputmode="numeric" placeholder="Chilometri (facoltativo)">
-      </div>
       <input type="file" id="fileInput" accept="image/*" onchange="handlePhoto(event)" style="display:none">
       <button class="photo-btn" onclick="document.getElementById('fileInput').click()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
         Scatta o carica foto targa
       </button>
+      <p class="search-footnote">Dati chilometrici e classe assicurativa compaiono nel report solo se forniti dal database veicolo.</p>
     </div>
 
-    <!-- Plans -->
-    <div class="plans-section">
-      <h2 class="section-title">Scegli il tuo piano</h2>
-      <div class="plans-grid">
-        <div class="plan-card">
-          <div class="plan-name">Free</div>
-          <div class="plan-price">€0</div>
-          <div class="plan-period">per sempre</div>
-          <ul class="plan-features">
-            <li>1 ricerca</li>
-            <li>Dati base veicolo</li>
-            <li>Prezzo stimato</li>
-          </ul>
-          <button class="plan-btn secondary" disabled>Piano attuale</button>
-        </div>
-        <div class="plan-card plan-featured">
-          <div class="plan-badge">Più scelto</div>
-          <div class="plan-name">Plus</div>
-          <div class="plan-price">€5,99</div>
-          <div class="plan-period">al mese</div>
-          <ul class="plan-features">
-            <li>30 ricerche</li>
-            <li>Report completo</li>
-            <li>Prezzi di mercato</li>
-            <li>Problemi e richiami</li>
-            <li>Report PDF</li>
-            <li>Senza pubblicità</li>
-          </ul>
-          <button class="plan-btn" onclick="showToast('Abbonamento disponibile presto')">Passa a Plus</button>
-        </div>
-        <div class="plan-card">
-          <div class="plan-name">Pro</div>
-          <div class="plan-price">€14,99</div>
-          <div class="plan-period">al mese</div>
-          <ul class="plan-features">
-            <li>Ricerche illimitate</li>
-            <li>AI Smart Analysis</li>
-            <li>Confronto concorrenti</li>
-            <li>Video e guide</li>
-            <li>Supporto prioritario</li>
-          </ul>
-          <button class="plan-btn" onclick="showToast('Abbonamento disponibile presto')">Passa a Pro</button>
-        </div>
-      </div>
-    </div>
   </main>
 
   <!-- LOADING -->
@@ -429,7 +384,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 
     <!-- AI Analysis -->
     <section class="section">
-      <h2 class="section-title">Analisi AI</h2>
+      <h2 class="section-title">Dossier del modello</h2>
       <div class="ai-card" id="aiCard">
         <div class="ai-verdict" id="aiVerdict">
           <div class="ai-verdict-icon buy" id="aiVerdictIcon">✓</div>
@@ -441,8 +396,9 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
         <div class="quick-actions" id="aiTools"></div>
         <div class="ai-grid" id="aiGrid"></div>
         <div class="ai-text" id="aiText"></div>
-        <div class="ai-issues-title">Problemi più comuni</div>
+        <div class="ai-issues-title">Punti da controllare</div>
         <ul class="ai-issues-list" id="aiIssuesList"></ul>
+        <div class="source-links" id="sourceLinks"></div>
       </div>
     </section>
 
@@ -487,8 +443,6 @@ let currentData = null;
 const $ = id => document.getElementById(id);
 
 const targaInput = $('targaInput');
-const askingPriceInput = $('askingPriceInput');
-const mileageInput = $('mileageInput');
 const searchBtn = $('searchBtn');
 const homeView = $('homeView');
 const loadingView = $('loadingView');
@@ -620,7 +574,7 @@ function estimateValue(data) {
   let value = Math.round(base * depreciation * powerFactor * mileageFactor / 500) * 500;
   value = Math.max(2000, value);
   const range = Math.round(value * (km ? 0.12 : 0.18) / 100) * 100;
-  return { value, min: value - range, max: value + range, confidence: km ? 'Indicativa' : 'Bassa: inserisci i km' };
+  return { value, min: value - range, max: value + range, confidence: km ? 'Indicativa' : 'Bassa: chilometraggio non fornito dal provider' };
 }
 
 const siteColors = {
@@ -697,26 +651,28 @@ const vehicleKB = {
 };
 
 function getVehicleInfo(make, model) {
-  const key = make.toLowerCase().trim();
-  return vehicleKB[key] || { reliabilityScore: 6, maintenance: 'medi', common: ['Consultare documentazione ufficiale', 'Verificare manutenzione storica'], engine: 'Motore da valutare in officina specializzata.', robust: 'Robustezza da verificare in base allo stato.' };
+  const name = `${make} ${model}`.toLowerCase();
+  const dossiers = [
+    { match: /fiat 500/, reliabilityScore: 7, maintenance: 'contenuti', engine: 'Motore: sul 1.2 Fire controlla tagliandi e circuito di raffreddamento; sulle TwinAir verifica consumo d’olio e regolarità al minimo.', robust: 'Cambio: il manuale è la scelta più semplice; sul Dualogic prova innesti, partenze e presenza di spie.', common: ['1.2 Fire: verifica perdite dal circuito di raffreddamento e usura della frizione.', 'TwinAir: controlla consumo d’olio, minimo irregolare e manutenzione documentata.', 'Dualogic: strattoni o innesti lenti richiedono diagnosi dell’attuatore.'], sources: [{ label: 'Esperienze Fiat 500 su Reddit', url: 'https://www.reddit.com/r/fiat500/comments/1lkw47r/which_500_model_has_been_the_most_reliable_in/' }] },
+    { match: /ford focus/, reliabilityScore: 6, maintenance: 'medi', engine: 'Motore: per il 1.0 EcoBoost verifica con fatture distribuzione e olio con specifica Ford; sulle diesel controlla lo storico DPF.', robust: 'Cambio: su PowerShift prova partenze, manovre e cambiate a caldo; evita esitazioni, vibrazioni e spie cambio.', common: ['1.0 EcoBoost: chiedi evidenza della verifica/sostituzione della cinghia in bagno d’olio e della pulizia pescante.', 'PowerShift DPS6: strattoni o partenze irregolari meritano una diagnosi indipendente.', 'Diesel: controlla rigenerazioni DPF e uso prevalente urbano nello storico.'], sources: [{ label: 'Focus 1.0: discussione Reddit', url: 'https://www.reddit.com/r/FordFocus/comments/11zoc0l/anyone_had_problems_with_their_wet_belt/' }] },
+    { match: /peugeot (208|308)/, reliabilityScore: 6, maintenance: 'medi', engine: 'Motore: per il 1.2 PureTech controlla distribuzione a bagno d’olio, lubrificante conforme e interventi documentati.', robust: 'Cambio: prova frizione e rumori sul manuale; sull’automatico esegui una prova completa a freddo e a caldo.', common: ['1.2 PureTech: chiedi prova degli interventi sulla cinghia a bagno d’olio e controlla eventuali spie pressione olio.', 'BlueHDi: verifica livello/additivo AdBlue e avvisi motore nello storico.', 'Infotainment: prova schermo, comandi al volante e connettività.'], sources: [{ label: 'PureTech: nota Stellantis', url: 'https://www.stellantis.com/en/news/press-releases/january-2025/stellantis-extends-compensation-policy-for-previous-generations-of-puretech-engines' }] }
+  ];
+  const dossier = dossiers.find(item => item.match.test(name));
+  return dossier || { reliabilityScore: 6, maintenance: 'da stimare', common: ['Non è disponibile un dossier verificato per questo modello/versione.'], engine: 'Motore: la versione esatta non è identificata; per correttezza non mostriamo consigli generici.', robust: 'Cambio: verifica sigla e storico del cambio prima di formulare una valutazione.', sources: [] };
 }
 
-function computeAnalysis(f, val, listings, askingPrice = 0) {
+function computeAnalysis(f, val, listings) {
   const info = getVehicleInfo(f.v, f.m);
-  const age = 2026 - parseInt(f.y);
+  const age = Math.max(0, 2026 - (parseInt(f.y) || 2020));
   const avgPrice = listings.reduce((a, l) => a + l.price, 0) / listings.length;
-  const referencePrice = askingPrice > 0 ? askingPrice : val.value;
-  const diffPct = Math.round(((referencePrice - avgPrice) / avgPrice) * 100);
+  const diffPct = 0;
   let score = info.reliabilityScore * 5 + (age <= 5 ? 20 : age <= 10 ? 10 : 0) + (info.maintenance === 'bassi' ? 15 : info.maintenance === 'medi' ? 8 : 0);
-  if (diffPct <= -8) score += 12;
-  else if (diffPct <= 5) score += 6;
-  else score -= Math.min(18, diffPct - 5);
   score = Math.min(100, Math.max(20, score));
   let verdict, verdictIcon, verdictClass;
   if (score >= 80) { verdict = 'Compra'; verdictIcon = '✓'; verdictClass = 'buy'; }
-  else if (score >= 60) { verdict = 'Tratta il prezzo'; verdictIcon = '↔'; verdictClass = 'negotiate'; }
+  else if (score >= 60) { verdict = 'Da valutare'; verdictIcon = '↔'; verdictClass = 'negotiate'; }
   else { verdict = 'Evita'; verdictIcon = '✕'; verdictClass = 'avoid'; }
-  const subVerdict = score >= 80 ? 'Questa vettura sembra una scelta solida.' : score >= 60 ? 'Può andare bene, ma prova a ribassare il prezzo.' : 'Ci sono troppi rischi rispetto al valore.';
+  const subVerdict = score >= 80 ? 'Profilo solido: conferma sempre con storico e prova.' : score >= 60 ? 'Procedi solo dopo una verifica dello storico e dei punti indicati.' : 'Richiede controlli approfonditi prima di prendere una decisione.';
   return { score, verdict, verdictIcon, verdictClass, subVerdict, info, avgPrice, diffPct, age };
 }
 
@@ -737,20 +693,17 @@ async function searchPlate() {
   try {
     const data = await lookupPlate(plate);
     const f = getVal(data);
-    const typedKm = Number(String(mileageInput.value).replace(/[^0-9]/g, '')) || 0;
-    if (typedKm) f.km = typedKm;
     const val = estimateValue(f);
     const listings = generateListings(f, val);
-    const askingPrice = Number(String(askingPriceInput.value).replace(/[^0-9]/g, '')) || 0;
-    currentData = { plate, data, f, val, listings, askingPrice };
+    currentData = { plate, data, f, val, listings };
     fetch('/api/analyses', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ plate, vehicle: `${f.v} ${f.m}`.trim(), year: f.y, askingPrice, estimatedValue: val.value, preview: Boolean(data.preview) })
+      body: JSON.stringify({ plate, vehicle: `${f.v} ${f.m}`.trim(), year: f.y, estimatedValue: val.value, preview: Boolean(data.preview) })
     }).catch(() => {});
     clearInterval(stepInt);
     loadingView.classList.remove('active');
     searchBtn.disabled = false;
-    renderReport(plate, f, val, listings, askingPrice);
+    renderReport(plate, f, val, listings);
     reportView.classList.add('active');
     newSearchBtn.style.display = 'inline-block';
   } catch (err) {
@@ -764,7 +717,7 @@ async function searchPlate() {
   }
 }
 
-function renderReport(plate, f, val, listings, askingPrice = 0) {
+function renderReport(plate, f, val, listings) {
   if (currentData.data.preview) {
     dataNotice.textContent = 'Modalità anteprima: il provider targa non è disponibile. I dati e la stima mostrati non sono verificati. Per rendere AutoEsperto un MVP con dati reali va collegato un provider autorizzato tramite backend.';
     dataNotice.style.display = 'block';
@@ -777,7 +730,7 @@ function renderReport(plate, f, val, listings, askingPrice = 0) {
   const img = $('heroImg');
   if (f.img) { img.src = f.img; img.style.display = 'block'; } else { img.style.display = 'none'; }
 
-  const analysis = computeAnalysis(f, val, listings, askingPrice);
+  const analysis = computeAnalysis(f, val, listings);
   const scoreEl = $('scoreValue');
   scoreEl.textContent = (analysis.score / 10).toFixed(1);
   scoreEl.className = 'score-value ' + (analysis.score >= 80 ? 'good' : analysis.score >= 60 ? 'fair' : 'bad');
@@ -788,9 +741,9 @@ function renderReport(plate, f, val, listings, askingPrice = 0) {
   $('valuationRange').textContent = `Forchetta stimata: ${val.min.toLocaleString('it-IT')} – ${val.max.toLocaleString('it-IT')} € · affidabilità ${val.confidence}`;
   const trend = analysis.diffPct;
   const trendEl = $('valuationTrend');
-  trendEl.textContent = askingPrice ? (trend > 5 ? '+' + trend + '% richiesta' : trend < -5 ? trend + '% richiesta' : 'Prezzo in linea') : 'Inserisci il prezzo';
-  trendEl.style.background = trend > 5 ? 'rgba(255,59,48,0.2)' : trend < -5 ? 'rgba(52,199,89,0.2)' : 'rgba(255,255,255,0.15)';
-  trendEl.style.color = trend > 5 ? '#FF453A' : trend < -5 ? '#32D74B' : '#fff';
+  trendEl.textContent = 'Stima di mercato';
+  trendEl.style.background = 'rgba(255,255,255,0.15)';
+  trendEl.style.color = '#fff';
 
   const avg = Math.round(listings.reduce((a, l) => a + l.price, 0) / listings.length);
   $('statMin').textContent = listings[0].price.toLocaleString('it-IT') + '€';
@@ -811,6 +764,8 @@ function renderReport(plate, f, val, listings, askingPrice = 0) {
     { label: 'Porte', value: f.d },
     { label: 'Colore', value: f.col },
     { label: 'Classe Euro', value: f.euro },
+    { label: 'Chilometri', value: f.km ? `${Number(String(f.km).replace(/\D/g, '')).toLocaleString('it-IT')} km` : '' },
+    { label: 'Assicurazione', value: f.insurance },
   ].filter(s => s.value);
   $('specsGrid').innerHTML = specs.map(s => `<div class="spec"><div class="spec-label">${s.label}</div><div class="spec-value">${s.value}</div></div>`).join('');
 
@@ -845,7 +800,7 @@ function renderReport(plate, f, val, listings, askingPrice = 0) {
     { label: 'Qualità/prezzo', value: Math.min(10, Math.max(4, 10 - Math.abs(trend) / 5)) },
     { label: 'Rivendita', value: Math.max(4, 10 - analysis.age * 0.4) }
   ];
-  $('aiTools').innerHTML = `<button class="quick-action" onclick="askAutoEsperto('price')">Prezzo consigliato</button><button class="quick-action" onclick="askAutoEsperto('risks')">Rischi da verificare</button><button class="quick-action" onclick="askAutoEsperto('checklist')">Checklist acquisto</button>`;
+  $('aiTools').innerHTML = `<button class="quick-action" onclick="askAutoEsperto('price')">Fascia di mercato</button><button class="quick-action" onclick="askAutoEsperto('risks')">Rischi da verificare</button><button class="quick-action" onclick="askAutoEsperto('checklist')">Checklist acquisto</button>`;
   $('aiGrid').innerHTML = scores.map(s => {
     const v = Math.round(s.value);
     return `<div class="ai-item">
@@ -857,9 +812,9 @@ function renderReport(plate, f, val, listings, askingPrice = 0) {
     </div>`;
   }).join('');
 
-  const priceComment = askingPrice ? (trend > 5 ? `Il prezzo richiesto è circa il ${trend}% sopra la fascia stimata.` : trend < -5 ? `Il prezzo richiesto è circa il ${Math.abs(trend)}% sotto la fascia stimata: approfondisci il motivo.` : 'Il prezzo richiesto è nella fascia stimata.') : 'Aggiungi il prezzo richiesto per ricevere un parere sulla trattativa.';
-  $('aiText').innerHTML = `<p><strong>${f.v} ${f.m}</strong> del <strong>${f.y}</strong>. ${priceComment} ${analysis.info.engine}</p><p><strong>Manutenzione:</strong> costi ${analysis.info.maintenance}. ${analysis.info.robust}</p>`;
+  $('aiText').innerHTML = `<p><strong>${f.v} ${f.m}</strong> del <strong>${f.y}</strong>. ${analysis.info.engine}</p><p><strong>Manutenzione:</strong> costi ${analysis.info.maintenance}. ${analysis.info.robust}</p>`;
   $('aiIssuesList').innerHTML = analysis.info.common.map(i => `<li>${i}</li>`).join('');
+  $('sourceLinks').innerHTML = (analysis.info.sources || []).map(s => `<a class="source-link" target="_blank" rel="noopener" href="${s.url}">${s.label} ↗</a>`).join('');
 
   $('problemsCard').innerHTML = `<div class="checklist">
     <div class="check-row"><div class="check-icon">1</div><div><strong>Storico manutenzione</strong><span>Chiedi fatture, tagliandi e verifica la coerenza dei chilometri.</span></div></div>
@@ -881,8 +836,6 @@ function resetApp() {
   loadingView.classList.remove('active');
   newSearchBtn.style.display = 'none';
   targaInput.value = '';
-  askingPriceInput.value = '';
-  mileageInput.value = '';
   targaInput.focus();
   currentData = null;
   dataNotice.style.display = 'none';
@@ -897,15 +850,15 @@ function showToast(msg) {
 
 function askAutoEsperto(topic = 'summary') {
   if (!currentData) return;
-  const { f, val, listings, askingPrice } = currentData;
-  const analysis = computeAnalysis(f, val, listings, askingPrice);
+  const { f, val, listings } = currentData;
+  const analysis = computeAnalysis(f, val, listings);
   const answer = topic === 'price'
-    ? (askingPrice ? `<strong>Prezzo richiesto: ${askingPrice.toLocaleString('it-IT')} €.</strong><br><br>La fascia stimata per questa configurazione è ${val.min.toLocaleString('it-IT')}–${val.max.toLocaleString('it-IT')} €. ${analysis.diffPct > 5 ? 'Chiedi uno sconto o una garanzia scritta prima di procedere.' : 'Il prezzo è ragionevole solo dopo aver verificato lo storico.'}` : `Inserisci il <strong>prezzo richiesto</strong> nella ricerca: così confronto la richiesta con la fascia stimata e ti suggerisco quanto trattare.`)
+    ? `<strong>Fascia di mercato stimata:</strong><br><br>${val.min.toLocaleString('it-IT')}–${val.max.toLocaleString('it-IT')} €. Confrontala con l’annuncio e verifica sempre condizioni, optional e storico.`
     : topic === 'risks'
       ? `<strong>I rischi da verificare per ${f.v} ${f.m}</strong><br><br>${analysis.info.common.map(x => `• ${x}`).join('<br>')}<br><br>Non sono una diagnosi: conferma tutto con una prova su strada e una verifica indipendente.`
       : topic === 'checklist'
         ? `<strong>Prima di comprare:</strong><br><br>1. Controlla VIN, libretto e storico tagliandi.<br>2. Fai una prova di almeno 20 minuti.<br>3. Richiedi un controllo in officina e un preventivo per gli interventi necessari.`
-        : `<strong>${analysis.verdict}: ${analysis.subVerdict}</strong><br><br>AutoEsperto valuta affidabilità, età e fascia di mercato. ${askingPrice ? `Con il prezzo inserito, la richiesta è ${Math.abs(analysis.diffPct)}% ${analysis.diffPct > 0 ? 'sopra' : 'sotto'} la media stimata.` : 'Aggiungi il prezzo richiesto per un parere sulla trattativa.'}`;
+        : `<strong>${analysis.verdict}: ${analysis.subVerdict}</strong><br><br>AutoEsperto valuta affidabilità, età e fascia di mercato.`;
   $('expertModalText').innerHTML = answer;
   $('expertModal').classList.add('active');
 }
@@ -916,8 +869,8 @@ async function generatePDF() {
   if (!currentData) return;
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
-  const { plate, f, val, listings, askingPrice } = currentData;
-  const analysis = computeAnalysis(f, val, listings, askingPrice);
+  const { plate, f, val, listings } = currentData;
+  const analysis = computeAnalysis(f, val, listings);
   doc.setFont('helvetica');
   doc.setFillColor(0, 113, 227); doc.rect(0, 0, 210, 36, 'F');
   doc.setTextColor(255,255,255); doc.setFontSize(24); doc.text('AutoEsperto', 18, 20);
@@ -927,10 +880,10 @@ async function generatePDF() {
   doc.setFillColor(245,247,250); doc.roundedRect(18, 68, 174, 33, 4, 4, 'F');
   doc.setFontSize(10); doc.text('FASCIA DI MERCATO STIMATA', 25, 79);
   doc.setFontSize(18); doc.text(`${val.min.toLocaleString('it-IT')} - ${val.max.toLocaleString('it-IT')} EUR`, 25, 92);
-  doc.setFontSize(10); doc.text(`Prezzo richiesto: ${askingPrice ? askingPrice.toLocaleString('it-IT') + ' EUR' : 'non inserito'}`, 118, 79);
+  doc.setFontSize(10); doc.text('Valutazione basata sulla fascia di mercato', 118, 79);
   doc.setFontSize(15); doc.text(`${(analysis.score/10).toFixed(1)}/10  ${analysis.verdict}`, 118, 92);
   let y = 118; doc.setFontSize(14); doc.text('Il parere di AutoEsperto', 18, y); y += 9;
-  doc.setFontSize(10); const opinion = doc.splitTextToSize(`${analysis.subVerdict} ${askingPrice ? `Il prezzo è ${Math.abs(analysis.diffPct)}% ${analysis.diffPct > 0 ? 'sopra' : 'sotto'} la media stimata.` : 'Inserisci il prezzo richiesto per completare la valutazione.'}`, 174); doc.text(opinion,18,y); y += opinion.length*5+12;
+  doc.setFontSize(10); const opinion = doc.splitTextToSize(`${analysis.subVerdict} Confronta la fascia con l’annuncio e verifica lo storico.`, 174); doc.text(opinion,18,y); y += opinion.length*5+12;
   doc.setFontSize(14); doc.text('Verifiche consigliate', 18, y); y += 8; doc.setFontSize(10);
   getVehicleInfo(f.v, f.m).common.slice(0,3).forEach(p => { const lines=doc.splitTextToSize('• '+p,174); doc.text(lines,18,y); y += lines.length*5+3; });
   y += 8; doc.setTextColor(110,110,115); doc.setFontSize(8); doc.text('Stima informativa: non sostituisce una perizia, i dati di mercato e l’ispezione professionale.',18,y);
