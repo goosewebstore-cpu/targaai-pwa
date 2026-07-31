@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://targaai-pwa.vercel.app/sitemap.xml
