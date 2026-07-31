@@ -91,7 +91,6 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .photo-btn{width:100%;height:52px;border-radius:var(--radius-sm);border:1.5px dashed var(--border);background:var(--surface2);color:var(--text2);font-size:16px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;}
 .photo-btn:active{background:var(--border);}
 .search-footnote{font-size:13px;line-height:1.45;color:var(--text3);padding:0 4px;}
-.popular-models{margin-top:22px}.popular-models h2{font-size:17px;margin-bottom:10px}.popular-links{display:flex;flex-wrap:wrap;gap:8px}.popular-links a{font-size:13px;font-weight:600;padding:8px 11px;border:1px solid var(--border);border-radius:999px;background:#fff;color:var(--accent);text-decoration:none}.model-prefill{font-size:14px;color:var(--text2);margin:0 0 12px;display:none}
 
 /* Loading */
 .loading{padding:0 24px 24px;display:none;}
@@ -272,7 +271,6 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
     </div>
 
     <div class="search-card">
-      <p class="model-prefill" id="modelPrefill"></p>
       <label class="search-label">Targa italiana</label>
       <div class="input-row">
         <div class="input-wrap">
@@ -290,12 +288,6 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
       </button>
       <p class="search-footnote">Dati chilometrici e classe assicurativa compaiono nel report solo se forniti dal database veicolo.</p>
     </div>
-    <section class="popular-models" aria-label="Modelli popolari">
-      <h2>Modelli popolari</h2>
-      <div class="popular-links">
-        <a href="/valutazione/fiat/panda">Fiat Panda</a><a href="/valutazione/volkswagen/golf">Volkswagen Golf</a><a href="/valutazione/toyota/yaris">Toyota Yaris</a><a href="/valutazione/ford/focus">Ford Focus</a><a href="/valutazione/peugeot/208">Peugeot 208</a><a href="/valutazione/renault">Modelli Renault</a>
-      </div>
-    </section>
 
   </main>
 
@@ -458,15 +450,6 @@ const errorView = $('errorView');
 const reportView = $('reportView');
 const newSearchBtn = $('newSearchBtn');
 const dataNotice = $('dataNotice');
-
-const landingParams = new URLSearchParams(location.search);
-const prefillMake = landingParams.get('make');
-const prefillModel = landingParams.get('model');
-if (prefillMake || prefillModel) {
-  const label = [prefillMake, prefillModel].filter(Boolean).join(' ');
-  $('modelPrefill').textContent = `Stai cercando: ${label}. Inserisci la targa per un report personalizzato.`;
-  $('modelPrefill').style.display = 'block';
-}
 
 targaInput.addEventListener('input', e => {
   const v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
