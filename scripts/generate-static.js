@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { catalogo, makes, slugify } = require('../lib/catalogo');
 const root = path.resolve(__dirname, '..');
-const host = 'https://goosewebstore-cpu.github.io/targaai-pwa';
+const host = 'https://goosewebstore-cpu.github.io/autoesperto';
 
 function write(relative, content) {
   const file = path.join(root, relative);
