@@ -83,7 +83,7 @@ function html(res, body, status = 200) {
 }
 
 function layout(title, description, content) {
-  return `<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title><meta name="description" content="${description}"><link rel="canonical" href="https://goosewebstore-cpu.github.io/autoesperto${content.canonical}"><style>body{font-family:system-ui,-apple-system,sans-serif;line-height:1.55;margin:0;background:#f5f5f7;color:#171717}main{max-width:900px;margin:auto;padding:28px 20px 56px}a{color:#0769d8;text-decoration:none}.card{background:#fff;border-radius:16px;padding:22px;margin:16px 0;box-shadow:0 2px 12px #0001}.score{font-size:2.4rem;font-weight:800;color:#16803c}.price{font-size:2rem;font-weight:800}ul{padding-left:20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}.muted{color:#61616b}</style></head><body><main><a href="/">← AutoEsperto</a>${content.body}</main></body></html>`;
+  return `<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title><meta name="description" content="${description}"><link rel="canonical" href="https://targaai-pwa.vercel.app${content.canonical}"><style>body{font-family:system-ui,-apple-system,sans-serif;line-height:1.55;margin:0;background:#f5f5f7;color:#171717}main{max-width:900px;margin:auto;padding:28px 20px 56px}a{color:#0769d8;text-decoration:none}.card{background:#fff;border-radius:16px;padding:22px;margin:16px 0;box-shadow:0 2px 12px #0001}.score{font-size:2.4rem;font-weight:800;color:#16803c}.price{font-size:2rem;font-weight:800}ul{padding-left:20px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}.muted{color:#61616b}</style></head><body><main><a href="/">← AutoEsperto</a>${content.body}</main></body></html>`;
 }
 
 function modelPage(item) {
@@ -102,7 +102,7 @@ function makePage(make) {
 }
 
 function sitemap(res) {
-  const host = 'https://goosewebstore-cpu.github.io/autoesperto';
+  const host = 'https://targaai-pwa.vercel.app';
   const paths = ['/', ...makes.map(m => `/valutazione/${slugify(m)}`), ...catalogo.map(x => `/valutazione/${slugify(x.make)}/${slugify(x.model)}`)];
   res.writeHead(200, { 'Content-Type': 'application/xml; charset=utf-8', 'Cache-Control': 'public, max-age=3600' });
   res.end(`<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${paths.map(p => `<url><loc>${host}${p}</loc></url>`).join('')}</urlset>`);
